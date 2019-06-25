@@ -1,0 +1,139 @@
+.GoodsList{
+    width: 100%;
+    height: 100%;
+    .Mask{ //遮罩层
+        width:100%;
+        height: 100%;
+        background: black;
+        opacity: 0.3;
+        position: absolute;
+    }
+    .searchBarBox{ // 顶部搜索模块
+        overflow: hidden;
+        z-index: 1000;
+        .Scan{
+            width: 44px;
+            height: 44px;
+            img{
+                width: 50%;
+                height: 44px;
+            }
+            background: #efeff4;
+            float: left;
+        }
+        .searchBar{
+            width: calc(100% - 88px);
+            float: left;
+        }
+        .screen{
+            width: 44px;
+            height: 44px;
+            img{
+                width: 50%;
+                height: 44px;
+            }
+            background: #efeff4;
+            float: left;
+        }
+    }
+    .screenBox{ //筛选条件模块
+        width: 100%;
+        height: 40px;  //两行筛选条件都显示时，要设置为80px
+        z-index: 1000;
+        .screenTop{
+            width: 100%;
+            height: 40px;
+            .screenTopItem{
+                width: 25%;
+                line-height: 40px;
+                color: gray;
+                float: left;
+                img{
+                    height: 0.9rem;
+                    top: -1px;
+                    position: relative;
+                }
+            }
+        }
+        .screenBottom{
+            width: 100%;
+            height: 40px;
+            .screenBottomItem{
+                width: 25%;
+                float: left;
+                height: 40px;
+                background: white;
+                span{
+                    line-height: 30px;
+                    background: #efeff4;
+                    width: 90%;
+                    display: inline-block;
+                    height: 30px;
+                    margin-top: 5px;
+                    border-radius: 15px;
+                    font-size: 0.6rem;
+                }
+                img{
+                    height: 0.8rem;
+                }
+            }
+            .screenBottomItemSelect{
+                width: 25%;
+                float: left;
+                height: 40px;
+                background: white;
+                span{
+                    line-height: 30px;
+                    background: #efeff4;
+                    width: 90%;
+                    display: inline-block;
+                    height: 35px;
+                    margin-top: 5px;
+                    border-top-left-radius: 15px;
+                    border-top-right-radius: 15px;
+                    font-size: 0.6rem;
+                }
+                img{
+                    height: 0.8rem;
+                }
+            }
+        }
+        .floatFrame{
+            width: 100%;
+            .CheckboxItem{
+                width: 50%;
+                float: left;
+                height: 40px;
+                :global{
+                    .am-list-line{
+                        height: 40px;
+                    }
+                    .am-list-content{
+                        height: 40px;
+                        padding: 0;
+                        font-size: 0.9rem;
+                        line-height: 40px;
+                    }
+                }
+            }
+            .ChoiceButton{
+                width: 100%;
+                height: 40px;
+                .ChoiceButtonItem{
+                    width: 50%;
+                    height: 40px;
+                    line-height: 40px;
+                    display: inline-block;
+                    background: white;
+                }
+            }
+        }
+    }
+    .hr{
+        background-color: #F5F5F9;
+        height: 6px;
+        border-top: 1px solid #ECECED;
+        border-bottom: 1px solid #ECECED;
+        margin: 0;
+    }
+}

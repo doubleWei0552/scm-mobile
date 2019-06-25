@@ -1,0 +1,118 @@
+@import '~antd/lib/style/themes/default.less';
+
+.ShoppingCart{
+    :global{
+        .am-list-thumb {
+            position: relative;
+            top: -15px;
+            left: -10px;
+        }
+        .am-stepper-handler-up{
+            right: 34px;
+        }
+        .am-stepper-input-wrap{
+            width: 72%;
+        }
+        .am-list-line{
+            padding-right: 5px;
+        }
+        .am-list-item{
+            padding-left: 5px;
+        }
+    }
+    .GoodsItem{
+        width: 100%;
+        height: 100px;
+        overflow: hidden; 
+        .itemLeft{
+            width: 30%;
+            height: 100%;
+            float: left;
+            .goodsImg{
+                width: 90%;
+                height: 80%;
+                margin: 10% 0 0 5%;
+                // box-shadow: 0 0 10px gray;
+            }
+        }
+        .itemRight{
+            width: 70%;
+            height: 100%;
+            float: left;
+            overflow: hidden; 
+            padding-left: 0.5rem;
+            .goodsTitle{
+                width: 170px;
+                font-size: 1.2rem;
+                overflow: hidden; 
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .goodsDes{
+                width: 170px;
+                font-size: 0.8rem;
+                margin: 5px 0;
+                color: gray;
+                overflow: hidden; 
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .goodsOther{
+                overflow: hidden;
+                .goodsPrice{
+                    // width: 50%;
+                    color: red;
+                    overflow: hidden; 
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    float: left;
+                }
+                .goodsNum{
+                    // width: 50%;
+                    float: left;
+                    .numIcon{
+                        svg{
+                            font-weight: bolder;
+                            width: 12px;
+                        }
+                    }
+                    .numInput{
+                        height: 1.2rem;
+                        width: 65%;
+                        margin: 0 3px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.settlementBox{
+    width: 100%;
+    min-height: 44px;
+    background: #f5f5f9;
+    position: fixed;
+    bottom: 50px;
+    z-index: 1000;
+    .selectBox{
+        width: 100%;
+        height: 35px;
+        .Amount{
+            float: left;
+            font-size: 0.9rem;
+            line-height: 35px;
+        }
+        .TotalButton{
+            float: right;
+            .Button{
+                box-shadow: none;
+                border: none;
+                z-index: 1000;
+                margin-right: 5px;
+                border-radius: 20px;
+                background: red;
+                color: white;
+            }
+        }
+    }
+}
