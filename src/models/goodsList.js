@@ -3,6 +3,7 @@ import { Toast } from 'antd-mobile';
 import router from 'umi/router';
 import _ from 'lodash';
 
+//新版的商品列表页
 export default {
     namespace: 'goodsList',
 
@@ -53,18 +54,21 @@ export default {
         goodsData: [
             {
                 img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
-                title: 'Meet hotel',
+                title: '测试数据',
                 des: '不是所有的兼职汪都需要风吹日晒',
+                ID:0,
             },
             {
                 img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-                title: 'McDonald\'s invites you',
-                des: '不是所有的兼职汪都需要风吹日晒',
+                title: '测试数据2',
+                des: '所有的兼职汪都需要风吹日晒',
+                ID:1,
             },
             {
                 img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-                title: 'Eat the week',
-                des: '不是所有的兼职汪都需要风吹日晒',
+                title: '测试数据3',
+                des: '都需要风吹日晒',
+                ID:2,
             },
         ]
     },

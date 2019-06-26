@@ -62,7 +62,6 @@ export default {
 
     // 绑定用户
     *bindWeChat({ payload, callback }, { call, put }) {
-
       const result = yield call(bindWeChat, payload);
       if (result.status === 'success') {
         localStorage.setItem('userId', result.data.userId);
@@ -72,8 +71,6 @@ export default {
         Toast.fail(result.message, 1);
         console.log('result', result)
       }
-
-
     },
 
     *queryCurrent({ payload, callback }, { call, put }) {

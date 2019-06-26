@@ -78,7 +78,7 @@ export default class NewGoodsList extends React.Component {
     onChoiceButton = (value, item) => {
         if (item.children.length > 0) {
             this.setState({
-                isMask: true,
+                isMask: this.state.ChoiceButton == value ? false : true,
                 ChoiceButton: this.state.ChoiceButton == value ? null : value
             })
         } else {
