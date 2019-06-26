@@ -6,10 +6,11 @@ import _ from 'lodash';
 import ReactDom from 'react-dom';
 import { Avatar, Button, Upload, Form } from 'antd';
 import noHead from '@/assets/noHead.svg'
-import { NavBar, Icon, TabBar, List, WhiteSpace, WingBlank, Result, ActivityIndicator, Picker } from 'antd-mobile';
+import { NavBar, Icon, TabBar, List, WhiteSpace, WingBlank, Result, ActivityIndicator, Picker, Modal, Toast } from 'antd-mobile';
 import styles from './style.less';
 
 const Item = List.Item;
+const alert = Modal.alert
 @Form.create()
 @connect(({ user, loading }) => ({
   user,
@@ -62,6 +63,18 @@ export default class UserCenter extends Component {
     })
   }
 
+  showAlert = () => {
+    const alertInstance = alert('Delete', 'Are you sure???', [
+      { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
+      { text: 'OK', onPress: () => console.log('ok') },
+    ]);
+    setTimeout(() => {
+      // 可以调用close方法以在外部close
+      console.log('auto close');
+      alertInstance.close();
+    }, 500000);
+  };
+
   render() {
     const userData = JSON.parse(localStorage.getItem('userData'));
     const { userInfo, visible, value } = this.state;
@@ -105,9 +118,16 @@ export default class UserCenter extends Component {
               </Picker>
             )}
           </List>
-          <Button type="primary" onClick={() => {
-            router.push('/welcome')
-            this.props.dispatch({ type: 'shoppingCart/save', payload: { goodsLists: [], TotalAmount: 0, TotalNumber: 0 } })
+          <Button onClick={() => {
+            alert('警告', '是否确定要退出当前账户？', [
+              { text: '取消', onPress: () => console.log('cancel') },
+              {
+                text: '确定', onPress: () => {
+                  router.push('/welcome')
+                  this.props.dispatch({ type: 'shoppingCart/save', payload: { goodsLists: [], TotalAmount: 0, TotalNumber: 0 } })
+                }
+              },
+            ])
           }} className={styles.signOut}>退出</Button>
         </div>
       </div>
