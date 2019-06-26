@@ -13,6 +13,7 @@ import disort from './image/disort.svg' //无序默认排布
 import down from './image/down.svg' //向下箭头
 import upward from './image/Upward.svg' //向上箭头
 import styles from './NewIndex.less'
+import { element } from 'prop-types';
 
 const CheckboxItem = Checkbox.CheckboxItem;
 
@@ -173,7 +174,7 @@ export default class NewGoodsList extends React.Component {
                 <div className={styles.hr} />
                 {/* 商品列表部分 */}
                 <div style={{ zIndex: 10 }}>
-                    <GoodsModul />
+                    <GoodsModul getStart={(e,element)=>this.props.getStart(e,element)}/>
                 </div>
             </div>
         )

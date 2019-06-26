@@ -269,7 +269,7 @@ export default class OrderList extends React.Component {
             <div style={{ height: '94px', width: '100%', padding: '15px 0', whiteSpace: 'nowrap' }}>
               <div style={{ overflowX: 'scroll', whiteSpace: 'nowrap', display: '-webkit-box' }}>
                 {obj.detailOrder.map((ii, jj) => {
-                  return <img key={jj} style={{ height: '64px', marginRight: '15px', marginBottom: '10px' }} src={noImg || obj.order.URL} alt="error" />
+                  return <img key={jj} style={{ height: '64px', marginRight: '15px', marginBottom: '10px' }} src={obj.order.URL || noImg} alt="error" />
                 })}
               </div>
             </div>
