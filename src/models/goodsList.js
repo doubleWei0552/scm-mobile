@@ -10,21 +10,17 @@ export default {
     state: {
         searchData: [
             {
-                label: '京东物流',
-                value: 0,
-                children: []
-            }, {
-                label: '品牌',
+                label: '品牌车型',
                 value: 1,
                 children: [
                     {
-                        label: '前减',
+                        label: '比亚迪',
                         value: 11
                     }, {
-                        label: '后减',
+                        label: '吉利',
                         value: 12
                     }, {
-                        label: '全套',
+                        label: '长城',
                         value: 13
                     }
                 ]
@@ -33,20 +29,14 @@ export default {
                 value: 2,
                 children: [
                     {
-                        label: 'test1',
+                        label: '前减',
                         value: 21
                     }, {
-                        label: 'test2',
+                        label: '后减',
                         value: 22
-                    }
-                ]
-            }, {
-                label: '减震种类',
-                value: 3,
-                children: [
-                    {
-                        label: '钢铁直男',
-                        value: 31
+                    }, {
+                        label: '全套',
+                        value: 23
                     }
                 ]
             }
@@ -54,26 +44,26 @@ export default {
         goodsData: [
             {
                 img: null,
-                GOODS_NAME: '测试数据',
-                des: '不是所有的兼职汪都需要风吹日晒',
+                GOODS_NAME: '吉利博锐',
+                des: '最美B级车',
                 ID:0,
-                PRICE:666,
+                PRICE:170000,
                 number:0,
             },
             {
                 img: null,
-                GOODS_NAME: '测试数据2',
-                des: '所有的兼职汪都需要风吹日晒',
+                GOODS_NAME: '领克02',
+                des: '紧凑型suv',
                 ID:1,
-                PRICE:888,
+                PRICE:150000,
                 number:0,
             },
             {
                 img: null,
-                GOODS_NAME: '测试数据3',
-                des: '都需要风吹日晒',
+                GOODS_NAME: '宝马3系',
+                des: '德系车',
                 ID:2,
-                PRICE:999,
+                PRICE:300000,
                 number:0,
             },
         ]
