@@ -7,6 +7,39 @@ export default {
   namespace: 'goodsData',
 
   state: {
+    searchData: [
+      {
+          label: '品牌车型',
+          value: 1,
+          children: [
+              {
+                  label: '比亚迪',
+                  value: 11
+              }, {
+                  label: '吉利',
+                  value: 12
+              }, {
+                  label: '长城',
+                  value: 13
+              }
+          ]
+      }, {
+          label: '安装方位',
+          value: 2,
+          children: [
+              {
+                  label: '前减',
+                  value: 21
+              }, {
+                  label: '后减',
+                  value: 22
+              }, {
+                  label: '全套',
+                  value: 23
+              }
+          ]
+      }
+  ],
     menuData: [],
     list: [],
     currentUser: {},
@@ -33,11 +66,17 @@ export default {
     *getGoodsList({ payload, callback }, { call, put, select }) {
       const result = yield call(getGoodsList, payload);
       const oldList = yield select(({ goodsData }) => goodsData.list);
-
+      console.log(result,oldList)
+      result.data.list.map((item,index)=>{
+        let isHave = _.findIndex(oldList,ii => ii.ID === item.ID)
+        if(isHave == -1){
+          oldList.push(item)
+        }
+      })
       if (result.status === 'success') {
         yield put({
           type: 'save',
-          payload: { list: _.concat(oldList, result.data.list), currentPage: result.data.currentPage },
+          payload: { list: oldList, currentPage: result.data.currentPage },
         });
       } else {
         Toast.fail(result.message, 1);

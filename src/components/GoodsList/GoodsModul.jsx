@@ -19,31 +19,38 @@ function MyBody(props) {
     );
 }
 const NUM_SECTIONS = 5;
-let pageIndex = 0;
+let pageIndex = 1;
 
-const dataBlobs = {};
+let dataBlobs = {};
 let sectionIDs = [];
 let rowIDs = [];
 
 function genData(pIndex = 1, list) {
+  console.log('list',list)
+  if(list.length===0){
+    return false
+  }
     const sectionName = `Section ${pIndex}`;
     const idx = _.findIndex(sectionIDs, item => item === sectionName)
     if (idx < 0) {
         sectionIDs.push(sectionName);
         dataBlobs[sectionName] = sectionName;
     }
-    rowIDs[pIndex] = [];
+    const aa = pIndex-1
+    rowIDs[aa] = [];
     _.map(list, (item, i) => {
-        rowIDs[pIndex].push(item.ID);
+        rowIDs[aa].push(item.ID);
         dataBlobs[item.ID] = item.ID;
     })
     sectionIDs = [...sectionIDs];
     rowIDs = [...rowIDs];
+    console.log('sectionIDs',sectionIDs,'rowIDs',rowIDs)
 }
 
-@connect(({ shoppingCart,goodsList }) => ({
+@connect(({ shoppingCart,goodsData,loading }) => ({
     shoppingCart,
-    goodsList,
+    goodsData,
+    loading: loading.models.goodsData,
 }))
 
 // 这是带选择和全选版本的购物车
@@ -74,17 +81,54 @@ export default class ShoppingCart extends React.Component {
     }
 
     componentDidMount() {
+        const { goodsData: { menuData, list } } = this.props;
         const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
-        let list = this.props.goodsList.goodsData
+        // let list = this.props.goodsData.list
         // simulate initial Ajax
-        setTimeout(() => {
-            genData(0, list);
+        this.getTypeList();
+        this.getGoodsList();
+        // setTimeout(() => {
+        //     genData(1, list);
+        //     this.setState({
+        //         dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
+        //         isLoading: false,
+        //         height: hei,
+        //     });
+        // }, 1000);
+    }
+
+    componentWillReceiveProps(nextProps) {
+      // if (nextProps.dataSource !== this.props.dataSource) {
+      //   this.setState({
+      //     dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.dataSource),
+      //   });
+      // }
+      this.setState({
+        cart: nextProps.shoppingCart.goodsLists
+      })
+    }
+
+    componentWillUnmount(){
+      let dataBlobs = {};
+let sectionIDs = [];
+let rowIDs = [];
+    }
+
+    getTypeList = () => {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'goodsData/getTypeList',
+        payload: {},
+        callback: response => {
+  
+          if (response.status === 'success') {
+            const value = [_.get(response, 'data[0].ID'), _.get(response, 'data[0].childCategory[0].ID')];
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-                isLoading: false,
-                height: hei,
-            });
-        }, 1000);
+              value,
+            })
+          }
+        }
+      })
     }
 
     // 进入详情页
@@ -109,13 +153,13 @@ export default class ShoppingCart extends React.Component {
         }
         console.log('reach end', event);
         this.setState({ isLoading: true });
-        setTimeout(() => {
-            genData(++pageIndex);
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-                isLoading: false,
-            });
-        }, 1000);
+        // setTimeout(() => {
+        //     genData(++pageIndex);
+        //     this.setState({
+        //         dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
+        //         isLoading: false,
+        //     });
+        // }, 1000);
     }
 
     onChange = (value) => {
@@ -216,7 +260,8 @@ export default class ShoppingCart extends React.Component {
 
     render() {
         let { SelectedData, TotalAmount, TotalNumber, allSelect } = this.props.shoppingCart
-        let goodsLists = this.props.goodsList.goodsData
+        let goodsLists = this.props.goodsData.list
+        console.log('goodsLists',goodsLists)
         const separator = (sectionID, rowID) => {
             return (
                 <div
