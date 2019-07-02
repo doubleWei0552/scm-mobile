@@ -204,8 +204,8 @@ export default class ShoppingCart extends React.Component {
   }
 
   // 获取商品列表
-  getGoodsList = (refresh = false,Classify,choiceBox) => {
-    console.log('筛选参数',refresh,Classify,choiceBox)
+  getGoodsList = (refresh = false,Classify,choiceBox,QUERY) => {
+    // console.log('筛选参数',refresh,Classify,choiceBox,QUERY)
     if(Classify){
       this.dataClean()
     }
@@ -223,11 +223,10 @@ export default class ShoppingCart extends React.Component {
       }, 1000);
       return
     }
-    console.log('daundian')
     dispatch({
       type: 'goodsData/getGoodsList',
       payload: { customerId, userId, pageSize: 10, category:Classify ? Classify.ID : (value[1] ? value[1] : null),
-        PROPERTIES:choiceBox, currentPage: Classify ? 1 : pageIndex  },
+        PROPERTIES:choiceBox, currentPage: Classify ? 1 : pageIndex,QUERY  },
       callback: response => {
         if (response.status === 'success') {
           const { data: { list } } = response;
@@ -301,6 +300,7 @@ export default class ShoppingCart extends React.Component {
     const row = (rowData, sectionID, rowID) => {
       const index = _.findIndex(goodsLists, item => item.ID === rowID)
       const obj = goodsLists[index];
+      console.log('obj',obj)
       return (
         <div key={rowID} style={{ padding: '0 10px' }}>
           <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
@@ -354,7 +354,7 @@ export default class ShoppingCart extends React.Component {
             overflow: 'auto',
           }}
           pageSize={4}
-          onScroll={() => { console.log('scroll'); }}
+          // onScroll={() => { console.log('scroll'); }}
           scrollRenderAheadDistance={500}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={10}
