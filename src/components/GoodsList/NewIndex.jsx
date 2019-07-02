@@ -62,7 +62,7 @@ export default class NewGoodsList extends React.Component {
     }
 
     onSearchBarChange = (value) => {
-        console.log('SearchBar', value)
+        this.child.getGoodsList(false,this.state.category,null,value)
     };
 
     onScan = () => {
