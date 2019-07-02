@@ -9,37 +9,37 @@ export default {
   state: {
     searchData: [
       {
-          label: '品牌车型',
-          value: 1,
-          children: [
-              {
-                  label: '比亚迪',
-                  value: 11
-              }, {
-                  label: '吉利',
-                  value: 12
-              }, {
-                  label: '长城',
-                  value: 13
-              }
-          ]
+        label: '品牌车型',
+        value: 1,
+        children: [
+          {
+            label: '比亚迪',
+            value: 11
+          }, {
+            label: '吉利',
+            value: 12
+          }, {
+            label: '长城',
+            value: 13
+          }
+        ]
       }, {
-          label: '安装方位',
-          value: 2,
-          children: [
-              {
-                  label: '前减',
-                  value: 21
-              }, {
-                  label: '后减',
-                  value: 22
-              }, {
-                  label: '全套',
-                  value: 23
-              }
-          ]
+        label: '安装方位',
+        value: 2,
+        children: [
+          {
+            label: '前减',
+            value: 21
+          }, {
+            label: '后减',
+            value: 22
+          }, {
+            label: '全套',
+            value: 23
+          }
+        ]
       }
-  ],
+    ],
     menuData: [],
     list: [],
     currentUser: {},
@@ -66,10 +66,10 @@ export default {
     *getGoodsList({ payload, callback }, { call, put, select }) {
       const result = yield call(getGoodsList, payload);
       const oldList = yield select(({ goodsData }) => goodsData.list);
-      console.log(result,oldList)
-      result.data.list.map((item,index)=>{
-        let isHave = _.findIndex(oldList,ii => ii.ID === item.ID)
-        if(isHave == -1){
+      console.log('oldList', result, oldList)
+      result.data.list.map((item, index) => {
+        let isHave = _.findIndex(oldList, ii => ii.ID === item.ID)
+        if (isHave == -1) {
           oldList.push(item)
         }
       })
@@ -84,6 +84,21 @@ export default {
       callback && callback(result)
     },
 
+    // 修改商品数量
+    *changeGoodsState({ payload }, { call, put, select }) {
+      const oldList = yield select(({ goodsData }) => goodsData.list);
+      const { isClear, goodsLists } = payload
+      if (isClear) {
+        _.map(oldList, item => {
+          item.number = 0
+        })
+      }
+      yield put({
+        type: 'save',
+        payload: { list: oldList },
+      });
+    },
+
     // 获取商品列表
     *confirmOrder({ payload, callback }, { call, put }) {
       const result = yield call(confirmOrder, payload);
@@ -94,6 +109,7 @@ export default {
         }, 900);
       } else {
         Toast.fail(result.message, 1);
+        callback && callback(result)
       }
     },
 

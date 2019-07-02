@@ -298,7 +298,7 @@ export default class OrderList extends React.Component {
           renderRow={row}
           renderSeparator={separator}
           style={{
-            height: this.state.height,
+            height: document.documentElement.clientHeight - 140,
             // overflow: 'auto',
             top: 0
           }}
