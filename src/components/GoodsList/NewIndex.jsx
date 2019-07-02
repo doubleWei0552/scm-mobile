@@ -118,9 +118,8 @@ export default class NewGoodsList extends React.Component {
         })
     }
 
-    submit=()=>{
+    submit=()=>{  //点击确定事件
         let choiceBox = this.state.choiceBox
-        console.log('点击确定',choiceBox)
         this.child.getGoodsList(false,this.state.category,choiceBox)
         this.setState({
             ChoiceButton:null,
@@ -128,7 +127,7 @@ export default class NewGoodsList extends React.Component {
         })
     }
 
-    onClassification =(value)=>{  //分类选择
+    onClassification =(value)=>{  //分类选择事件
         this.props.dispatch({type:'goodsData/onGoodsClassify',payload:{categoryId:value.ID}})
         this.child.getGoodsList(false,value)
         this.setState({
@@ -136,6 +135,7 @@ export default class NewGoodsList extends React.Component {
             isMask:false,
             category:value
         })
+        // this.props.dispatch({type:'goodsData/save',payload:{list:[]}})
     }
 
     onRef = (ref) => {
@@ -157,7 +157,6 @@ export default class NewGoodsList extends React.Component {
     }
 
     render() {
-        console.log('this.child', this.child)
         if(_.get(this.props.goodsData, 'menuData').length == 0) return null
         return (
             <div className={styles.GoodsList}>

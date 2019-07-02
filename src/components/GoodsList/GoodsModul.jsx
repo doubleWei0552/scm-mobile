@@ -26,6 +26,7 @@ let sectionIDs = [];
 let rowIDs = [];
 
 function genData(pIndex = 1, list) {
+
   if (list.length === 0) {
     return false
   }
@@ -36,6 +37,7 @@ function genData(pIndex = 1, list) {
     dataBlobs[sectionName] = sectionName;
   }
   const aa = pIndex - 1
+  console.log('aa',aa)
   rowIDs[aa] = [];
   _.map(list, (item, i) => {
     rowIDs[aa].push(item.ID);
@@ -43,6 +45,7 @@ function genData(pIndex = 1, list) {
   })
   sectionIDs = [...sectionIDs];
   rowIDs = [...rowIDs];
+  
   console.log('参数',sectionIDs,rowIDs)
 }
 
@@ -194,11 +197,21 @@ export default class ShoppingCart extends React.Component {
     })
   }
 
+  dataClean = () => {
+    dataBlobs = {};
+    sectionIDs = [];
+    rowIDs = [];
+  }
+
   // 获取商品列表
   getGoodsList = (refresh = false,Classify,choiceBox) => {
-    console.log('fang',refresh,Classify,choiceBox)
+    console.log('筛选参数',refresh,Classify,choiceBox)
+    if(Classify){
+      this.dataClean()
+    }
     const { dispatch } = this.props;
-    const { pageIndex, value } = this.state
+    const { value } = this.state
+    let pageIndex = Classify ? 1 : _.get(this.state, 'pageIndex');
     const customerId = localStorage.getItem('customerId') * 1;
     const userId = localStorage.getItem('userId') * 1;
     if (refresh) {
@@ -210,6 +223,7 @@ export default class ShoppingCart extends React.Component {
       }, 1000);
       return
     }
+    console.log('daundian')
     dispatch({
       type: 'goodsData/getGoodsList',
       payload: { customerId, userId, pageSize: 10, category:Classify ? Classify.ID : (value[1] ? value[1] : null),
@@ -218,7 +232,7 @@ export default class ShoppingCart extends React.Component {
         if (response.status === 'success') {
           const { data: { list } } = response;
           setTimeout(() => {
-            genData(pageIndex, list);
+            genData( pageIndex, list);
             this.setState({
               dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
               isLoading: false,
@@ -234,7 +248,6 @@ export default class ShoppingCart extends React.Component {
             refreshing: false,
           })
         }
-
       }
     })
   }

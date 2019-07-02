@@ -7,39 +7,7 @@ export default {
   namespace: 'goodsData',
 
   state: {
-    searchData: [
-      {
-        label: '品牌车型',
-        value: 1,
-        children: [
-          {
-            label: '比亚迪',
-            value: 11
-          }, {
-            label: '吉利',
-            value: 12
-          }, {
-            label: '长城',
-            value: 13
-          }
-        ]
-      }, {
-        label: '安装方位',
-        value: 2,
-        children: [
-          {
-            label: '前减',
-            value: 21
-          }, {
-            label: '后减',
-            value: 22
-          }, {
-            label: '全套',
-            value: 23
-          }
-        ]
-      }
-    ],
+    searchData: [],
     menuData: [],
     handMenu:[],
     list: [],
