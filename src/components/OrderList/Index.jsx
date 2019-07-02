@@ -118,7 +118,7 @@ export default class OrderList extends React.Component {
         isLoading: false,
         height: hei,
       });
-    }, 1000);
+    }, 3000);
   }
 
   // If you use redux, the data maybe at props, you need use `componentWillReceiveProps`

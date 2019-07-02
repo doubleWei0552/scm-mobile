@@ -5,6 +5,7 @@ import _ from 'lodash';
 import ReactDom from 'react-dom';
 import { NavBar, Icon, List, Button, WhiteSpace, WingBlank, Result, ActivityIndicator } from 'antd-mobile';
 import Style from './style.less';
+import noImg from '@/assets/noImg.svg'
 
 const Item = List.Item;
 
@@ -91,34 +92,36 @@ class OrderDetailPage extends Component {
           />
           <WhiteSpace />
         </div> */}
+        {orderDList && (
+          <List renderHeader={() => <div>订单号： {CODE}</div>} className="my-list">
+            {_.map(orderDList, o => (
+              <Item key={o.ID} extra={<div style={{ fontSize: 18 }}>金额：<div style={{ display: 'inline-block', minWidth: 36, textAlign: 'left' }}>{o.AMOUNT}</div></div>}>
+                <div style={{ display: 'flex' }}>
+                  <div>
+                    <img style={{ height: '64px', width: '64px', marginRight: '15px' }} src={noImg} alt="" />
+                  </div>
+                  <div>
+                    <div style={{ lineHeight: '40px', fontSize: 20 }}>{o.GOODS_NAME}</div>
+                    <div style={{ lineHeight: '24px', color: '#736f6f' }}><span>数量： {o.NUM}</span></div>
+                  </div>
+                </div>
+              </Item>))}
 
-        <List renderHeader={() => <div>订单号： {CODE}</div>} className="my-list">
-          {_.map(orderDList, o => (
-            <Item key={o.ID} extra={<div style={{ fontSize: 18 }}>金额：<div style={{ display: 'inline-block', minWidth: 36, textAlign: 'left' }}>{o.AMOUNT}</div></div>}>
+
+            <Item style={{ background: '#c5dff9', overflow: 'unset' }} extra={<div style={{ fontSize: 18 }}>总价：<span style={{ color: 'red', fontSize: 24, }}>{totalPrice}</span></div>}>
               <div style={{ display: 'flex' }}>
-                <div>
-                  <img style={{ height: '64px', width: '64px', marginRight: '15px' }} src='https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png' alt="" />
-                </div>
-                <div>
-                  <div style={{ lineHeight: '40px', fontSize: 20 }}>{o.GOODS_NAME}</div>
-                  <div style={{ lineHeight: '24px', color: '#736f6f' }}><span>数量： {o.NUM}</span></div>
-                </div>
-              </div>
-            </Item>))}
-
-
-          <Item style={{ background: '#c5dff9', overflow: 'unset' }} extra={<div style={{ fontSize: 18 }}>总价：<span style={{ color: 'red', fontSize: 24, }}>{totalPrice}</span></div>}>
-            <div style={{ display: 'flex' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                共{totalNum} 件
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  共{totalNum} 件
               </div>
 
-            </div>
-          </Item>
+              </div>
+            </Item>
 
 
 
-        </List>
+          </List>
+        )}
+
         {/* <div style={{ position: 'fixed', bottom: 0, background: '#ffffff', width: '100%', zIndex: 10 }}>
           <WhiteSpace />
           <WingBlank size="md"><Button type="primary">立即支付</Button></WingBlank>

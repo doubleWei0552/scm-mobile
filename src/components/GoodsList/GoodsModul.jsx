@@ -152,7 +152,9 @@ export default class ShoppingCart extends React.Component {
       return;
     }
     console.log('reach end', event);
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true }, () => {
+      this.getGoodsList();
+    });
     // setTimeout(() => {
     //     genData(++pageIndex);
     //     this.setState({
@@ -206,7 +208,7 @@ export default class ShoppingCart extends React.Component {
     }
     dispatch({
       type: 'goodsData/getGoodsList',
-      payload: { customerId, userId, pageSize: 10, category: value[1] ? value[1] : null, currentPage: pageIndex },
+      payload: { customerId, userId, pageSize: 10, category: null, currentPage: pageIndex },
       callback: response => {
         if (response.status === 'success') {
           const { data: { list } } = response;
