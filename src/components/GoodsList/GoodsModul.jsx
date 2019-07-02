@@ -26,7 +26,7 @@ let sectionIDs = [];
 let rowIDs = [];
 
 function genData(pIndex = 1, list) {
-  console.log('list', list)
+
   if (list.length === 0) {
     return false
   }
@@ -37,6 +37,7 @@ function genData(pIndex = 1, list) {
     dataBlobs[sectionName] = sectionName;
   }
   const aa = pIndex - 1
+  console.log('aa',aa)
   rowIDs[aa] = [];
   _.map(list, (item, i) => {
     rowIDs[aa].push(item.ID);
@@ -44,7 +45,8 @@ function genData(pIndex = 1, list) {
   })
   sectionIDs = [...sectionIDs];
   rowIDs = [...rowIDs];
-  console.log('sectionIDs', sectionIDs, 'rowIDs', rowIDs)
+  
+  console.log('参数',sectionIDs,rowIDs)
 }
 
 @connect(({ shoppingCart, goodsData, loading }) => ({
@@ -82,6 +84,7 @@ export default class ShoppingCart extends React.Component {
 
   componentDidMount() {
     const { goodsData: { menuData, list } } = this.props;
+    this.props.onRef(this)
     const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
     // let list = this.props.goodsData.list
     // simulate initial Ajax
@@ -120,7 +123,6 @@ export default class ShoppingCart extends React.Component {
       type: 'goodsData/getTypeList',
       payload: {},
       callback: response => {
-
         if (response.status === 'success') {
           const value = [_.get(response, 'data[0].ID'), _.get(response, 'data[0].childCategory[0].ID')];
           this.setState({
@@ -164,6 +166,10 @@ export default class ShoppingCart extends React.Component {
     // }, 1000);
   }
 
+  getScreen =(ID) => {
+
+  }
+
   onChange = (value) => {
     const { goodsData: { menuData } } = this.props;
     let label = '';
@@ -191,10 +197,21 @@ export default class ShoppingCart extends React.Component {
     })
   }
 
+  dataClean = () => {
+    dataBlobs = {};
+    sectionIDs = [];
+    rowIDs = [];
+  }
+
   // 获取商品列表
-  getGoodsList = (refresh = false) => {
+  getGoodsList = (refresh = false,Classify,choiceBox) => {
+    console.log('筛选参数',refresh,Classify,choiceBox)
+    if(Classify){
+      this.dataClean()
+    }
     const { dispatch } = this.props;
-    const { pageIndex, value } = this.state
+    const { value } = this.state
+    let pageIndex = Classify ? 1 : _.get(this.state, 'pageIndex');
     const customerId = localStorage.getItem('customerId') * 1;
     const userId = localStorage.getItem('userId') * 1;
     if (refresh) {
@@ -206,14 +223,16 @@ export default class ShoppingCart extends React.Component {
       }, 1000);
       return
     }
+    console.log('daundian')
     dispatch({
       type: 'goodsData/getGoodsList',
-      payload: { customerId, userId, pageSize: 10, category: null, currentPage: pageIndex },
+      payload: { customerId, userId, pageSize: 10, category:Classify ? Classify.ID : (value[1] ? value[1] : null),
+        PROPERTIES:choiceBox, currentPage: Classify ? 1 : pageIndex  },
       callback: response => {
         if (response.status === 'success') {
           const { data: { list } } = response;
           setTimeout(() => {
-            genData(pageIndex, list);
+            genData( pageIndex, list);
             this.setState({
               dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
               isLoading: false,
@@ -229,7 +248,6 @@ export default class ShoppingCart extends React.Component {
             refreshing: false,
           })
         }
-
       }
     })
   }
@@ -267,7 +285,6 @@ export default class ShoppingCart extends React.Component {
     const { cart } = this.state;
     let { SelectedData, TotalAmount, TotalNumber, allSelect } = this.props.shoppingCart
     let goodsLists = this.props.goodsData.list
-    console.log('goodsLists', goodsLists)
     const separator = (sectionID, rowID) => {
       return (
         <div

@@ -31,6 +31,7 @@ export default class NewGoodsList extends React.Component {
         isMask: false, //是否展示遮罩层
         ChoiceButton: null, //选择的筛选按钮，用于判断哪个要触发下拉框
         choiceBox:[], //选择框选择到的数据
+        category:{}, //分类
     }
     componentDidMount=()=>{
         this.getTypeList();
@@ -117,22 +118,28 @@ export default class NewGoodsList extends React.Component {
         })
     }
 
-    submit=()=>{
+    submit=()=>{  //点击确定事件
         let choiceBox = this.state.choiceBox
-        console.log(JSON.stringify(choiceBox))
-        this.props.dispatch({
-            type:'goodsData/',
-            payload:{choiceBox}
+        this.child.getGoodsList(false,this.state.category,choiceBox)
+        this.setState({
+            ChoiceButton:null,
+            isMask:false,
         })
     }
 
-    onClassification =(value)=>{  //分类选择
-        console.log(value)
+    onClassification =(value)=>{  //分类选择事件
+        this.props.dispatch({type:'goodsData/onGoodsClassify',payload:{categoryId:value.ID}})
+        this.child.getGoodsList(false,value)
         this.setState({
             ChoiceButton:null,
-            isMask:false
+            isMask:false,
+            category:value
         })
-        this.props.dispatch({type:'goodsData/onGoodsClassify',payload:{categoryId:value.ID}})
+        // this.props.dispatch({type:'goodsData/save',payload:{list:[]}})
+    }
+
+    onRef = (ref) => {
+        this.child = ref
     }
 
     onChoiceButton = (value, item) => {
@@ -274,7 +281,8 @@ export default class NewGoodsList extends React.Component {
                 <div className={styles.hr} />
                 {/* 商品列表部分 */}
                 <div style={{ zIndex: 10 }}>
-                    <GoodsModul getStart={(e,element)=>this.props.getStart(e,element)}/>
+                    <GoodsModul onRef={this.onRef} 
+                    getStart={(e,element)=>this.props.getStart(e,element)}/>
                 </div>
             </div>
         )
