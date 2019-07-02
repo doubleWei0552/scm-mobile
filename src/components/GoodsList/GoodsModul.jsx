@@ -79,6 +79,9 @@ export default class ShoppingCart extends React.Component {
       value: [],
       isEnd: false,
       stepper: {}, //用于存储步进器的数值
+      Classify:{}, //分类数据
+      choiceBox:[], //选择框选择的值
+      QUERY:'',  //搜索条件的值
     };
   }
 
@@ -155,7 +158,10 @@ export default class ShoppingCart extends React.Component {
     }
     console.log('reach end', event);
     this.setState({ isLoading: true }, () => {
-      this.getGoodsList();
+      this.getGoodsList(refresh = false,
+        this.state.Classify,
+        this.state.choiceBox,
+        this.state.QUERY);
     });
     // setTimeout(() => {
     //     genData(++pageIndex);
@@ -239,6 +245,9 @@ export default class ShoppingCart extends React.Component {
               show: false,
               refreshing: false,
               isEnd: list.length < 10 ? true : false,
+              Classify,
+              choiceBox,
+              QUERY,
             });
           }, 1000);
         } else {
@@ -300,7 +309,6 @@ export default class ShoppingCart extends React.Component {
     const row = (rowData, sectionID, rowID) => {
       const index = _.findIndex(goodsLists, item => item.ID === rowID)
       const obj = goodsLists[index];
-      console.log('obj',obj)
       return (
         <div key={rowID} style={{ padding: '0 10px' }}>
           <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
