@@ -25,6 +25,14 @@ export async function confirmOrder(params) {
   });
 }
 
+// 商品分类接口
+export async function goodsClassify(params) {
+  return request('/app/materialCategoryProperty/load', {
+    method: 'POST',
+    body: params,
+  });
+}
+
 export async function query() {
   return request('/api/users');
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { SearchBar, Button, WhiteSpace, WingBlank, Accordion, List, Checkbox, Flex } from 'antd-mobile'
+import { Tree,Collapse } from 'antd'
 import { connect } from 'dva'
 import _ from 'lodash'
 
@@ -16,9 +17,11 @@ import styles from './NewIndex.less'
 import { element } from 'prop-types';
 
 const CheckboxItem = Checkbox.CheckboxItem;
+const { TreeNode } = Tree;
+const { Panel } = Collapse
 
-@connect(({ goodsList }) => ({
-    goodsList,
+@connect(({ goodsData }) => ({
+    goodsData,
 }))
 
 export default class NewGoodsList extends React.Component {
@@ -27,7 +30,36 @@ export default class NewGoodsList extends React.Component {
         subscript: 0, //筛选底部的下标线展示
         isMask: false, //是否展示遮罩层
         ChoiceButton: null, //选择的筛选按钮，用于判断哪个要触发下拉框
+        choiceBox:[], //选择框选择到的数据
     }
+    componentDidMount=()=>{
+        this.getTypeList();
+    }
+
+    onSelect = (selectedKeys, info) => {
+        console.log('selected', selectedKeys, info);
+      };
+    
+    onCheck = (checkedKeys, info) => {
+        console.log('onCheck', checkedKeys, info);
+    };    
+
+    getTypeList = () => {
+        const { dispatch } = this.props;
+        dispatch({
+          type: 'goodsData/getTypeList',
+          payload: {},
+          callback: response => {
+            if (response.status === 'success') {
+              const value = [_.get(response, 'data[0].ID'), _.get(response, 'data[0].CHILD[0].ID')];
+              this.setState({
+                value,
+              })
+            }
+          }
+        })
+    }
+
     onSearchBarChange = (value) => {
         console.log('SearchBar', value)
     };
@@ -73,11 +105,38 @@ export default class NewGoodsList extends React.Component {
     }
 
     onCheckboxChange = (value) => { // 复选框的选择事件
-        console.log('Checkbox', value)
+        let choiceBox = this.state.choiceBox
+        let index = _.findIndex(choiceBox,item => item.ID == value.ID)
+        if(index > 0){
+            choiceBox.splice(index,1)
+        } else {
+            choiceBox.push(value)
+        }
+        this.setState({
+            choiceBox
+        })
+    }
+
+    submit=()=>{
+        let choiceBox = this.state.choiceBox
+        console.log(JSON.stringify(choiceBox))
+        this.props.dispatch({
+            type:'goodsData/',
+            payload:{choiceBox}
+        })
+    }
+
+    onClassification =(value)=>{  //分类选择
+        console.log(value)
+        this.setState({
+            ChoiceButton:null,
+            isMask:false
+        })
+        this.props.dispatch({type:'goodsData/onGoodsClassify',payload:{categoryId:value.ID}})
     }
 
     onChoiceButton = (value, item) => {
-        if (item.children.length > 0) {
+        if (item.CHILD.length > 0) {
             this.setState({
                 isMask: this.state.ChoiceButton == value ? false : true,
                 ChoiceButton: this.state.ChoiceButton == value ? null : value
@@ -88,10 +147,10 @@ export default class NewGoodsList extends React.Component {
                 ChoiceButton: this.state.ChoiceButton == value ? null : value
             })
         }
-
     }
 
     render() {
+        if(_.get(this.props.goodsData, 'menuData').length == 0) return null
         return (
             <div className={styles.GoodsList}>
                 {/* 遮罩层 */}
@@ -134,12 +193,24 @@ export default class NewGoodsList extends React.Component {
                     {/* 第二层的筛选条件 */}
                     <div className={styles.screenBottom}>
                         {
-                            _.get(this.props.goodsList, 'searchData').map((item, index) => {
+                            _.get(this.props.goodsData, 'menuData').map((item, index) => {
                                 return (
-                                    <div onClick={() => this.onChoiceButton(item.label, item)} className={this.state.ChoiceButton == item.label && item.children.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} key={item.label + index}>
-                                        <span style={{ color: this.state.ChoiceButton == item.label ? '#3c8ee2' : null }}>
-                                            {item.label}
-                                            {item.children.length > 0 ? <img src={this.state.ChoiceButton == item.label ? upward : down} alt="error" /> : null}
+                                    <div onClick={() => this.onChoiceButton(item.NAME, item)} className={this.state.ChoiceButton == item.NAME && item.CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} key={item.NAME + index}>
+                                        <span style={{ color: this.state.ChoiceButton == item.NAME ? '#3c8ee2' : null }}>
+                                            {item.NAME}
+                                            {item.CHILD.length > 0 ? <img src={this.state.ChoiceButton == item.NAME ? upward : down} alt="error" /> : null}
+                                        </span>
+                                    </div>
+                                )
+                            })
+                        }
+                        {
+                            _.get(this.props.goodsData, 'handMenu').map((item, index) => {
+                                return (
+                                    <div onClick={() => this.onChoiceButton(item.NAME, item)} className={this.state.ChoiceButton == item.NAME && item.CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} key={item.NAME + index}>
+                                        <span style={{ color: this.state.ChoiceButton == item.NAME ? '#3c8ee2' : null }}>
+                                            {item.NAME}
+                                            {item.CHILD.length > 0 ? <img src={this.state.ChoiceButton == item.NAME ? upward : down} alt="error" /> : null}
                                         </span>
                                     </div>
                                 )
@@ -148,23 +219,51 @@ export default class NewGoodsList extends React.Component {
                     </div>
                     {/* 第二层弹框的浮框 */}
                     <div className={styles.floatFrame}>
-                        {
-                            _.get(this.props.goodsList, 'searchData').map((item, index) => {
-                                return item.label == this.state.ChoiceButton ? <div key={index} style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
+                    {
+                            _.get(this.props.goodsData, 'menuData').map((item, index) => {
+                                return item.NAME == this.state.ChoiceButton ? <div key={index} style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
                                     <div style={{ overflow: 'hidden' }}> {/*  清除浮动带来的影响，划重点，要考的！！！ */}
-                                        {item.children.map((ii, jj) => {
-                                            return (
-                                                <div key={jj}>
-                                                    <CheckboxItem onChange={() => this.onCheckboxChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.label + jj}>
-                                                        {ii.label}
-                                                    </CheckboxItem>
-                                                </div>
-                                            )
+                                        {item.CHILD.map((ii, jj) => {
+                                            if(ii.CHILD.length > 0){
+                                                return <Collapse accordion key={jj + ii.NAME}>
+                                                    <Panel header={ii.NAME} key={ii.NAME + jj}>
+                                                        {ii.CHILD.map((bb,cc)=>{
+                                                            return <p style={{textAlign:'left',borderBottom:'1px solid lightgray'}} onClick={()=>this.onClassification(bb)} key={bb.NAME + ii.NAME + jj}>
+                                                            {bb.NAME}</p>
+                                                        })}
+                                                    </Panel>
+                                                </Collapse>
+                                            } else {
+                                                return (
+                                                    <div key={jj}>
+                                                        <CheckboxItem onChange={() => this.onCheckboxChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
+                                                            {ii.NAME}
+                                                        </CheckboxItem>
+                                                    </div>
+                                                )
+                                            }
                                         })}
                                     </div>
-                                    <div style={{ display: item.children.length > 0 ? 'block' : 'none' }} className={styles.ChoiceButton}>
+                                </div> : null
+                            })
+                        }
+                        {
+                            _.get(this.props.goodsData, 'handMenu').map((item, index) => {
+                                return item.NAME == this.state.ChoiceButton ? <div key={index} style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
+                                    <div style={{ overflow: 'hidden' }}> {/*  清除浮动带来的影响，划重点，要考的！！！ */}
+                                        {item.CHILD.map((ii, jj) => {
+                                                return (
+                                                    <div key={jj}>
+                                                        <CheckboxItem onChange={() => this.onCheckboxChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
+                                                            {ii.NAME}
+                                                        </CheckboxItem>
+                                                    </div>
+                                                )
+                                        })}
+                                    </div>
+                                    <div style={{ display: item.CHILD.length > 0 ? 'block' : 'none' }} className={styles.ChoiceButton}>
                                         <span style={{ borderBottomLeftRadius: '10px' }} className={styles.ChoiceButtonItem}>重置</span>
-                                        <span style={{ background: '#3c8ee2', borderBottomRightRadius: '10px' }} className={styles.ChoiceButtonItem}>确定</span>
+                                        <span style={{ background: '#3c8ee2', borderBottomRightRadius: '10px' }} onClick={this.submit} className={styles.ChoiceButtonItem}>确定</span>
                                     </div>
                                 </div> : null
                             })

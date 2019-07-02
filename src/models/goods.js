@@ -1,4 +1,4 @@
-import { getGoodsList, getTypeList, confirmOrder } from '@/services/goods';
+import { getGoodsList, getTypeList, confirmOrder,goodsClassify } from '@/services/goods';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
 import _ from 'lodash';
@@ -41,6 +41,7 @@ export default {
       }
     ],
     menuData: [],
+    handMenu:[],
     list: [],
     currentUser: {},
     currentPage: 0,
@@ -99,6 +100,16 @@ export default {
       });
     },
 
+    // 商品分类方法
+    *onGoodsClassify({payload,callback},{call,select,put}){
+      console.log('shangpingfenlei')
+      let {categoryId} = payload
+      let params = {
+        categoryId
+      }
+      const result = yield call(goodsClassify,params)
+      yield put({type:'save',payload:{handMenu:result.data}})
+    },
     // 获取商品列表
     *confirmOrder({ payload, callback }, { call, put }) {
       const result = yield call(confirmOrder, payload);

@@ -103,8 +103,10 @@ class LoginPage extends Component {
           animating={loading}
         />
         <WingBlank className="logo">
-          <Avatar shape="square" src={Logo} size={64} icon="user" />
-          <div className='title'>精诚供应链系统</div>
+          {/* <Avatar shape="square" src={Logo} size={64} icon="user" /> */}
+          <Avatar shape="square" src={localStorage.getItem('logoImgPath')} size={64} icon="user" />
+          {/* <div className='title'>精诚供应链系统</div> */}
+          <div className='title'>{localStorage.getItem('title')}</div>
         </WingBlank>
         <WingBlank>
           <Form onSubmit={this.handleSubmit} className="login-form">
