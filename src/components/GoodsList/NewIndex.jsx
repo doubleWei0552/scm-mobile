@@ -194,6 +194,7 @@ export default class NewGoodsList extends React.Component {
                     <div className={styles.screenBottom}>
                         {
                             _.get(this.props.goodsData, 'menuData').map((item, index) => {
+                                console.log('fenlei',item)
                                 return (
                                     <div onClick={() => this.onChoiceButton(item.NAME, item)} className={this.state.ChoiceButton == item.NAME && item.CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} key={item.NAME + index}>
                                         <span style={{ color: this.state.ChoiceButton == item.NAME ? '#3c8ee2' : null }}>
