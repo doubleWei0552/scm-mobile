@@ -23,15 +23,6 @@ class OrderDetailPage extends Component {
 
   componentDidMount() {
     this.getOrderDetail()
-    this.props.dispatch({
-      type: 'shoppingCart/save', payload: {
-        SelectedData: [],
-        goodsLists: [],
-        TotalAmount: 0,
-        TotalNumber: 0,
-        allSelect: false,
-      }
-    })
   }
 
   componentWillReceiveProps(nextProps) {

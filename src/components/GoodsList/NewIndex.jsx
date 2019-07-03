@@ -142,11 +142,18 @@ export default class NewGoodsList extends React.Component {
     }
 
     onChoiceButton = (value, item) => {
-        if (item.CHILD.length > 0) {
-            this.setState({
-                isMask: this.state.ChoiceButton == value ? false : true,
-                ChoiceButton: this.state.ChoiceButton == value ? null : value
-            })
+        if(item){
+            if (item.CHILD.length > 0) {
+                this.setState({
+                    isMask: this.state.ChoiceButton == value ? false : true,
+                    ChoiceButton: this.state.ChoiceButton == value ? null : value
+                })
+            } else {
+                this.setState({
+                    isMask: false,
+                    ChoiceButton: this.state.ChoiceButton == value ? null : value
+                })
+            }
         } else {
             this.setState({
                 isMask: false,
@@ -210,6 +217,11 @@ export default class NewGoodsList extends React.Component {
                                 )
                             })
                         }
+                        <div onClick={() => this.onChoiceButton('商品品牌')} className={styles.screenBottomItem}>
+                            <span style={{ color: this.state.ChoiceButton == '商品品牌' ? '#3c8ee2' : null }}>
+                                <label>商品品牌</label>
+                            </span>
+                        </div>
                         {
                             _.get(this.props.goodsData, 'handMenu').map((item, index) => {
                                 return (
