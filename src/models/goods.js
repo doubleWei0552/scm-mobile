@@ -9,6 +9,8 @@ export default {
   state: {
     searchData: [],
     menuData: [],
+    BRAND:[], //品牌的数据
+    ALLBRAND:[], //所有的品牌信息
     handMenu:[],
     list: [],
     currentUser: {},
@@ -19,10 +21,11 @@ export default {
     // 获取分类列表
     *getTypeList({ payload, callback }, { call, put }) {
       const result = yield call(getTypeList, payload);
+      console.log('fenlei',result)
       if (result.status === 'success') {
         yield put({
           type: 'save',
-          payload: { menuData: result.data },
+          payload: { menuData: result.data.CATEGORY,ALLBRAND:result.data.ALLBRAND },
         });
         callback && callback(result)
       } else {
@@ -75,7 +78,7 @@ export default {
         categoryId
       }
       const result = yield call(goodsClassify,params)
-      yield put({type:'save',payload:{handMenu:result.data}})
+      yield put({type:'save',payload:{handMenu:result.data.PROPERTY,BRAND:result.data.BRAND }})
     },
     // 获取商品列表
     *confirmOrder({ payload, callback }, { call, put }) {

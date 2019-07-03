@@ -193,6 +193,7 @@ export default class ShoppingCart extends React.Component {
         this.state.choiceBox,
         this.state.QUERY,
         null,
+        null,
         this.state.pageIndex);
     });
     // setTimeout(() => {
@@ -242,7 +243,7 @@ export default class ShoppingCart extends React.Component {
   }
 
   // 获取商品列表
-  getGoodsList = (refresh = false, Classify, choiceBox, QUERY, type, pIndex) => {
+  getGoodsList = (refresh = false, Classify, choiceBox, QUERY, type,BRAND, pIndex) => {
     // console.log('筛选参数',refresh,Classify,choiceBox,QUERY)
     Toast.loading('Loading...', 0);
     const { dispatch } = this.props;
@@ -263,7 +264,7 @@ export default class ShoppingCart extends React.Component {
       type: 'goodsData/getGoodsList',
       payload: {
         customerId, userId, pageSize: 10, category: Classify ? Classify.ID : (value[1] ? value[1] : null),
-        PROPERTIES: choiceBox, currentPage: type ? 1 : pageIndex, QUERY
+        PROPERTIES: choiceBox, currentPage: type ? 1 : pageIndex, QUERY,BRAND
       },
       callback: response => {
         if (response.status === 'success') {
