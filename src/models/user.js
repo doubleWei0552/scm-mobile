@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent, queryRSLogin, getUserInfo } from '@/services/user';
+import { query as queryUsers, queryCurrent, queryRSLogin, getUserInfo, queryLogoParameter } from '@/services/user';
 import { bindWeChat } from '@/services/wechat';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
@@ -17,6 +17,15 @@ export default {
   },
 
   effects: {
+    *queryLogoParameter({ }, { call, put }) {
+      const result = yield call(queryLogoParameter);
+      console.log('tesult', result)
+
+      localStorage.setItem('wechatLoginLogoImg', result.wechatLoginLogoImg);
+      localStorage.setItem('wechatLoginTitle', result.wechatLoginTitle);
+      localStorage.setItem('wechatLoginSubTitle', result.wechatLoginSubTitle);
+    },
+
     *login({ payload }, { call, put }) {
       const params = {
         username: payload.userName,

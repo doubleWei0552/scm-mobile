@@ -2,6 +2,14 @@ import request from '@/utils/request';
 
 
 // 登陆接口
+export async function queryLogoParameter() {
+  return request('/app/work/queryLogoParameter', {
+    method: 'POST',
+    body: {},
+  });
+}
+
+// 登陆接口
 export async function queryRSLogin(params) {
   return request('/rs/login', {
     method: 'POST',
