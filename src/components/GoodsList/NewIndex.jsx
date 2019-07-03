@@ -62,7 +62,7 @@ export default class NewGoodsList extends React.Component {
     }
 
     onSearchBarChange = (value) => {
-        this.child.getGoodsList(false,this.state.category,null,value)
+        this.child.getGoodsList(false,this.state.category,null,value,'father')
     };
 
     onScan = () => {
@@ -120,7 +120,7 @@ export default class NewGoodsList extends React.Component {
 
     submit=()=>{  //点击确定事件
         let choiceBox = this.state.choiceBox
-        this.child.getGoodsList(false,this.state.category,choiceBox)
+        this.child.getGoodsList(false,this.state.category,choiceBox,'','father')
         this.setState({
             ChoiceButton:null,
             isMask:false,
@@ -129,13 +129,12 @@ export default class NewGoodsList extends React.Component {
 
     onClassification =(value)=>{  //分类选择事件
         this.props.dispatch({type:'goodsData/onGoodsClassify',payload:{categoryId:value.ID}})
-        this.child.getGoodsList(false,value)
+        this.child.getGoodsList(false,value,[],'','father')
         this.setState({
             ChoiceButton:null,
             isMask:false,
             category:value
         })
-        // this.props.dispatch({type:'goodsData/save',payload:{list:[]}})
     }
 
     onRef = (ref) => {
@@ -201,7 +200,6 @@ export default class NewGoodsList extends React.Component {
                     <div className={styles.screenBottom}>
                         {
                             _.get(this.props.goodsData, 'menuData').map((item, index) => {
-                                console.log('fenlei',item)
                                 return (
                                     <div onClick={() => this.onChoiceButton(item.NAME, item)} className={this.state.ChoiceButton == item.NAME && item.CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} key={item.NAME + index}>
                                         <span style={{ color: this.state.ChoiceButton == item.NAME ? '#3c8ee2' : null }}>

@@ -35,7 +35,6 @@ export default {
     *getGoodsList({ payload, callback }, { call, put, select }) {
       const result = yield call(getGoodsList, payload);
       const oldList = yield select(({ goodsData }) => goodsData.list);
-      console.log('oldList', result, oldList)
       result.data.list.map((item, index) => {
         let isHave = _.findIndex(oldList, ii => ii.ID === item.ID)
         if (isHave == -1) {
