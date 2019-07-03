@@ -1,4 +1,4 @@
-import { ListView, List, Checkbox, Stepper, PullToRefresh, } from 'antd-mobile';
+import { ListView, List, Checkbox, Stepper, PullToRefresh, Toast, WhiteSpace, WingBlank } from 'antd-mobile';
 import { Input, Icon, Button } from 'antd'
 import ReactDOM from 'react-dom';
 import { connect } from 'dva'
@@ -26,7 +26,7 @@ let sectionIDs = [];
 let rowIDs = [];
 
 function genData(pIndex = 1, list) {
-
+  console.log('pIndex,list', pIndex, list)
   if (list.length === 0) {
     return false
   }
@@ -45,7 +45,33 @@ function genData(pIndex = 1, list) {
   })
   sectionIDs = [...sectionIDs];
   rowIDs = [...rowIDs];
+  rowIDs.filter(item => item)
+  console.log('处理后的rowIDS', rowIDs)
+  console.log('参数', sectionIDs, rowIDs)
+}
 
+function genScreenData(pIndex = 1, list) {
+  console.log('pIndex,list', pIndex, list)
+  if (list.length === 0) {
+    return false
+  }
+  const sectionName = `Section ${pIndex}`;
+  const idx = _.findIndex(sectionIDs, item => item === sectionName)
+  if (idx < 0) {
+    sectionIDs.push(sectionName);
+    dataBlobs[sectionName] = sectionName;
+  }
+  const aa = pIndex - 1
+  console.log('aa', aa)
+  rowIDs[aa] = [];
+  _.map(list, (item, i) => {
+    rowIDs[aa].push(item.ID);
+    dataBlobs[item.ID] = item.ID;
+  })
+  sectionIDs = [...sectionIDs];
+  rowIDs = [...rowIDs];
+  rowIDs.filter(item => item)
+  console.log('处理后的rowIDS', rowIDs)
   console.log('参数', sectionIDs, rowIDs)
 }
 
@@ -73,7 +99,6 @@ export default class ShoppingCart extends React.Component {
       dataSource,
       isLoading: true,
       show: false,
-      pageIndex: 1,
       height: document.documentElement.clientHeight * 3 / 4,
       cart: [],
       value: [],
@@ -82,6 +107,7 @@ export default class ShoppingCart extends React.Component {
       Classify: {}, //分类数据
       choiceBox: [], //选择框选择的值
       QUERY: '',  //搜索条件的值
+      pageIndex: 1,  //数据下标
     };
   }
 
@@ -89,8 +115,6 @@ export default class ShoppingCart extends React.Component {
     const { goodsData: { menuData, list } } = this.props;
     this.props.onRef(this)
     const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
-    // let list = this.props.goodsData.list
-    // simulate initial Ajax
     this.getTypeList();
     this.getGoodsList();
     // setTimeout(() => {
@@ -118,6 +142,12 @@ export default class ShoppingCart extends React.Component {
     let dataBlobs = {};
     let sectionIDs = [];
     let rowIDs = [];
+  }
+
+  loadingToast = () => {
+    Toast.loading('Loading...', 1, () => {
+      console.log('Load complete !!!');
+    });
   }
 
   getTypeList = () => {
@@ -161,7 +191,9 @@ export default class ShoppingCart extends React.Component {
       this.getGoodsList(false,
         this.state.Classify,
         this.state.choiceBox,
-        this.state.QUERY);
+        this.state.QUERY,
+        null,
+        this.state.pageIndex);
     });
     // setTimeout(() => {
     //     genData(++pageIndex);
@@ -210,14 +242,12 @@ export default class ShoppingCart extends React.Component {
   }
 
   // 获取商品列表
-  getGoodsList = (refresh = false, Classify, choiceBox, QUERY) => {
+  getGoodsList = (refresh = false, Classify, choiceBox, QUERY, type, pIndex) => {
     // console.log('筛选参数',refresh,Classify,choiceBox,QUERY)
-    if (Classify) {
-      this.dataClean()
-    }
+    Toast.loading('Loading...', 0);
     const { dispatch } = this.props;
     const { value } = this.state
-    let pageIndex = Classify ? 1 : _.get(this.state, 'pageIndex');
+    let pageIndex = type ? 1 : (pIndex ? ++pIndex : _.get(this.state, 'pageIndex'));
     const customerId = localStorage.getItem('customerId') * 1;
     const userId = localStorage.getItem('userId') * 1;
     if (refresh) {
@@ -233,17 +263,18 @@ export default class ShoppingCart extends React.Component {
       type: 'goodsData/getGoodsList',
       payload: {
         customerId, userId, pageSize: 10, category: Classify ? Classify.ID : (value[1] ? value[1] : null),
-        PROPERTIES: choiceBox, currentPage: Classify ? 1 : pageIndex, QUERY
+        PROPERTIES: choiceBox, currentPage: type ? 1 : pageIndex, QUERY
       },
       callback: response => {
         if (response.status === 'success') {
           const { data: { list } } = response;
           setTimeout(() => {
+            Toast.hide()
             genData(pageIndex, list);
             this.setState({
               dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
               isLoading: false,
-              pageIndex: pageIndex + 1,
+              pageIndex: response.data.currentPage,
               show: false,
               refreshing: false,
               isEnd: list.length < 10 ? true : false,
@@ -326,7 +357,8 @@ export default class ShoppingCart extends React.Component {
                   max={999999}
                   min={0}
                   step={1}
-                  defaultValue={index > -1 ? goodsLists[index].number : 0}
+                  // defaultValue={index > -1 ? goodsLists[index].number : 0}
+                  defaultValue={0}
                   onChange={(e, f) => {
                     if (e > this.state.stepper[rowID] || !this.state.stepper[rowID]) {
                       this.props.getStart(rowID, this._circle)
