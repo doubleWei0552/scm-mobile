@@ -32,6 +32,7 @@ export default class NewGoodsList extends React.Component {
         ChoiceButton: null, //选择的筛选按钮，用于判断哪个要触发下拉框
         choiceBox:[], //选择框选择到的数据
         category:{}, //分类
+        BRAND:[], //商品品牌数据
     }
     componentDidMount=()=>{
         this.getTypeList();
@@ -62,7 +63,7 @@ export default class NewGoodsList extends React.Component {
     }
 
     onSearchBarChange = (value) => {
-        this.child.getGoodsList(false,this.state.category,null,value,'father')
+        this.child.getGoodsList(false,this.state.category,null,value,'father',[])
     };
 
     onScan = () => {
@@ -118,9 +119,23 @@ export default class NewGoodsList extends React.Component {
         })
     }
 
+    onBRANDChange=(value) => {
+        let BRAND = this.state.BRAND
+        let index = _.findIndex(BRAND,item => item == value.ID)
+        if(index > 0){
+            BRAND.splice(index,1)
+        } else {
+            BRAND.push(value.ID)
+        }
+        this.setState({
+            BRAND
+        })
+    }
+
     submit=()=>{  //点击确定事件
         let choiceBox = this.state.choiceBox
-        this.child.getGoodsList(false,this.state.category,choiceBox,'','father')
+        let BRAND = this.state.BRAND
+        this.child.getGoodsList(false,this.state.category,choiceBox,'','father',BRAND)
         this.setState({
             ChoiceButton:null,
             isMask:false,
@@ -129,7 +144,7 @@ export default class NewGoodsList extends React.Component {
 
     onClassification =(value)=>{  //分类选择事件
         this.props.dispatch({type:'goodsData/onGoodsClassify',payload:{categoryId:value.ID}})
-        this.child.getGoodsList(false,value,[],'','father')
+        this.child.getGoodsList(false,value,[],'','father',[])
         this.setState({
             ChoiceButton:null,
             isMask:false,
@@ -142,7 +157,8 @@ export default class NewGoodsList extends React.Component {
     }
 
     onChoiceButton = (value, item) => {
-        if(item){
+        console.log(value, item)
+        if(item.CHILD){
             if (item.CHILD.length > 0) {
                 this.setState({
                     isMask: this.state.ChoiceButton == value ? false : true,
@@ -155,14 +171,21 @@ export default class NewGoodsList extends React.Component {
                 })
             }
         } else {
+            console.log('jinlaile')
             this.setState({
                 isMask: false,
                 ChoiceButton: this.state.ChoiceButton == value ? null : value
             })
         }
+        console.log('ChoiceButton',this.state.ChoiceButton)
     }
 
     render() {
+        console.log('menuData',_.get(this.props.goodsData, 'menuData'))
+        let BRAND = _.get(this.props.goodsData, 'BRAND')
+        let ALLBRAND = _.get(this.props.goodsData, 'ALLBRAND')
+        console.log('ALLBRAND',ALLBRAND,BRAND)
+        console.log('props',this.props.goodsData)
         if(_.get(this.props.goodsData, 'menuData').length == 0) return null
         return (
             <div className={styles.GoodsList}>
@@ -206,7 +229,7 @@ export default class NewGoodsList extends React.Component {
                     {/* 第二层的筛选条件 */}
                     <div className={styles.screenBottom}>
                         {
-                            _.get(this.props.goodsData, 'menuData').map((item, index) => {
+                            _.get(this.props.goodsData, 'menuData',[]).map((item, index) => {
                                 return (
                                     <div onClick={() => this.onChoiceButton(item.NAME, item)} className={this.state.ChoiceButton == item.NAME && item.CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} key={item.NAME + index}>
                                         <span style={{ color: this.state.ChoiceButton == item.NAME ? '#3c8ee2' : null }}>
@@ -217,11 +240,21 @@ export default class NewGoodsList extends React.Component {
                                 )
                             })
                         }
-                        <div onClick={() => this.onChoiceButton('商品品牌')} className={styles.screenBottomItem}>
-                            <span style={{ color: this.state.ChoiceButton == '商品品牌' ? '#3c8ee2' : null }}>
-                                <label>商品品牌</label>
+                        {/* 商品品牌 */}
+                        {
+                            BRAND.length != 0 ? <div onClick={() => this.onChoiceButton(BRAND.NAME, BRAND)} className={this.state.ChoiceButton == BRAND.NAME && BRAND.CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} >
+                            <span style={{ color: this.state.ChoiceButton == BRAND.NAME ? '#3c8ee2' : null }}>
+                                {BRAND.NAME}
+                                <img src={this.state.ChoiceButton == BRAND.NAME ? upward : down} alt="error" />
                             </span>
-                        </div>
+                            </div> : <div onClick={() => this.onChoiceButton('品牌', BRAND)} className={styles.screenBottomItem} >
+                                <span>
+                                    <label>品牌</label>
+                                    <img src={down} alt="error" />
+                                </span>
+                            </div>
+                        }
+                        {/* 商品属性 */}
                         {
                             _.get(this.props.goodsData, 'handMenu').map((item, index) => {
                                 return (
@@ -234,13 +267,14 @@ export default class NewGoodsList extends React.Component {
                                 )
                             })
                         }
+                       
                     </div>
                     {/* 第二层弹框的浮框 */}
                     <div className={styles.floatFrame}>
-                    {
+                        {
                             _.get(this.props.goodsData, 'menuData').map((item, index) => {
                                 return item.NAME == this.state.ChoiceButton ? <div key={index} style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
-                                    <div style={{ overflow: 'hidden' }}> {/*  清除浮动带来的影响，划重点，要考的！！！ */}
+                                    <div style={{ overflow: 'hidden' }}> 
                                         {item.CHILD.map((ii, jj) => {
                                             if(ii.CHILD.length > 0){
                                                 return <Collapse accordion key={jj + ii.NAME}>
@@ -285,6 +319,25 @@ export default class NewGoodsList extends React.Component {
                                     </div>
                                 </div> : null
                             })
+                        }
+                        { 
+                            BRAND.NAME == this.state.ChoiceButton && BRAND.CHILD ? <div style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
+                                <div style={{ overflow: 'hidden' }}> {/*  清除浮动带来的影响，划重点，要考的！！！ */}
+                                    {BRAND.CHILD.map((ii, jj) => {
+                                            return (
+                                                <div key={jj}>
+                                                    <CheckboxItem onChange={() => this.onBRANDChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
+                                                        {ii.NAME}
+                                                    </CheckboxItem>
+                                                </div>
+                                            )
+                                    })}
+                                </div>
+                                <div style={{ display: BRAND.CHILD.length > 0 ? 'block' : 'none' }} className={styles.ChoiceButton}>
+                                    <span style={{ borderBottomLeftRadius: '10px' }} className={styles.ChoiceButtonItem}>重置</span>
+                                    <span style={{ background: '#3c8ee2', borderBottomRightRadius: '10px' }} onClick={this.submit} className={styles.ChoiceButtonItem}>确定</span>
+                                </div>
+                            </div> : null
                         }
                     </div>
                 </div>
