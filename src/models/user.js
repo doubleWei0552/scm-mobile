@@ -38,16 +38,17 @@ export default {
         // document.cookie = `ssoSessionId=${_.get(result, 'data.sessionId')}`;
         localStorage.setItem('userId', userData.id);
         localStorage.setItem('sessionId', userData.sessionId);
+        localStorage.setItem('customerId', userData.customerId)
         // router.push('/goodslist')
         yield put({
           type: 'save',
           payload: { wechatinfo: userData },
         });
-        // if (customerUserList.length > 1) {
-        //   router.push('/customerselect')
-        // } else {
-        router.push('/homepage')
-        // }
+        if (customerUserList.length > 1) {
+          router.push('/customerselect')
+        } else {
+          router.push('/homepage')
+        }
 
       } else {
         Toast.fail(result.message, 1);
