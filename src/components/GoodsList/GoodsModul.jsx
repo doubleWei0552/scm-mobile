@@ -37,7 +37,7 @@ function genData(pIndex = 1, list) {
     dataBlobs[sectionName] = sectionName;
   }
   const aa = pIndex - 1
-  console.log('aa',aa)
+  console.log('aa', aa)
   rowIDs[aa] = [];
   _.map(list, (item, i) => {
     rowIDs[aa].push(item.ID);
@@ -45,8 +45,8 @@ function genData(pIndex = 1, list) {
   })
   sectionIDs = [...sectionIDs];
   rowIDs = [...rowIDs];
-  
-  console.log('参数',sectionIDs,rowIDs)
+
+  console.log('参数', sectionIDs, rowIDs)
 }
 
 @connect(({ shoppingCart, goodsData, loading }) => ({
@@ -79,9 +79,9 @@ export default class ShoppingCart extends React.Component {
       value: [],
       isEnd: false,
       stepper: {}, //用于存储步进器的数值
-      Classify:{}, //分类数据
-      choiceBox:[], //选择框选择的值
-      QUERY:'',  //搜索条件的值
+      Classify: {}, //分类数据
+      choiceBox: [], //选择框选择的值
+      QUERY: '',  //搜索条件的值
     };
   }
 
@@ -158,7 +158,7 @@ export default class ShoppingCart extends React.Component {
     }
     console.log('reach end', event);
     this.setState({ isLoading: true }, () => {
-      this.getGoodsList(refresh = false,
+      this.getGoodsList(false,
         this.state.Classify,
         this.state.choiceBox,
         this.state.QUERY);
@@ -172,7 +172,7 @@ export default class ShoppingCart extends React.Component {
     // }, 1000);
   }
 
-  getScreen =(ID) => {
+  getScreen = (ID) => {
 
   }
 
@@ -210,9 +210,9 @@ export default class ShoppingCart extends React.Component {
   }
 
   // 获取商品列表
-  getGoodsList = (refresh = false,Classify,choiceBox,QUERY) => {
+  getGoodsList = (refresh = false, Classify, choiceBox, QUERY) => {
     // console.log('筛选参数',refresh,Classify,choiceBox,QUERY)
-    if(Classify){
+    if (Classify) {
       this.dataClean()
     }
     const { dispatch } = this.props;
@@ -231,13 +231,15 @@ export default class ShoppingCart extends React.Component {
     }
     dispatch({
       type: 'goodsData/getGoodsList',
-      payload: { customerId, userId, pageSize: 10, category:Classify ? Classify.ID : (value[1] ? value[1] : null),
-        PROPERTIES:choiceBox, currentPage: Classify ? 1 : pageIndex,QUERY  },
+      payload: {
+        customerId, userId, pageSize: 10, category: Classify ? Classify.ID : (value[1] ? value[1] : null),
+        PROPERTIES: choiceBox, currentPage: Classify ? 1 : pageIndex, QUERY
+      },
       callback: response => {
         if (response.status === 'success') {
           const { data: { list } } = response;
           setTimeout(() => {
-            genData( pageIndex, list);
+            genData(pageIndex, list);
             this.setState({
               dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
               isLoading: false,
