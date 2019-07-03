@@ -43,11 +43,11 @@ export default {
           type: 'save',
           payload: { wechatinfo: userData },
         });
-        if (customerUserList.length > 1) {
-          router.push('/customerselect')
-        } else {
-          router.push('/homepage')
-        }
+        // if (customerUserList.length > 1) {
+        //   router.push('/customerselect')
+        // } else {
+        router.push('/homepage')
+        // }
 
       } else {
         Toast.fail(result.message, 1);
