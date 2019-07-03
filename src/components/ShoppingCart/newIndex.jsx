@@ -136,6 +136,15 @@ export default class ShoppingCart extends React.Component {
         })
         if (response.status === 'success') {
           dispatch({
+            type: 'shoppingCart/save', payload: {
+              SelectedData: [],
+              goodsLists: [],
+              TotalAmount: 0,
+              TotalNumber: 0,
+              allSelect: false,
+            }
+          })
+          dispatch({
             type: 'goodsData/changeGoodsState',
             payload: { isClear: true }
           })
