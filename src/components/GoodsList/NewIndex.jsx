@@ -251,7 +251,7 @@ export default class NewGoodsList extends React.Component {
                                 {BRAND[0].NAME}
                                 <img src={this.state.ChoiceButton == '品牌' ? upward : down} alt="error" />
                             </span>
-                            </div> : <div onClick={() => this.onBRANDButton('品牌', BRAND[0])} className={styles.screenBottomItem} >
+                            </div> : <div onClick={() => this.onBRANDButton('品牌', BRAND[0])} className={this.state.ChoiceButton == '品牌' && BRAND[0].CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} >
                                 <span>
                                     <label>品牌</label>
                                     <img src={down} alt="error" />
