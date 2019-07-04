@@ -51,6 +51,7 @@ const errorHandler = error => {
 // const apiUrl = 'http://192.168.60.201:8083/rs-pc-web';
 // const apiUrl = 'http://192.168.1.118:9099';  //test
 const apiUrl = 'http://crm.addchina.com:8080';
+// const apiUrl= 'http://zmmax.systex365.com:10050'; //外网链接的服务器
 // const apiUrl = 'http://192.168.4.128:9099'; // 俊峰
 // const apiUrl = 'http://192.168.4.139:9099'  // 维华
 // const apiUrl = 'http://192.168.60.205:10050'; // 临时服务器

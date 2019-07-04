@@ -72,13 +72,12 @@ export default {
 
     // 商品分类方法
     *onGoodsClassify({payload,callback},{call,select,put}){
-      console.log('shangpingfenlei')
       let {categoryId} = payload
       let params = {
         categoryId
       }
       const result = yield call(goodsClassify,params)
-      yield put({type:'save',payload:{handMenu:result.data.PROPERTY,BRAND:result.data.BRAND }})
+      yield put({type:'save',payload:{handMenu:result.data.PROPERTY,BRAND:[result.data.BRAND] }})
     },
     // 获取商品列表
     *confirmOrder({ payload, callback }, { call, put }) {

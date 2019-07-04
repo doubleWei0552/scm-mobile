@@ -157,35 +157,38 @@ export default class NewGoodsList extends React.Component {
     }
 
     onChoiceButton = (value, item) => {
-        console.log(value, item)
-        if(item.CHILD){
-            if (item.CHILD.length > 0) {
-                this.setState({
-                    isMask: this.state.ChoiceButton == value ? false : true,
-                    ChoiceButton: this.state.ChoiceButton == value ? null : value
-                })
-            } else {
-                this.setState({
-                    isMask: false,
-                    ChoiceButton: this.state.ChoiceButton == value ? null : value
-                })
-            }
+        console.log('123123',value, item)
+        if (item.CHILD.length > 0) {
+            this.setState({
+                isMask: this.state.ChoiceButton == value ? false : true,
+                ChoiceButton: this.state.ChoiceButton == value ? null : value
+            })
         } else {
-            console.log('jinlaile')
             this.setState({
                 isMask: false,
                 ChoiceButton: this.state.ChoiceButton == value ? null : value
             })
         }
-        console.log('ChoiceButton',this.state.ChoiceButton)
+    }
+
+    onBRANDButton =(value,item) => {
+        this.props.dispatch({
+            type:'goodsData/save',payload:{
+                BRAND:_.get(this.props.goodsData, 'ALLBRAND')
+            }
+        })
+        this.setState({
+            isMask: false,
+            ChoiceButton: this.state.ChoiceButton == value ? null : value
+        })
     }
 
     render() {
-        console.log('menuData',_.get(this.props.goodsData, 'menuData'))
         let BRAND = _.get(this.props.goodsData, 'BRAND')
         let ALLBRAND = _.get(this.props.goodsData, 'ALLBRAND')
-        console.log('ALLBRAND',ALLBRAND,BRAND)
-        console.log('props',this.props.goodsData)
+        console.log('ALLBRAND',ALLBRAND,'BRAND',BRAND)
+        console.log('判断',_.isEmpty(BRAND))
+        console.log('this.state.ChoiceButton',this.state.ChoiceButton)
         if(_.get(this.props.goodsData, 'menuData').length == 0) return null
         return (
             <div className={styles.GoodsList}>
@@ -242,12 +245,13 @@ export default class NewGoodsList extends React.Component {
                         }
                         {/* 商品品牌 */}
                         {
-                            BRAND.length != 0 ? <div onClick={() => this.onChoiceButton(BRAND.NAME, BRAND)} className={this.state.ChoiceButton == BRAND.NAME && BRAND.CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} >
-                            <span style={{ color: this.state.ChoiceButton == BRAND.NAME ? '#3c8ee2' : null }}>
-                                {BRAND.NAME}
-                                <img src={this.state.ChoiceButton == BRAND.NAME ? upward : down} alt="error" />
+                            !_.isEmpty(BRAND) ? <div onClick={() => this.onChoiceButton(BRAND[0].NAME, BRAND[0])} 
+                            className={this.state.ChoiceButton == '品牌' && BRAND[0].CHILD.length > 0 ? styles.screenBottomItemSelect : styles.screenBottomItem} >
+                            <span style={{ color: this.state.ChoiceButton == BRAND[0].NAME ? '#3c8ee2' : null }}>
+                                {BRAND[0].NAME}
+                                <img src={this.state.ChoiceButton == '品牌' ? upward : down} alt="error" />
                             </span>
-                            </div> : <div onClick={() => this.onChoiceButton('品牌', BRAND)} className={styles.screenBottomItem} >
+                            </div> : <div onClick={() => this.onBRANDButton('品牌', BRAND[0])} className={styles.screenBottomItem} >
                                 <span>
                                     <label>品牌</label>
                                     <img src={down} alt="error" />
@@ -321,9 +325,9 @@ export default class NewGoodsList extends React.Component {
                             })
                         }
                         { 
-                            BRAND.NAME == this.state.ChoiceButton && BRAND.CHILD ? <div style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
+                            '品牌' == this.state.ChoiceButton && BRAND[0].CHILD ? <div style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
                                 <div style={{ overflow: 'hidden' }}> {/*  清除浮动带来的影响，划重点，要考的！！！ */}
-                                    {BRAND.CHILD.map((ii, jj) => {
+                                    {BRAND[0].CHILD.map((ii, jj) => {
                                             return (
                                                 <div key={jj}>
                                                     <CheckboxItem onChange={() => this.onBRANDChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
@@ -333,7 +337,7 @@ export default class NewGoodsList extends React.Component {
                                             )
                                     })}
                                 </div>
-                                <div style={{ display: BRAND.CHILD.length > 0 ? 'block' : 'none' }} className={styles.ChoiceButton}>
+                                <div style={{ display: BRAND[0].CHILD.length > 0 ? 'block' : 'none' }} className={styles.ChoiceButton}>
                                     <span style={{ borderBottomLeftRadius: '10px' }} className={styles.ChoiceButtonItem}>重置</span>
                                     <span style={{ background: '#3c8ee2', borderBottomRightRadius: '10px' }} onClick={this.submit} className={styles.ChoiceButtonItem}>确定</span>
                                 </div>
