@@ -11,6 +11,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>精诚商城</title>
   <!-- <link rel="icon" href="/logoO.png" type="image/x-icon"> -->
+  <script>
+    window.apiConfig = {
+      // apiUrl: 'http://192.168.1.118:9099' // test
+      // apiUrl: 'http://192.168.1.109:9099' // test
+      // apiUrl: 'http://192.168.4.56:9099' // 成杰
+      apiUrl = 'http://crm.addchina.com:8080'
+      // apiUrl: 'http://192.168.4.128:9099' // 俊峰
+      // apiUrl: 'http://192.168.60.205:10050' // 内网服务器
+      // apiUrl: 'http://192.168.1.104:9099' // 冰清
+      // apiUrl: 'http://192.168.4.138:9099' // 佳丽
+      // apiUrl: 'http://192.168.4.130:9099' // 立中
+      // apiUrl : 'http://192.168.4.62:9099' // 永昆
+      // apiUrl : 'http://192.168.4.59:9099' //  李强
+      // apiUrl : 'http://192.168.4.60:9099' //  宁江龙
+    }
+    localStorage.setItem('origin', window.location.origin)
+  </script>
   <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.9.6/dist/data-set.min.js"></script>
   <meta name="viewport"
     content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
@@ -24,6 +41,8 @@
     if (!window.Promise) {
       document.writeln('<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"' + '>' + '<' + '/' + 'script>');
     }
+
+
   </script>
 </head>
 
@@ -31,6 +50,9 @@
   <noscript>Sorry, we need js to run correctly!</noscript>
   <div id="root"></div>
 </body>
+<script>
+
+</script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <script>
   /*

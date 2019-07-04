@@ -7,6 +7,7 @@ import { notification } from 'antd';
 import fetch from 'dva/fetch';
 import router from 'umi/router';
 import hash from 'hash.js';
+import { apiConfig } from '../defaultSettings';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -45,19 +46,9 @@ const errorHandler = error => {
  */
 // const REQUEST_SERVER = window.ENV.server;
 // console.log(REQUEST_SERVER)
-
-// const apiUrl = 'http://192.168.1.118:9099'; // 成杰
-// const apiUrl = 'http://192.168.4.56:9099'; // 成杰
-// const apiUrl = 'http://192.168.60.201:8083/rs-pc-web';
-// const apiUrl = 'http://192.168.1.118:9099';  //test
-const apiUrl = 'http://crm.addchina.com:8080';
-// const apiUrl = 'http://192.168.4.128:9099'; // 俊峰
-// const apiUrl = 'http://192.168.4.139:9099'  // 维华
-// const apiUrl = 'http://192.168.60.205:10050'; // 临时服务器
-// const apiUrl = 'http://192.168.4.126:9099'; // 冰清
-// const apiUrl = 'http://192.168.4.138:9099' // 佳丽
-// const apiUrl = 'http://192.168.4.130:9099' // 立中
-// const apiUrl = 'http://220.189.216.106:8880' // 永昆
+const { apiUrl: _apiUrl } = apiConfig;
+const origin = localStorage.getItem('origin') || '';
+const apiUrl = process.env.NODE_ENV === 'development' ? _apiUrl : origin;
 export default function request(url, options) {
   const defaultOptions = {
     // credentials: 'include',
