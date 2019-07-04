@@ -178,7 +178,7 @@ export default class NewGoodsList extends React.Component {
             }
         })
         this.setState({
-            isMask: false,
+            isMask: true,
             ChoiceButton: this.state.ChoiceButton == value ? null : value
         })
     }
