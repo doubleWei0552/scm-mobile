@@ -100,7 +100,7 @@ class LoginPage extends Component {
     const { loading = false } = this.props;
     const { getFieldDecorator } = this.props.form;
     console.log('sssss22', localStorage.getItem('wechatLoginLogoImg'))
-    const loginLogo = localStorage.getItem('wechatLoginLogoImg') !== 'undefined' ? JSON.parse(localStorage.getItem('wechatLoginLogoImg')) : [];
+    const loginLogo = localStorage.getItem('wechatLoginLogoImg') && localStorage.getItem('wechatLoginLogoImg') !== 'undefined' ? JSON.parse(localStorage.getItem('wechatLoginLogoImg')) : [];
     return (
       <div className={Style.welcomePage}>
         <ActivityIndicator
@@ -110,9 +110,9 @@ class LoginPage extends Component {
         />
         <WingBlank className="logo">
           {/* <Avatar shape="square" src={Logo} size={64} icon="user" /> */}
-          <Avatar shape="square" src={loginLogo.length ? loginLogo[0].url : ''} size={64} icon="user" />
+          <Avatar shape="square" src={loginLogo.length > 0 ? loginLogo[0].url : ''} size={64} icon="user" />
           {/* <div className='title'>精诚供应链系统</div> */}
-          <div className='title'>{localStorage.getItem('wechatLoginTitle') !== 'undefined' ? localStorage.getItem('wechatLoginTitle') : ''}</div>
+          <div className='title'>{localStorage.getItem('wechatLoginTitle') && localStorage.getItem('wechatLoginTitle') !== 'undefined' ? localStorage.getItem('wechatLoginTitle') : ''}</div>
         </WingBlank>
         <WingBlank>
           <Form onSubmit={this.handleSubmit} className="login-form">
