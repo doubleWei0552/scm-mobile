@@ -11,7 +11,7 @@ module.exports = {
     // apiUrl: 'http://192.168.1.118:9099' // test
     // apiUrl: 'http://192.168.1.109:9099' // test
     // apiUrl: 'http://192.168.4.56:9099' // 成杰
-    apiUrl: 'http://crm.addchina.com:8080'
+    apiUrl: 'http://crm.addchina.com:7080'
     // apiUrl: 'http://192.168.4.128:9099' // 俊峰
     // apiUrl: 'http://192.168.60.205:10050' // 内网服务器
     // apiUrl: 'http://192.168.1.104:9099' // 冰清
