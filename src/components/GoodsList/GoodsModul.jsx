@@ -26,7 +26,6 @@ let sectionIDs = [];
 let rowIDs = [];
 
 function genData(pIndex = 1, list) {
-  console.log('pIndex,list', pIndex, list)
   if (list.length === 0) {
     return false
   }
@@ -37,7 +36,6 @@ function genData(pIndex = 1, list) {
     dataBlobs[sectionName] = sectionName;
   }
   const aa = pIndex - 1
-  console.log('aa', aa)
   rowIDs[aa] = [];
   _.map(list, (item, i) => {
     rowIDs[aa].push(item.ID);
@@ -46,33 +44,6 @@ function genData(pIndex = 1, list) {
   sectionIDs = [...sectionIDs];
   rowIDs = [...rowIDs];
   rowIDs.filter(item => item)
-  console.log('处理后的rowIDS', rowIDs)
-  console.log('参数', sectionIDs, rowIDs)
-}
-
-function genScreenData(pIndex = 1, list) {
-  console.log('pIndex,list', pIndex, list)
-  if (list.length === 0) {
-    return false
-  }
-  const sectionName = `Section ${pIndex}`;
-  const idx = _.findIndex(sectionIDs, item => item === sectionName)
-  if (idx < 0) {
-    sectionIDs.push(sectionName);
-    dataBlobs[sectionName] = sectionName;
-  }
-  const aa = pIndex - 1
-  console.log('aa', aa)
-  rowIDs[aa] = [];
-  _.map(list, (item, i) => {
-    rowIDs[aa].push(item.ID);
-    dataBlobs[item.ID] = item.ID;
-  })
-  sectionIDs = [...sectionIDs];
-  rowIDs = [...rowIDs];
-  rowIDs.filter(item => item)
-  console.log('处理后的rowIDS', rowIDs)
-  console.log('参数', sectionIDs, rowIDs)
 }
 
 @connect(({ shoppingCart, goodsData, loading }) => ({

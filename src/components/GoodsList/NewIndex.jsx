@@ -109,7 +109,7 @@ export default class NewGoodsList extends React.Component {
     onCheckboxChange = (value) => { // 复选框的选择事件
         let choiceBox = this.state.choiceBox
         let index = _.findIndex(choiceBox,item => item.ID == value.ID)
-        if(index > 0){
+        if(index > -1){
             choiceBox.splice(index,1)
         } else {
             choiceBox.push(value)
@@ -122,7 +122,7 @@ export default class NewGoodsList extends React.Component {
     onBRANDChange=(value) => {
         let BRAND = this.state.BRAND
         let index = _.findIndex(BRAND,item => item == value.ID)
-        if(index > 0){
+        if(index > -1){
             BRAND.splice(index,1)
         } else {
             BRAND.push(value.ID)
@@ -157,7 +157,6 @@ export default class NewGoodsList extends React.Component {
     }
 
     onChoiceButton = (value, item) => {
-        console.log('123123',value, item)
         if (item.CHILD.length > 0) {
             this.setState({
                 isMask: this.state.ChoiceButton == value ? false : true,
@@ -184,11 +183,9 @@ export default class NewGoodsList extends React.Component {
     }
 
     render() {
+        console.log('选择框',this.state.choiceBox,'分类',this.state.category,'品牌',this.state.BRAND)
         let BRAND = _.get(this.props.goodsData, 'BRAND')
         let ALLBRAND = _.get(this.props.goodsData, 'ALLBRAND')
-        console.log('ALLBRAND',ALLBRAND,'BRAND',BRAND)
-        console.log('判断',_.isEmpty(BRAND))
-        console.log('this.state.ChoiceButton',this.state.ChoiceButton)
         if(_.get(this.props.goodsData, 'menuData').length == 0) return null
         return (
             <div className={styles.GoodsList}>
@@ -308,9 +305,11 @@ export default class NewGoodsList extends React.Component {
                                 return item.NAME == this.state.ChoiceButton ? <div key={index} style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
                                     <div style={{ overflow: 'hidden' }}> {/*  清除浮动带来的影响，划重点，要考的！！！ */}
                                         {item.CHILD.map((ii, jj) => {
+                                            console.log(ii)
                                                 return (
                                                     <div key={jj}>
-                                                        <CheckboxItem onChange={() => this.onCheckboxChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
+                                                        <CheckboxItem defaultChecked={_.findIndex(this.state.choiceBox,item => item.ID == ii.ID) > -1 ? true : false}  
+                                                        onChange={() => this.onCheckboxChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
                                                             {ii.NAME}
                                                         </CheckboxItem>
                                                     </div>
@@ -330,7 +329,8 @@ export default class NewGoodsList extends React.Component {
                                     {BRAND[0].CHILD.map((ii, jj) => {
                                             return (
                                                 <div key={jj}>
-                                                    <CheckboxItem onChange={() => this.onBRANDChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
+                                                    <CheckboxItem defaultChecked={_.findIndex(this.state.BRAND,item => item == ii.ID) > -1 ? true : false}
+                                                    onChange={() => this.onBRANDChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
                                                         {ii.NAME}
                                                     </CheckboxItem>
                                                 </div>

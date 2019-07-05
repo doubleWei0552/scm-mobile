@@ -21,7 +21,6 @@ export default {
     // 获取分类列表
     *getTypeList({ payload, callback }, { call, put }) {
       const result = yield call(getTypeList, payload);
-      console.log('fenlei',result)
       if (result.status === 'success') {
         yield put({
           type: 'save',
@@ -30,7 +29,6 @@ export default {
         callback && callback(result)
       } else {
         Toast.fail(result.message, 1);
-        console.log('result', result)
       }
     },
 
