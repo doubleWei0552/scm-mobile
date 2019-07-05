@@ -156,6 +156,21 @@ export default class NewGoodsList extends React.Component {
         this.child = ref
     }
 
+    onReset = (value) => {
+        let choiceBox = this.state.choiceBox
+        let PROPERTY_ID = value.CHILD[0].PROPERTY_ID
+        let newData = _.filter(choiceBox,item => item.PROPERTY_ID !== PROPERTY_ID)
+        this.setState({
+            choiceBox:newData
+        })
+    }
+
+    onBRANDReset =()=>{
+        this.setState({
+            BRAND:[]
+        })
+    }
+
     onChoiceButton = (value, item) => {
         if (item.CHILD.length > 0) {
             this.setState({
@@ -305,10 +320,9 @@ export default class NewGoodsList extends React.Component {
                                 return item.NAME == this.state.ChoiceButton ? <div key={index} style={{ background: '#efeff4', borderBottomLeftRadius: '10px', WebkitBorderBottomRightRadius: '10px' }}>
                                     <div style={{ overflow: 'hidden' }}> {/*  清除浮动带来的影响，划重点，要考的！！！ */}
                                         {item.CHILD.map((ii, jj) => {
-                                            console.log(ii)
                                                 return (
                                                     <div key={jj}>
-                                                        <CheckboxItem defaultChecked={_.findIndex(this.state.choiceBox,item => item.ID == ii.ID) > -1 ? true : false}  
+                                                        <CheckboxItem checked={_.findIndex(this.state.choiceBox,item => item.ID == ii.ID) > -1 ? true : false}  
                                                         onChange={() => this.onCheckboxChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
                                                             {ii.NAME}
                                                         </CheckboxItem>
@@ -317,7 +331,7 @@ export default class NewGoodsList extends React.Component {
                                         })}
                                     </div>
                                     <div style={{ display: item.CHILD.length > 0 ? 'block' : 'none' }} className={styles.ChoiceButton}>
-                                        <span style={{ borderBottomLeftRadius: '10px' }} className={styles.ChoiceButtonItem}>重置</span>
+                                        <span style={{ borderBottomLeftRadius: '10px' }} onClick={()=>this.onReset(item)} className={styles.ChoiceButtonItem}>重置</span>
                                         <span style={{ background: '#3c8ee2', borderBottomRightRadius: '10px' }} onClick={this.submit} className={styles.ChoiceButtonItem}>确定</span>
                                     </div>
                                 </div> : null
@@ -329,7 +343,7 @@ export default class NewGoodsList extends React.Component {
                                     {BRAND[0].CHILD.map((ii, jj) => {
                                             return (
                                                 <div key={jj}>
-                                                    <CheckboxItem defaultChecked={_.findIndex(this.state.BRAND,item => item == ii.ID) > -1 ? true : false}
+                                                    <CheckboxItem checked={_.findIndex(this.state.BRAND,item => item == ii.ID) > -1 ? true : false}
                                                     onChange={() => this.onBRANDChange(ii)} style={{ minHeight: '30px', background: '#efeff4' }} className={styles.CheckboxItem} key={ii.NAME + jj}>
                                                         {ii.NAME}
                                                     </CheckboxItem>
@@ -338,7 +352,7 @@ export default class NewGoodsList extends React.Component {
                                     })}
                                 </div>
                                 <div style={{ display: BRAND[0].CHILD.length > 0 ? 'block' : 'none' }} className={styles.ChoiceButton}>
-                                    <span style={{ borderBottomLeftRadius: '10px' }} className={styles.ChoiceButtonItem}>重置</span>
+                                    <span style={{ borderBottomLeftRadius: '10px' }} onClick={this.onBRANDReset} className={styles.ChoiceButtonItem}>重置</span>
                                     <span style={{ background: '#3c8ee2', borderBottomRightRadius: '10px' }} onClick={this.submit} className={styles.ChoiceButtonItem}>确定</span>
                                 </div>
                             </div> : null
