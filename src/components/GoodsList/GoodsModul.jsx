@@ -215,7 +215,6 @@ export default class ShoppingCart extends React.Component {
 
   // 获取商品列表
   getGoodsList = (refresh = false, Classify, choiceBox, QUERY, type,BRAND, pIndex) => {
-    // console.log('筛选参数',refresh,Classify,choiceBox,QUERY)
     Toast.loading('Loading...', 0);
     const { dispatch } = this.props;
     const { value } = this.state
@@ -329,8 +328,7 @@ export default class ShoppingCart extends React.Component {
                   max={999999}
                   min={0}
                   step={1}
-                  // defaultValue={index > -1 ? goodsLists[index].number : 0}
-                  defaultValue={0}
+                  defaultValue={index > -1 ? (goodsLists[index].number ? goodsLists[index].number : 0) : 0}
                   onChange={(e, f) => {
                     if (e > this.state.stepper[rowID] || !this.state.stepper[rowID]) {
                       this.props.getStart(rowID, this._circle)
