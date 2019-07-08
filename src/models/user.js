@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent, queryRSLogin, getUserInfo, queryLogoParameter } from '@/services/user';
+import { query as queryUsers, queryCurrent, queryRSLogin, getUserInfo, queryLogoParameter, queryRSLogOut } from '@/services/user';
 import { bindWeChat } from '@/services/wechat';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
@@ -62,6 +62,15 @@ export default {
 
       } else {
         Toast.fail(result.message, 1);
+      }
+    },
+
+    // 退出登录
+    *queryRSLogOut({ payload }, { call, put }) {
+      const result = yield call(queryRSLogOut);
+      if (result.status === 'success') {
+        localStorage.setItem('sessionId', '')
+        router.push('/welcome');
       }
     },
 

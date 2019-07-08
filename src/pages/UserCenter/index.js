@@ -123,7 +123,7 @@ export default class UserCenter extends Component {
               { text: '取消', onPress: () => console.log('cancel') },
               {
                 text: '确定', onPress: () => {
-                  router.push('/welcome')
+                  this.props.dispatch({ type: 'user/queryRSLogOut' })
                   this.props.dispatch({ type: 'shoppingCart/save', payload: { goodsLists: [], TotalAmount: 0, TotalNumber: 0 } })
                 }
               },

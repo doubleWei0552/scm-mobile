@@ -17,6 +17,13 @@ export async function queryRSLogin(params) {
   });
 }
 
+// 登出接口
+export async function queryRSLogOut(params) {
+  return request('/rs/ajax/logout', {
+    method: 'POST',
+  });
+}
+
 // 获取用户信息接口
 export async function getUserInfo(params) {
   return request('/wechat/oauth', {
