@@ -103,8 +103,8 @@ export default class ShoppingCart extends React.Component {
       { text: '取消', onPress: () => null, style: 'default' },
       {
         text: '确定', onPress: () => {
-          this.props.dispatch({ type: 'shoppingCart/removeGoods', payload: { obj } })
           this.props.dispatch({ type: 'shoppingCart/changeGoodsNumber', payload: { value: e, obj } })
+          this.props.dispatch({ type: 'shoppingCart/removeGoods', payload: { obj } })
         }
       },
     ]);
