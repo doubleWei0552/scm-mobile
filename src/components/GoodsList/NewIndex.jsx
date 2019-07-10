@@ -198,7 +198,6 @@ export default class NewGoodsList extends React.Component {
     }
 
     render() {
-        console.log('选择框',this.state.choiceBox,'分类',this.state.category,'品牌',this.state.BRAND)
         let BRAND = _.get(this.props.goodsData, 'BRAND')
         let ALLBRAND = _.get(this.props.goodsData, 'ALLBRAND')
         if(_.get(this.props.goodsData, 'menuData').length == 0) return null

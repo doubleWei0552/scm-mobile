@@ -328,7 +328,7 @@ export default class ShoppingCart extends React.Component {
                   max={999999}
                   min={0}
                   step={1}
-                  defaultValue={index > -1 ? (goodsLists[index].number ? goodsLists[index].number : 0) : 0}
+                  defaultValue={index > -1 ? (obj.number ? obj.number : 0) : 0}
                   onChange={(e, f) => {
                     if (e > this.state.stepper[rowID] || !this.state.stepper[rowID]) {
                       this.props.getStart(rowID, this._circle)
