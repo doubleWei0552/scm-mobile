@@ -1,4 +1,13 @@
-import { getGoodsList, getTypeList, confirmOrder,goodsClassify } from '@/services/goods';
+import { 
+  getGoodsList, 
+  getTypeList, 
+  confirmOrder,
+  goodsClassify,
+  queryAllcarBrand,
+  querycarManufacturer,
+  querycarModelsByModel, 
+  querycarMaterialList,
+} from '@/services/goods';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
 import _ from 'lodash';
@@ -15,6 +24,10 @@ export default {
     list: [],
     currentUser: {},
     currentPage: 0,
+    AllcarBrand:[], //选择页所有的商品品牌
+    carManufacturer:[], //商品品牌对应的数据
+    carModel: [],  //车子的年份和排量
+    installPosition:[],  //安装位置
   },
 
   effects: {
@@ -90,7 +103,63 @@ export default {
         callback && callback(result)
       }
     },
+    //选择页获取商品所有品牌的数据
+    *getAllcarBrand({payload,callback},{call,put,select}){
+      const result = yield call(queryAllcarBrand)
+      yield put({type:'save',payload:{AllcarBrand:result.data}})
+    },
+    //品牌对应的车型
+    *getcarManufacturer({payload,callback},{call,put,select}){
+      let params={
+        brandId:payload.brandId
+      }
+      const result = yield call(querycarManufacturer,params)
+      yield put({type:'save',payload:{carManufacturer:result.data}})
+    },
+    //具体车型对应的年份、安装位置数据
+    *getcarModelsByModel({payload},{call,select,put}){
+      let {MODEL,ID} = payload
+      let params ={
+        MODEL,
+        ID
+      }
+      let result = yield call(querycarModelsByModel,params)
+      yield put({type:'save',payload:{carModel:result.data.carModel,
+        installPosition:result.data.installPosition}})
+    },
+    //具体车型对应的所有数据
+    *getcarMaterialList({payload,callback},{call,select,put}){
+      let params ={
+        ID:payload.ID,
+        MODEL:payload.MODEL,
+        INSTALLATION_POSITION:payload.INSTALLATION_POSITION,
+        CAR_MODEL:payload.CAR_MODEL,
+        customerId:payload.customerId,
+        userId:payload.userId,
+        pageSize:payload.pageSize,
+        currentPage:payload.currentPage,
+      }
+      let result = yield call(querycarMaterialList,params)
+      console.log('result',result)
+      const oldList = yield select(({ goodsData }) => goodsData.list);
+      result.data.list.map((item, index) => {
+        let isHave = _.findIndex(oldList, ii => ii.ID === item.ID)
+        if (isHave == -1) {
+          oldList.push(item)
+        }
+      })
+      if (result.status === 'success') {
+        yield put({
+          type: 'save',
+          payload: { list: oldList, currentPage: result.data.currentPage },
+        });
+      } else {
+        Toast.fail(result.message, 1);
+      }
+      callback && callback(result)
+    },
 
+    
     *fetch(_, { call, put }) {
       const response = yield call(queryUsers);
       yield put({

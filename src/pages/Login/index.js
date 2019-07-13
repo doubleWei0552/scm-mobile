@@ -96,10 +96,11 @@ class LoginPage extends Component {
     const { loading = false } = this.props;
     const { getFieldDecorator } = this.props.form;
     const loginLogo = localStorage.getItem('wechatLoginLogoImg') && localStorage.getItem('wechatLoginLogoImg') !== 'undefined' ? JSON.parse(localStorage.getItem('wechatLoginLogoImg')) : [];
-    if(loginLogo[0].url){
+    if(loginLogo[0]){
       if(!loginLogo[0].url.includes('http:')){
           const { apiUrl: _apiUrl } = apiConfig;
-          const origin = localStorage.getItem('origin') || '';
+          let port = window.location.origin.split(':')
+          const origin = port[0]+':'+port[1] || '';
           const apiUrl = process.env.NODE_ENV === 'development' ? _apiUrl : origin;
           let newUrl = apiUrl.split(':')
           loginLogo[0].url = `${newUrl[0]}:${newUrl[1]}${loginLogo[0].url}`

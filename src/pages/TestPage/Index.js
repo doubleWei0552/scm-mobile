@@ -4,8 +4,8 @@ import Link from 'umi/link';
 import _ from 'lodash';
 import ReactDom from 'react-dom';
 import { NavBar, Icon, TabBar, List, Button, WhiteSpace, WingBlank, Result, ActivityIndicator, Badge } from 'antd-mobile';
-import GoodsList from '@/components/GoodsList/Index'
 import NewGoodsList from '@/components/GoodsList/NewIndex'
+import SelectionPage from '@/components/GoodsList/SelectionPage'
 import OrderList from '@/components/OrderList/Index'
 // import ShoppingCart from '@/components/ShoppingCart/Index' //带选择功能的购物车
 import ShoppingCart from '@/components/ShoppingCart/newIndex'
@@ -85,12 +85,12 @@ class TabPanePage extends Component {
       case 'goodList':
         return (
           <div key={1} style={{ flex: 1, textAlign: 'center', height: '100%' }}>
-            {/* <GoodsList getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
+            {/* <NewGoodsList getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
               this.goodsListRef = dom;
-            }} key={1} /> */}
-            <NewGoodsList getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
+            }} /> */}
+            <SelectionPage getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
               this.goodsListRef = dom;
-            }} />
+            }}/>
           </div>
         )
         break

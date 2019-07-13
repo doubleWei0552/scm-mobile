@@ -1,523 +1,199 @@
 import React from 'react'
-import { connect } from 'dva';
-import Link from 'umi/link';
-import _ from 'lodash';
-import ReactDom from 'react-dom';
-import { Menu, ActivityIndicator, NavBar, Icon, ListView, Stepper, PullToRefresh, Badge, Modal, List, Button, Toast } from 'antd-mobile';
-import router from 'umi/router';
-import shoppingCar from './image/shopping-car.png'
-import noImg from '@/assets/noImg.svg'
-import Style from './style.less';
+import { SearchBar, Button, WhiteSpace, WingBlank, Accordion, List, Checkbox, Flex } from 'antd-mobile'
+import { Tree,Collapse } from 'antd'
+import { connect } from 'dva'
+import _ from 'lodash'
 
-let dataBlobs = {};
-let sectionIDs = [];
-let rowIDs = [];
-function genData(pIndex = 1, list = []) {
-  const sectionName = `Section ${pIndex}`;
-  const idx = _.findIndex(sectionIDs, item => item === sectionName)
-  if (idx > -1) {
-    return
-  }
-  sectionIDs.push(sectionName);
-  dataBlobs[sectionName] = sectionName;
-  rowIDs[pIndex - 1] = [];
-  _.map(list, (item, i) => {
-    rowIDs[pIndex - 1].push(item.ID);
-    dataBlobs[item.ID] = item.ID;
-  })
-  sectionIDs = [...sectionIDs];
-  rowIDs = [...rowIDs];
-}
+import GoodsModul from './GoodsModul'
+import screen from './image/screen.svg' //右上角变化表格图标
+import screens from './image/screens.svg' //筛选排序图标
+import Scan from './image/Scan.svg' //扫一扫图标
+import descend from './image/descend.svg' //下降排序
+import scend from './image/scend.svg' //上升排序
+import disort from './image/disort.svg' //无序默认排布
+import down from './image/down.svg' //向下箭头
+import upward from './image/Upward.svg' //向上箭头
+import styles from './Index.less'
+import { element } from 'prop-types';
 
+const CheckboxItem = Checkbox.CheckboxItem;
+const { TreeNode } = Tree;
+const { Panel } = Collapse
 
-@connect(({ goodsData, shoppingCart, loading }) => ({
-  goodsData,
-  shoppingCart,
-  loading: loading.models.goodsData,
+@connect(({ goodsData }) => ({
+    goodsData,
 }))
 
 export default class GoodsList extends React.Component {
-  constructor(props) {
-    super(props);
-    const getSectionData = (dataBlob, sectionID) => dataBlob[sectionID];
-    const getRowData = (dataBlob, sectionID, rowID) => dataBlob[rowID];
-
-    const dataSource = new ListView.DataSource({
-      getRowData,
-      getSectionHeaderData: getSectionData,
-      rowHasChanged: (row1, row2) => row1 !== row2,
-      sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
-    });
-
-    this.state = {
-      dataSource,
-      isLoading: true,
-      show: false,
-      pageIndex: 1,
-      height: document.documentElement.clientHeight * 3 / 4,
-      cart: [],
-      modal2: false,
-      value: [],
-      isEnd: false,
-      stepper: {}, //用于存储步进器的数值
-    };
-  }
-
-  componentDidMount() {
-    const { goodsData: { menuData, list } } = this.props;
-    const { pageIndex } = this.state;
-    const hei = document.documentElement.clientHeight - ReactDom.findDOMNode(this.lv).parentNode.offsetTop;
-    this.getTypeList();
-    this.getGoodsList();
-    setTimeout(() => {
-      this.setState({
-        isLoading: false,
-        height: hei,
-      });
-    }, 600);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.dataSource !== this.props.dataSource) {
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.dataSource),
-      });
+    state = {
+        PriceRanking: null, //价格筛选的图标展示
+        subscript: 0, //筛选底部的下标线展示
+        isMask: false, //是否展示遮罩层
+        ChoiceButton: null, //选择的筛选按钮，用于判断哪个要触发下拉框
+        choiceBox:[], //选择框选择到的数据
+        category:{}, //分类
+        INSTALLATION_POSITION:'', //选择的安装位置
+        CAR_MODEL:'', //汽车年份
     }
-    this.setState({
-      cart: nextProps.shoppingCart.goodsLists
-    })
-  }
-
-  getTypeList = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'goodsData/getTypeList',
-      payload: {},
-      callback: response => {
-
-        if (response.status === 'success') {
-          const value = [_.get(response, 'data[0].ID'), _.get(response, 'data[0].childCategory[0].ID')];
-          this.setState({
-            value,
-          })
-        }
-      }
-    })
-  }
-
-  // 获取商品列表
-  getGoodsList = (refresh = false) => {
-    const { dispatch } = this.props;
-    const { pageIndex, value } = this.state
-    const customerId = localStorage.getItem('customerId') * 1;
-    const userId = localStorage.getItem('userId') * 1;
-    if (refresh) {
-      setTimeout(() => {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-          refreshing: false,
-        });
-      }, 1000);
-      return
+    componentDidMount=()=>{
+        this.getTypeList();
     }
-    dispatch({
-      type: 'goodsData/getGoodsList',
-      payload: { customerId, userId, pageSize: 10, category: value[1] ? value[1] : null, currentPage: pageIndex },
-      callback: response => {
-        if (response.status === 'success') {
-          const { data: { list } } = response;
-          setTimeout(() => {
-            genData(pageIndex, list);
-            this.setState({
-              dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-              isLoading: false,
-              pageIndex: pageIndex + 1,
-              show: false,
-              refreshing: false,
-              isEnd: list.length < 10 ? true : false,
-            });
-          }, 1000);
-        } else {
-          this.setState({
-            isLoading: false,
-            refreshing: false,
-          })
-        }
+    
+    onCheck = (checkedKeys, info) => {
+        console.log('onCheck', checkedKeys, info);
+    };    
 
-      }
-    })
-  }
-
-
-  onChange = (value) => {
-    const { goodsData: { menuData } } = this.props;
-    let label = '';
-    menuData.forEach((dataItem) => {
-      if (dataItem.value === value[0]) {
-        label = dataItem.label;
-        if (dataItem.children && value[1]) {
-          dataItem.children.forEach((cItem) => {
-            if (cItem.value === value[1]) {
-              label += ` ${cItem.label}`;
+    getTypeList = () => {
+        const { dispatch } = this.props;
+        dispatch({
+          type: 'goodsData/getTypeList',
+          payload: {},
+          callback: response => {
+            if (response.status === 'success') {
+              const value = [_.get(response, 'data[0].ID'), _.get(response, 'data[0].CHILD[0].ID')];
+              this.setState({
+                value,
+              })
             }
-          });
-        }
-      }
-    });
-    this.setState({
-      pageIndex: 1,
-      value,
-      isLoading: true,
-    }, () => {
-      dataBlobs = {};
-      sectionIDs = [];
-      rowIDs = [];
-      this.getGoodsList()
-    })
-  }
-
-  handleClick = (e) => {
-    e.preventDefault(); // Fix event propagation on Android
-    this.setState({
-      show: !this.state.show,
-    });
-
-  }
-
-  goBack = () => {
-    window.history.back()
-  }
-
-  onMaskClick = () => {
-    this.setState({
-      show: false,
-    });
-  }
-
-  onClose = () => {
-    this.setState({
-      modal2: false,
-    });
-  }
-
-  // 确认下单
-  confirmOrder = () => {
-    const { dispatch } = this.props;
-    const { cart } = this.state;
-    const customerId = localStorage.getItem('customerId')
-    dispatch({
-      type: 'goodsData/confirmOrder',
-      payload: { list: cart, customerId },
-      callback: response => {
-        if (response.status === 'success') {
-          this.setState({
-            modal2: false,
-          })
-
-          router.push(`/orderdetail/${response.data}`)
-        }
-      }
-    })
-  }
-
-  showModal = () => {
-    this.setState({
-      modal2: true,
-    });
-  }
-
-  onEndReached = (event) => {
-    // load new data
-    // hasMore: from backend data, indicates whether it is the last page, here is false
-    const { pageIndex, isEnd } = this.state;
-    if (isEnd) {
-      return;
+          }
+        })
     }
-    this.setState({ isLoading: true, pageIndex }, () => {
-      this.getGoodsList();
-    });
-  }
 
-  onRefresh = () => {
-    this.setState({ refreshing: true, }, () => {
-      this.getGoodsList(true)
-    });
-  };
-
-  stepperChange = (val, obj) => {
-    const { cart } = this.state;
-    const idx = _.findIndex(cart, item => item.ID === obj.ID)
-    if (idx > -1) {
-      if (val === 0) {
-        _.remove(cart, c => c.ID === obj.ID)
-        this.setState({
-          cart
-        })
-      } else {
-        cart[idx].number = val
-        this.setState({
-          cart
-        })
-      }
-
-    } else {
-      obj.number = val;
-      cart.push(obj);
-      this.setState({
-        cart
-      })
-    }
-    this.props.dispatch({ type: 'shoppingCart/save', payload: { goodsLists: cart } })
-  }
-
-  render() {
-    const { goodsData: { menuData, list }, shoppingCart: { goodsLists } } = this.props;
-    const { initData, show, dataSource, cart, value, isLoading, isEnd } = this.state;
-    _.map(menuData, item => {
-      item.value = item.ID;
-      item.label = item.NAME;
-      item.children = item.childCategory;
-      if (item.childCategory.length) {
-        _.map(item.children, child => {
-          child.label = child.NAME;
-          child.value = child.ID;
-        })
-      }
-    })
-    let cartNum = 0;
-    let totalPrice = 0;
-    _.map(cart, item => {
-      cartNum += item.number;
-      totalPrice += (item.PRICE || 0) * (item.number || 1);
-    })
-    const menuEl = (
-      <Menu
-        className="foo-menu"
-        data={menuData}
-        value={value}
-        onChange={this.onChange}
-        level={2}
-        height={document.documentElement.clientHeight * 0.6}
-      />
-    );
-    const loadingEl = (
-      <div style={{ width: '100%', height: document.documentElement.clientHeight * 0.6, display: 'flex', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </div>
-    );
-
-    const separator = (sectionID, rowID) => (
-      <div
-        key={rowID}
-        style={{
-          backgroundColor: '#F5F5F9',
-          height: 8,
-          borderTop: '1px solid #ECECED',
-          borderBottom: '1px solid #ECECED',
-        }}
-      />
-    );
-    const row = (rowData, sectionID, rowID) => {
-      const index = _.findIndex(list, item => item.ID === rowData)
-      const obj = list[index];
-      const idx = _.findIndex(goodsLists, item => item.ID === obj.ID)
-      return (
-        <div key={rowID} style={{ padding: '0 15px' }}>
-
-          <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
-            <img style={{ maxHeight: '80px', marginRight: '15px', borderRadius: '5px' }} src={_.get(obj, 'img') || noImg} alt="error" />
-            <div style={{ lineHeight: 1, width: 'calc(100% - 95px)' }}>
-              <div style={{ marginBottom: '8px', textAlign: 'left', fontWeight: 'bold' }}>{_.get(obj, 'GOODS_NAME')}</div>
-              <div style={{ marginBottom: '8px', textAlign: 'left', fontSize: '0.8rem' }}>{obj.des}</div>
-              <div style={{ overflow: 'hidden' }}>
-                <div style={{ color: 'red', textAlign: 'left', float: 'left' }}>价格:{_.get(obj, 'PRICE')}</div>
-                <div style={{ textAlign: 'right' }}><Stepper
-                  style={{ minWidth: '100px', backgroundColor: 'white', float: 'right' }}
-                  showNumber
-                  max={999999}
-                  min={0}
-                  step={1}
-                  defaultValue={idx > -1 ? goodsLists[idx].number : 0}
-                  onChange={(e, f) => {
-                    if (e > this.state.stepper[rowID] || !this.state.stepper[rowID]) {
-                      this.props.getStart(rowID, this._circle)
-                    }
-                    let stepper = this.state.stepper
-                    stepper[rowID] = e
-                    this.setState({
-                      stepper
-                    })
-                    this.stepperChange(e, obj)
-                  }}
-                />
-                  <span id={rowID} ref={r => this._circle = r} style={{ display: 'none', zIndex: 1000, position: 'absolute', right: '20px', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: 'red' }} />
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* 老的样式，暂时别删 ⬇️*/}
-          {/* <div
-            style={{
-              lineHeight: '43px',
-              color: 'rgba(0,0,0,0.8)',
-              fontSize: 18,
-              fontWeight: 500,
-              borderBottom: '1px solid #F6F6F6',
-              textAlign: 'right',
-              paddingRight: 16,
-            }}
-          >{_.get(obj, 'GOODS_NAME')}
-          </div>
-          <div style={{ display: '-webkit-box', display: 'flex', padding: '5px 0' }}>
-            <img style={{ height: '64px', marginRight: '15px' }} src={_.get(obj, 'img') || 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png'} alt="" />
-            <div style={{ lineHeight: 1, flex: 1 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 64 }}>
-                <div style={{ fontSize: '30px', color: '#FF6E27' }}><span style={{ fontSize: 18, color: 'rgba(0,0,0,0.65)' }}>价格：</span>{_.get(obj, 'PRICE')}</div>
-                <Stepper
-                  style={{ minWidth: '100px', backgroundColor: 'white' }}
-                  showNumber
-                  max={999999}
-                  min={0}
-                  step={1}
-                  defaultValue={idx > -1 ? goodsLists[idx].number : 0}
-                  onChange={(e, f) => {
-                    if (e > this.state.stepper[rowID] || !this.state.stepper[rowID]) {
-                      this.props.getStart(rowID, this._circle)
-                    }
-                    let stepper = this.state.stepper
-                    stepper[rowID] = e
-                    this.setState({
-                      stepper
-                    })
-                    this.stepperChange(e, obj)
-                  }}
-                />
-                <span id={rowID} ref={r => this._circle = r} style={{ display: 'none', zIndex: 1000, position: 'absolute', right: '20px', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: 'red' }} />
-              </div>
-            </div>
-          </div> */}
-        </div>
-      );
+    onSearchBarChange = (value) => {
+        this.child.getGoodsList(false,this.state.category,null,value,'father',[])
     };
 
-    return (
-      <div ref={el => this.content = el} className={show ? Style.menuactive : Style.goodsPage} style={{ flex: 1 }}>
-        {/* <ActivityIndicator
-          toast
-          text="Loading..."
-          animating={isLoading}
-        /> */}
-        {/* <div style={{ position: 'fixed', top: 0, zIndex: 10, width: '100%' }}>
-          <NavBar
-            // leftContent="Menu"
-            // icon={<Icon type="left" size='lg' />}
-            // onLeftClick={this.goBack}
-            rightContent={[
-              <Icon onClick={this.handleClick} key="1" type="ellipsis" />,
-            ]}
-            className="top-nav-bar"
-          >
-            商品列表
-          </NavBar>
-        </div> */}
-        {show ? menuData ? menuEl : loadingEl : null}
-        {show ? <div className="menu-mask" onClick={this.onMaskClick} /> : null}
+    onScan = () => {
+        console.log('点击扫一扫按钮')
+        this.props.onGoSelectPage()
+    }
 
-        <ListView
-          ref={el => this.lv = el}
-          dataSource={dataSource}
-          renderFooter={() => (<div style={{ padding: 5, textAlign: 'center' }}>
-            {this.state.isLoading ? 'Loading...' : isEnd ? '数据加载完成' : '上拉加载下一页'}
-          </div>)}
-          renderRow={row}
-          renderSeparator={separator}
-          style={{
-            height: show ? document.documentElement.clientHeight - 140 : document.documentElement.clientHeight - 95,
-            // overflow: 'auto',
-            top: 0,
-            // flex: 1,
-          }}
-          pageSize={4}
-          scrollRenderAheadDistance={500}
-          onEndReached={this.onEndReached}
-          onEndReachedThreshold={10}
-          pullToRefresh={<PullToRefresh
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}
-          />}
-        />
+    onScreen = () => {
+        console.log('点击筛选按钮')
+    }
 
-        {/* <div className="animated fadeIn" style={{
-          zIndex: 10, width: '100%',
-          display: cart.length > 0 ? 'block' : 'none',
-          position: 'fixed', bottom: '100px', textAlign: 'right',
-        }}>
+    onDismask = () => { //点击遮罩层的方法
+        this.setState({
+            isMask: false,
+            ChoiceButton: null,
+        })
+    }
 
-          <img style={{
-            padding: '0.5rem', border: '1px solid lightgray', marginRight: '18px',
-            borderRadius: '10px'
-          }} onClick={this.showModal} src={shoppingCar} />
-          <Badge text={cartNum} style={{ position: 'absolute', right: '18px', top: '-25px' }} />
-          <NavBar
-            mode="light"
-            icon={<Badge text={cartNum} style={{ marginLeft: 12 }}>购物车</Badge>}
-            onLeftClick={this.showModal}
-            rightContent={[
-              <span key={3} onClick={this.showModal}>
-                立即下单
-                
-              </span>,
-            ]}
-          />
-        </div> */}
-        <Modal
-          popup
-          className='goodsModal'
-          visible={this.state.modal2}
-          onClose={this.onClose}
-          animationType="slide-up"
-          style={{
-            height: document.documentElement.clientHeight * 0.6,
-          }}
-        >
-          <div className='title'>购物车</div>
-          <List style={{ height: document.documentElement.clientHeight * 0.6 - 113, overflow: 'auto' }} className="popup-list">
-            {cart.map((i, index) => {
+    onCheckboxChange = (value) => { // 复选框的选择事件
+        let choiceBox = this.state.choiceBox
+        let index = _.findIndex(choiceBox,item => item.ID == value.ID)
+        if(index > -1){
+            choiceBox.splice(index,1)
+        } else {
+            choiceBox.push(value)
+        }
+        this.setState({
+            choiceBox
+        })
+    }
 
-              return (
-                <List.Item key={i.id || index} style={{ display: 'flex' }}>
-                  <img style={{ height: '64px', width: '64px', marginRight: '15px' }} src={_.get(i, 'img') || 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png'} alt="" />
-                  <div style={{ flex: 1, textAlign: 'right' }}>
-                    <div style={{ fontSize: '20px', lineHeight: '24px', textAlign: 'left' }}>{_.get(i, 'GOODS_NAME')} </div>
+    onClassification =(value)=>{  //分类选择事件
+        this.child.getGoodsList(false,this.state.INSTALLATION_POSITION,value.CAR_MODEL,'',[])
+        this.setState({
+            ChoiceButton:null,
+            isMask:false,
+            CAR_MODEL:value.CAR_MODEL,
+        })
+    }
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontSize: '16px', color: '#FF6E27', textAlign: 'left' }}><span style={{ fontSize: 16, color: 'rgba(0,0,0,0.65)' }}>价格：</span>{_.get(i, 'PRICE')}</div>
+    onPosition =(value)=>{
+        this.child.getGoodsList(false,value.INSTALLATION_POSITION,this.state.CAR_MODEL,'',[])
+        this.setState({
+            ChoiceButton:null,
+            isMask:false,
+            INSTALLATION_POSITION:value.INSTALLATION_POSITION,
+        })
+    }
 
-                      <Stepper
-                        style={{ minWidth: '100px' }}
-                        showNumber
-                        max={10}
-                        min={0}
-                        step={1}
-                        defaultValue={i.number}
-                        onChange={(e) => this.stepperChange(e, i)}
-                      />
+    onRef = (ref) => {
+        this.child = ref
+    }
+
+    onChoiceButton = (value) => {
+        this.setState({
+            isMask: this.state.ChoiceButton == value ? false : true,
+            ChoiceButton: this.state.ChoiceButton == value ? null : value
+        })
+    }
+    floatFrame=()=>{
+        if(this.state.ChoiceButton == '汽车排量年份'){
+            return _.get(this.props.goodsData, 'carModel').map((item, index) => {
+                return <div key={index} style={{ background: '#efeff4' }}>
+                    <div style={{ overflow: 'hidden' }}> 
+                        <p onClick={()=>this.onClassification(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.CAR_MODEL}</p>
                     </div>
+                </div>
+            })
+        } else if(this.state.ChoiceButton == '安装位置'){
+            return _.get(this.props.goodsData, 'installPosition').map((item, index) => {
+                return <div key={index} style={{ background: '#efeff4' }}>
+                    <div style={{ overflow: 'hidden' }}> 
+                        <p onClick={()=>this.onPosition(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.INSTALLATION_POSITION}</p>
+                    </div>
+                </div>
+            })
+        }
+    }
 
-                  </div>
-                </List.Item>
-              )
-            })}
-            <List.Item>
-              <div style={{ lineHeight: '36px' }}>共<span>{cart.length}</span>种，<span>{cartNum}</span>件</div>
-              <div style={{ flex: '1', textAlign: 'right', }}>总价：<span style={{ color: '#FF6E27', fontSize: 24 }}>{totalPrice}</span></div>
-            </List.Item>
-          </List>
-          <Button style={{ width: '95%', margin: '0 auto', top: '12px' }} type="primary" onClick={this.confirmOrder}>确认下单</Button>
-        </Modal>
-      </div>
-    );
-  }
+    render() {
+        const goodsModulProps = {
+            CAR_MODEL:this.state.CAR_MODEL,
+            INSTALLATION_POSITION:this.state.INSTALLATION_POSITION,
+            MODEL:this.props.MODEL,
+            ID:this.props.ID
+        }
+        return (
+            <div className={styles.GoodsList}>
+                {/* 遮罩层 */}
+                <div onClick={this.onDismask} style={{ display: this.state.isMask ? 'block' : 'none', zIndex: 11 }} className={styles.Mask} />
+                {/* 搜索输入框 */}
+                <div style={{ zIndex: 1000, position: 'relative' }} className={styles.searchBarBox}>
+                    <div className={styles.Scan} onClick={this.onScan}>
+                        <img src={Scan} alt="error" />
+                    </div>
+                    <div className={styles.searchBar}>
+                        <SearchBar placeholder="请输入查询条件" onChange={this.onSearchBarChange} />
+                    </div>
+                    <div className={styles.screen} onClick={this.onScreen}>
+                        <img src={screen} alt="error" />
+                    </div>
+                </div>
+                <div style={{ zIndex: 1000, position: 'relative' }} className={styles.screenBox}>
+                    {/* 第二层的筛选条件 */}
+                    <div className={styles.screenBottom}>
+                        {/* 商品属性 */}
+                        <div onClick={() => this.onChoiceButton('汽车排量年份')} className={this.state.ChoiceButton == '汽车排量年份'  ? styles.screenBottomItemSelect : styles.screenBottomItem} key={'汽车排量年份'}>
+                            <span style={{ color: this.state.ChoiceButton == '汽车排量年份' ? '#3c8ee2' : null }}>
+                                汽车排量年份
+                                <img src={this.state.ChoiceButton == '汽车排量年份' ? upward : down} alt="error" />
+                            </span>
+                        </div>
+                        <div onClick={() => this.onChoiceButton('安装位置')} className={this.state.ChoiceButton == '安装位置'  ? styles.screenBottomItemSelect : styles.screenBottomItem} key={'安装位置'}>
+                            <span style={{ color: this.state.ChoiceButton == '安装位置' ? '#3c8ee2' : null }}>
+                                安装位置
+                                <img src={this.state.ChoiceButton == '安装位置' ? upward : down} alt="error" />
+                            </span>
+                        </div>
+                    </div>
+                    {/* 第二层弹框的浮框 */}
+                    <div className={styles.floatFrame}>
+                        {
+                            this.floatFrame()
+                        }
+                    </div>
+                </div>
+                <div className={styles.hr} />
+                {/* 商品列表部分 */}
+                <div style={{ zIndex: 10 }}>
+                    <GoodsModul {...goodsModulProps} onRef={this.onRef} 
+                    getStart={(e,element)=>this.props.getStart(e,element)}/>
+                </div>
+            </div>
+        )
+    }
 }
