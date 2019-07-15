@@ -8,6 +8,7 @@ import GoodsModul from './GoodsModul'
 import screen from './image/screen.svg' //右上角变化表格图标
 import screens from './image/screens.svg' //筛选排序图标
 import Scan from './image/Scan.svg' //扫一扫图标
+import goBack from './image/goBack.png' //返回图标
 import descend from './image/descend.svg' //下降排序
 import scend from './image/scend.svg' //上升排序
 import disort from './image/disort.svg' //无序默认排布
@@ -59,9 +60,19 @@ export default class GoodsList extends React.Component {
         })
     }
 
+    //列表页延时搜索
+    timeOut = null
     onSearchBarChange = (value) => {
-        this.child.getGoodsList(false,this.state.category,null,value,'father',[])
+        if(this.timeOut)clearTimeout(this.timeOut)
+        this.timeOut = setTimeout(()=>this.fn(value),1000)
     };
+    fn=(value)=>{
+        this.child.getGoodsList(false,'','','',[],value)
+        if(this.timeOut){
+            clearTimeout(this.timeOut)
+            this.timeOut = null
+        }
+    }
 
     onScan = () => {
         console.log('点击扫一扫按钮')
@@ -154,7 +165,7 @@ export default class GoodsList extends React.Component {
                 {/* 搜索输入框 */}
                 <div style={{ zIndex: 1000, position: 'relative' }} className={styles.searchBarBox}>
                     <div className={styles.Scan} onClick={this.onScan}>
-                        <img src={Scan} alt="error" />
+                        <img src={goBack} alt="error" />
                     </div>
                     <div className={styles.searchBar}>
                         <SearchBar placeholder="请输入查询条件" onChange={this.onSearchBarChange} />

@@ -28,6 +28,7 @@ export default {
     carManufacturer:[], //商品品牌对应的数据
     carModel: [],  //车子的年份和排量
     installPosition:[],  //安装位置
+    brandId:32, //分类页的选择的商品品牌数据
   },
 
   effects: {
@@ -138,6 +139,7 @@ export default {
         userId:payload.userId,
         pageSize:payload.pageSize,
         currentPage:payload.currentPage,
+        QUERY:payload.QUERY,
       }
       let result = yield call(querycarMaterialList,params)
       console.log('result',result)

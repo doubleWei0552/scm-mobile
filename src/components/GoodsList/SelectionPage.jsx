@@ -22,7 +22,7 @@ export default class SelectionPage extends React.Component {
     componentDidMount=()=>{
         this.props.dispatch({type:'goodsData/getAllcarBrand'})
         this.props.dispatch({type:'goodsData/getcarManufacturer',payload:{
-            brandId:this.state.brandId
+            brandId:this.props.goodsData.brandId
         }})
     }
     onChangeCarBrand=(item)=>{
@@ -32,6 +32,9 @@ export default class SelectionPage extends React.Component {
         this.setState({
             brandId:item.ID
         })
+        this.props.dispatch({type:'goodsData/save',payload:{
+            brandId:item.ID
+        }})
     }
     onGoSelectPage=()=>{
         this.setState({
@@ -58,7 +61,8 @@ export default class SelectionPage extends React.Component {
         const AllcarBrand = _.get(this.props.goodsData,'AllcarBrand',[])
         const carManufacturer = _.get(this.props.goodsData,'carManufacturer',[])
         const LeftSide = AllcarBrand.map((item,index)=>{
-            return <div onClick={()=>this.onChangeCarBrand(item)} style={{background:item.ID == this.state.brandId ? 'white' : null,
+            return <div onClick={()=>this.onChangeCarBrand(item)} style={{background:item.ID == this.props.goodsData.brandId ? 'white' : null,
+            borderLeft:item.ID == this.props.goodsData.brandId ? '3px solid #3c8ee2' : null,
             width:100,paddingTop:4,paddingBottom:4,height:30}} key={item.NAME + index}>
                     {item.NAME}
                 </div>
@@ -69,9 +73,9 @@ export default class SelectionPage extends React.Component {
                 <div style={{width:'100%',border:'1px solid lightgray',minHeight:70,overflow:'hidden'}}>
                     {
                         item.child.map(ii=>{
-                            return <div style={{width:'33.3%',float:'left',overflow:'hidden'}} onClick={()=>this.onSelectVehicleType(ii)} key={ii}>
+                            return <div style={{width:'33.3%',height:86,float:'left',overflow:'hidden'}} onClick={()=>this.onSelectVehicleType(ii)} key={ii}>
                                 <img style={{width:'50%',display:'block',margin:'0 auto'}} src={car} alt="error"/>
-                                <span>{ii}</span>
+                                <span style={{paddingLeft:4,paddingRight:4,display:'inline-block'}}>{ii}</span>
                             </div>
                         })
                     }
@@ -79,7 +83,7 @@ export default class SelectionPage extends React.Component {
             </div>
         })
         return(
-            <div>
+            <div style={{height:'100%'}}>
                 {
                     this.state.isListPage ? <GoodsList getStart={(e,element)=>this.props.getStart(e,element)} {...GoodsListProps}/> :
                     <div style={{height:'100%',overflow:'hidden',display:'flex',flexDirection:'row'}}>
@@ -94,8 +98,10 @@ export default class SelectionPage extends React.Component {
                                 </div>
                         </div>
                         {/* right部分 */}
-                        <div style={{width:'100%',marginLeft:25,overflowY:'auto'}}>
-                            {rightSide}
+                        <div style={{width:'100%',marginLeft:25,height:'100%',overflowY:'auto'}}>
+                            <div style={{height:'100%',overflowY:'auto'}}>
+                                {rightSide}
+                            </div>
                         </div>
                     </div>
                 }

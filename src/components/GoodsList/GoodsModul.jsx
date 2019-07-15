@@ -214,7 +214,8 @@ export default class ShoppingCart extends React.Component {
   }
 
   // 获取商品列表
-  getGoodsList = (refresh = false, INSTALLATION_POSITION,CAR_MODEL,  type, pIndex) => {
+  getGoodsList = (refresh = false, INSTALLATION_POSITION,CAR_MODEL,  type, pIndex,search) => {
+    console.log(refresh, INSTALLATION_POSITION,CAR_MODEL,  type, pIndex,search)
     Toast.loading('Loading...', 0);
     const { dispatch } = this.props;
     const { value } = this.state
@@ -240,14 +241,15 @@ export default class ShoppingCart extends React.Component {
         CAR_MODEL,
         customerId, userId, pageSize: 10, 
         currentPage: type ? 1 : pageIndex,
+        QUERY:search,
       },
       callback: response => {
         console.log('response',response)
         if (response.status === 'success') {
           const { data: { list } } = response;
-          // if(!response.data.list.length){
-          //   this.dataClean()
-          // }
+          if(!response.data.list.length){
+            this.dataClean()
+          }
           setTimeout(() => {
             Toast.hide()
             genData(pageIndex, list);
