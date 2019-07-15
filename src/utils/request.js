@@ -48,6 +48,8 @@ const errorHandler = error => {
 // console.log(REQUEST_SERVER)
 const { apiUrl: _apiUrl } = apiConfig;
 const origin = localStorage.getItem('origin') || '';
+// let port = window.location.origin.split(':')
+// const origin = port[0]+':'+port[1] || '';
 const apiUrl = process.env.NODE_ENV === 'development' ? _apiUrl : origin;
 export default function request(url, options) {
   const defaultOptions = {
