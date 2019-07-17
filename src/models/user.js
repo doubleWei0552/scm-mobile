@@ -24,6 +24,7 @@ export default {
       localStorage.setItem('wechatLoginLogoImg', result.wechatLoginLogoImg);
       localStorage.setItem('wechatLoginTitle', result.wechatLoginTitle);
       localStorage.setItem('wechatLoginSubTitle', result.wechatLoginSubTitle);
+      localStorage.setItem('helpLink', result.helpLink);
     },
 
     *login({ payload }, { call, put }) {

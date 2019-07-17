@@ -105,6 +105,16 @@ export default {
           path: '/company/qrcode',
           component: './QrCode',
         },
+        // 任务列表
+        {
+          path: '/user/services',
+          component: './Services',
+        },
+        // 任务新增
+        {
+          path: '/user/service/add',
+          component: './ServiceAdd',
+        },
       ],
     },
   ],

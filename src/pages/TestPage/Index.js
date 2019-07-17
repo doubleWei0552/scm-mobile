@@ -7,7 +7,7 @@ import { NavBar, Icon, TabBar, List, Button, WhiteSpace, WingBlank, Result, Acti
 import NewGoodsList from '@/components/GoodsList/NewIndex'
 import SelectionPage from '@/components/GoodsList/SelectionPage'
 import OrderList from '@/components/OrderList/Index'
-import HomePage from '@/components/HomePage/Index'
+import HomePage from '@/components/HomePage'
 // import ShoppingCart from '@/components/ShoppingCart/Index' //带选择功能的购物车
 import ShoppingCart from '@/components/ShoppingCart/newIndex'
 import shoppingCartClick from '@/components/ShoppingCart/image/shoppingCartClick.png'
@@ -98,7 +98,7 @@ class TabPanePage extends Component {
             }} /> */}
             <SelectionPage getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
               this.goodsListRef = dom;
-            }}/>
+            }} />
           </div>
         )
         break
@@ -165,15 +165,16 @@ class TabPanePage extends Component {
           </div>
           <div style={{ height: '50px', width: '100%', zIndex: '1000', position: 'fixed', bottom: '0', background: 'white', borderTop: '1px solid lightgray' }}>
             {/* 首页 */}
-            {/* <div style={{
-              width: '25%',
-              height: '45px',
-              lineHeight: '70px',
-              textAlign: 'center',
-              background: selectedTab != 'index' ? `url(${wode}) center 8px /  21px 21px no-repeat` :
-                `url(${wodeS}) center 8px /  21px 21px no-repeat`,
-              float: 'left',
-            }}
+            <div
+              style={{
+                width: '20%',
+                height: '45px',
+                lineHeight: '70px',
+                textAlign: 'center',
+                background: selectedTab != 'index' ? `url(${home}) center 8px /  21px 21px no-repeat` :
+                  `url(${homeS}) center 8px /  21px 21px no-repeat`,
+                float: 'left',
+              }}
               onClick={
                 () => {
                   router.push('/homepage/index')
@@ -185,10 +186,10 @@ class TabPanePage extends Component {
               }
             >
               <span style={{ fontSize: '0.7rem', color: selectedTab != 'me' ? '#353535' : '#0090ff' }}>首页</span>
-            </div> */}
+            </div>
             {/* 分类 */}
             <div style={{
-              width: '25%',
+              width: '20%',
               height: '45px',
               lineHeight: '70px',
               textAlign: 'center',
@@ -210,7 +211,7 @@ class TabPanePage extends Component {
             </div>
             {/* 购物车 */}
             <div style={{
-              width: '25%',
+              width: '20%',
               height: '45px',
               lineHeight: '70px',
               textAlign: 'center',
@@ -235,7 +236,7 @@ class TabPanePage extends Component {
             </div>
             {/* 订单 */}
             <div style={{
-              width: '25%',
+              width: '20%',
               height: '45px',
               lineHeight: '70px',
               textAlign: 'center',
@@ -257,7 +258,7 @@ class TabPanePage extends Component {
             </div>
             {/* 我的 */}
             <div style={{
-              width: '25%',
+              width: '20%',
               height: '45px',
               lineHeight: '70px',
               textAlign: 'center',

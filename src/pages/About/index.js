@@ -29,6 +29,13 @@ export default class About extends Component {
     window.history.back()
   }
 
+  handleHelp = () => {
+    const helpLink = localStorage.getItem('helpLink')
+    if (helpLink) {
+      window.location.href = helpLink
+    }
+  }
+
   render() {
     const loginLogo = localStorage.getItem('wechatLoginLogoImg') && localStorage.getItem('wechatLoginLogoImg') !== 'undefined' ? JSON.parse(localStorage.getItem('wechatLoginLogoImg')) : [];
     if (loginLogo[0]) {
@@ -41,12 +48,13 @@ export default class About extends Component {
         loginLogo[0].url = `${newUrl[0]}:${newUrl[1]}${loginLogo[0].url}`
       }
     }
+    const helpLink = localStorage.getItem('helpLink')
     return (
       <div>
         <div>
           <NavBar
             mode="dark"
-            icon={<Icon type="left" />}
+            icon={<Icon type="left" size='lg' />}
             onLeftClick={this.goBack}
             rightContent={[
             ]}
@@ -60,7 +68,7 @@ export default class About extends Component {
             <Item extra={'精诚供应链'}>产品名称</Item>
             <Item extra={'1.0'}>版本</Item>
             <Item extra={'精诚SCM'} arrow="horizontal" onClick={() => router.push('/company/qrcode')}>公众号</Item>
-            <Item extra={''} arrow="horizontal">帮助</Item>
+            <Item extra={''} arrow="horizontal" onClick={this.handleHelp}>帮助</Item>
           </List>
         </div>
         <div
