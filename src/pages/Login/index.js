@@ -10,6 +10,7 @@ import {
 import { local } from 'd3-selection';
 import Style from './style.less';
 import Logo from './image/logoO.png';
+import { apiConfig } from '@/defaultSettings';
 import router from 'umi/router';
 
 @Form.create()
@@ -53,10 +54,8 @@ class LoginPage extends Component {
   }
 
   componentDidMount() {
-    console.log('props', this.props.location)
     const code = _.get(this.props.location.query, 'code');
     const appId = 'wx2c109902ccf13bee';
-    console.log('code2', code)
     if (!code) {
       // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2c109902ccf13bee&redirect_uri=http://www.doublewei.online/welcome&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'
     } else {
@@ -75,10 +74,7 @@ class LoginPage extends Component {
     const { dispatch } = this.props;
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log('999', values)
-
       if (!err) {
-        console.log('Received values of form: ', values);
         const { remember, password, userName } = values;
         if (remember) {
           localStorage.setItem('mPassword', password)
@@ -99,8 +95,17 @@ class LoginPage extends Component {
   render() {
     const { loading = false } = this.props;
     const { getFieldDecorator } = this.props.form;
-    console.log('sssss22', localStorage.getItem('wechatLoginLogoImg'))
     const loginLogo = localStorage.getItem('wechatLoginLogoImg') && localStorage.getItem('wechatLoginLogoImg') !== 'undefined' ? JSON.parse(localStorage.getItem('wechatLoginLogoImg')) : [];
+    if(loginLogo[0]){
+      if(!loginLogo[0].url.includes('http:')){
+          const { apiUrl: _apiUrl } = apiConfig;
+          let port = window.location.origin.split(':')
+          const origin = port[0]+':'+port[1] || '';
+          const apiUrl = process.env.NODE_ENV === 'development' ? _apiUrl : origin;
+          let newUrl = apiUrl.split(':')
+          loginLogo[0].url = `${newUrl[0]}:${newUrl[1]}${loginLogo[0].url}`
+      }
+    }
     return (
       <div className={Style.welcomePage}>
         <ActivityIndicator

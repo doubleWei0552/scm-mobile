@@ -50,7 +50,6 @@ export default {
                 TotalAmount = TotalAmount + item.number * item.PRICE
                 TotalNumber = TotalNumber + item.number * 1
             })
-            console.log('goodsLists', goodsLists)
             yield put({ type: 'save', payload: { TotalAmount, TotalNumber, goodsLists } })
         },
         *removeGoods({ payload, callback }, { call, select, put }) {
