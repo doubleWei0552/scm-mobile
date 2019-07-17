@@ -97,6 +97,14 @@ export default {
           path: '/customerselect',
           component: './CustomerSelect',
         },
+        {
+          path: '/company/about',
+          component: './About',
+        },
+        {
+          path: '/company/qrcode',
+          component: './QrCode',
+        },
       ],
     },
   ],

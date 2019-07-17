@@ -75,6 +75,10 @@ export default class UserCenter extends Component {
     }, 500000);
   };
 
+  handleAbout = () => {
+    router.push('/company/about')
+  }
+
   render() {
     const userData = JSON.parse(localStorage.getItem('userData'));
     const { userInfo, visible, value } = this.state;
@@ -118,6 +122,7 @@ export default class UserCenter extends Component {
               </Picker>
             )}
           </List>
+          <Item onClick={() => this.handleAbout()} arrow="horizontal">关于</Item>
           <Button onClick={() => {
             alert('警告', '是否确定要退出当前账户？', [
               { text: '取消', onPress: () => console.log('cancel') },
