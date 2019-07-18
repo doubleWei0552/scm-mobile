@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { NavBar, Icon, Button } from 'antd-mobile'
+import { NavBar, Icon, Button, SearchBar } from 'antd-mobile'
 import router from "umi/router";
+import ListViews from '@/components/ListView'
 
 export default class ServicesPage extends Component {
   constructor(props) {
@@ -21,6 +22,44 @@ export default class ServicesPage extends Component {
   }
 
   render() {
+    const data = [
+      {
+        img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
+        title: 'Meet hotel',
+        des: '不是所有的兼职汪都需要风吹日晒',
+        ID: 1,
+      },
+      {
+        img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
+        title: 'McDonald\'s invites you',
+        des: '不是所有的兼职汪都需要风吹日晒',
+        ID: 2,
+      },
+      {
+        img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
+        title: 'Eat the week',
+        des: '不是所有的兼职汪都需要风吹日晒',
+        ID: 3,
+      },
+      {
+        img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
+        title: 'Meet hotel',
+        des: '不是所有的兼职汪都需要风吹日晒',
+        ID: 4,
+      },
+      {
+        img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
+        title: 'McDonald\'s invites you',
+        des: '不是所有的兼职汪都需要风吹日晒',
+        ID: 5,
+      },
+      {
+        img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
+        title: 'Eat the week',
+        des: '不是所有的兼职汪都需要风吹日晒',
+        ID: 6,
+      },
+    ];
     return (
       <div>
         <div>
@@ -35,7 +74,11 @@ export default class ServicesPage extends Component {
             任务列表
           </NavBar>
         </div>
+        <SearchBar placeholder="Search" maxLength={8} />
         <div>
+          {data.length && (
+            <ListViews list={data} />
+          )}
 
         </div>
         <Button

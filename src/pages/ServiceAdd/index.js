@@ -14,18 +14,55 @@ import {
   WhiteSpace,
   DatePicker
 } from 'antd-mobile';
+import { connect } from 'dva';
 import { createForm } from 'rc-form';
 import Styles from './style.less';
 
 const Item = List.Item;
 
 @createForm()
+@connect(({ user, loading }) => ({
+  user,
+  loading: loading.models.user,
+}))
 export default class ServiceAdd extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      date: null
+      customerUserList: [],
+      postData: {},
+      date: null,
+      customerContact: [],
+      checked: false,
+      START_DATE: null,
+      END_DATE: null,
     }
+  }
+
+  componentDidMount = () => {
+    const userId = localStorage.getItem('userId');
+    this.queryCurrent(userId);
+  }
+
+  // 查询客户
+  queryCurrent = (userId) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'user/queryCurrent',
+      payload: { userId },
+      callback: response => {
+        if (response.status === 'success') {
+          const { customerUserList } = response.data;
+          this.setState({
+            userInfo: response.data,
+            visible: false,
+            customerUserList
+          })
+        }
+      }
+    })
+
   }
 
   // 返回
@@ -33,10 +70,72 @@ export default class ServiceAdd extends Component {
     window.history.back()
   }
 
-  render() {
-    console.log('ssss', this.props)
-    const { getFieldProps, getFieldError } = this.props.form;
+  // 表单数据
+  handleItemChange = (value, key) => {
+    const { dispatch } = this.props;
+    this.state.postData[key] = value
 
+    if (key === 'ORGANIZATION_ID') {
+      dispatch({
+        type: 'serviceAdd/queryCustomer',
+        payload: { Id: value },
+        callback: (result) => {
+          if (result.status === 'success') {
+            const { CUSTOMER_CONTACT = [] } = result.data
+            this.setState({
+              customerContact: CUSTOMER_CONTACT
+            })
+          }
+        }
+      })
+    }
+    this.setState({
+    })
+  }
+
+  // Switch
+  handleSwitch = (checked) => {
+    this.setState({
+      checked
+    })
+  }
+
+  // 日期变化
+  handleChangeData = (date, key) => {
+    const { checked } = this.state
+    console.log('data', date.valueOf())
+    if (checked) {
+      this.state.postData['START_DATE'] = date.valueOf()
+      this.state.postData['END_DATE'] = date.valueOf()
+    } else {
+      this.state.postData[key] = date.valueOf()
+    }
+    this.state[key] = date
+    this.setState({})
+  }
+
+  // 保存
+  handleAdd = () => {
+    const { dispatch } = this.props;
+    const { postData } = this.state;
+    dispatch({
+      type: 'serviceAdd/serviceAdd',
+      payload: postData
+    })
+  }
+
+  render() {
+    console.log('ssss', this.state)
+    const { customerUserList, customerContact, checked, START_DATE, END_DATE, postData } = this.state;
+    const { getFieldProps, getFieldError } = this.props.form;
+    _.map(customerUserList, item => {
+      item.label = item.NAME,
+        item.value = item.ID
+    })
+    _.map(customerContact, item => {
+      item.label = item.CONTACT,
+        item.value = item.ID
+    })
     const district = [
       {
         label: '2013',
@@ -64,19 +163,21 @@ export default class ServiceAdd extends Component {
           >
             <InputItem
               clear
+              onChange={(v) => this.handleItemChange(v, 'SUBJECT')}
             // placeholder="auto focus"
             >
               标题
             </InputItem>
-            <Picker data={district} cols={1} {...getFieldProps('district3')} className="forss">
+            <Picker value={[postData.ORGANIZATION_ID]} data={customerUserList} cols={1} onOk={v => this.handleItemChange(v[0], 'ORGANIZATION_ID')} className="forss">
               <List.Item arrow="horizontal">公司</List.Item>
             </Picker>
-            <Picker data={district} cols={1} {...getFieldProps('district3')} className="forss">
+            <Picker value={[postData.CONTACT_ID]} data={customerContact} cols={1} onOk={v => this.handleItemChange(v[0], 'CONTACT_ID')} className="forss">
               <List.Item arrow="horizontal">联系人</List.Item>
             </Picker>
             <TextareaItem
               title='地址'
               autoHeight
+              onChange={(v) => this.handleItemChange(v, 'ADDRESS')}
             />
           </List>
           <WhiteSpace size="lg" />
@@ -85,17 +186,19 @@ export default class ServiceAdd extends Component {
           // renderFooter={() => getFieldError('account') && getFieldError('account').join(',')}
           >
             <Item
-              extra={<Switch {...getFieldProps('1', { initialValue: true, valuePropName: 'checked' })} />}
+              extra={<Switch checked={checked} onChange={(v) => this.handleSwitch(v)} />}
             >全天</Item>
             <DatePicker
-              value={this.state.date}
-              onChange={date => this.setState({ date })}
+              value={START_DATE}
+              onChange={date => this.handleChangeData(date, 'START_DATE')}
+              mode={checked ? 'date' : 'datetime'}
             >
               <List.Item arrow="horizontal">开始时间</List.Item>
             </DatePicker>
             <DatePicker
-              value={this.state.date}
-              onChange={date => this.setState({ date })}
+              value={END_DATE}
+              onChange={date => this.handleChangeData(date, 'END_DATE')}
+              mode={checked ? 'date' : 'datetime'}
             >
               <List.Item arrow="horizontal">结束时间</List.Item>
             </DatePicker>
@@ -104,6 +207,7 @@ export default class ServiceAdd extends Component {
           <List renderHeader={() => <div style={{ color: '#000', fontSize: 17 }}>描述</div>}>
             <TextareaItem
               defaultValue="我是描述..."
+              onChange={(v) => this.handleItemChange(v, 'DESCRIBE')}
               rows={5}
               count={100}
             />
@@ -118,7 +222,7 @@ export default class ServiceAdd extends Component {
         </div>
         <div style={{ display: 'flex', position: 'absolute', bottom: 16, width: '100%', justifyContent: 'space-around' }}>
           <Button style={{ width: '45%' }} type="warning">取消</Button>
-          <Button style={{ width: '45%' }} type="primary">保存</Button>
+          <Button onClick={this.handleAdd} style={{ width: '45%' }} type="primary">保存</Button>
         </div>
       </div >
     )

@@ -185,7 +185,7 @@ class TabPanePage extends Component {
                 }
               }
             >
-              <span style={{ fontSize: '0.7rem', color: selectedTab != 'me' ? '#353535' : '#0090ff' }}>首页</span>
+              <span style={{ fontSize: '0.7rem', color: selectedTab != 'index' ? '#353535' : '#0090ff' }}>首页</span>
             </div>
             {/* 分类 */}
             <div style={{
