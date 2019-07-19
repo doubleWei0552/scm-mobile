@@ -28,7 +28,10 @@ export default {
     carManufacturer:[], //商品品牌对应的数据
     carModel: [],  //车子的年份和排量
     installPosition:[],  //安装位置
-    brandId:32, //分类页的选择的商品品牌数据
+    brandId:null, //分类页的选择的商品品牌数据
+    MODEL:null, //汽车车型
+    selectBrand:null,//选择的汽车品牌
+    selectModel:null, //选择的车型
   },
 
   effects: {
@@ -107,6 +110,7 @@ export default {
     //选择页获取商品所有品牌的数据
     *getAllcarBrand({payload,callback},{call,put,select}){
       const result = yield call(queryAllcarBrand)
+      if(callback) callback(result)
       yield put({type:'save',payload:{AllcarBrand:result.data}})
     },
     //品牌对应的车型
@@ -115,6 +119,7 @@ export default {
         brandId:payload.brandId
       }
       const result = yield call(querycarManufacturer,params)
+      if(callback) callback(result)
       yield put({type:'save',payload:{carManufacturer:result.data}})
     },
     //具体车型对应的年份、安装位置数据
@@ -130,6 +135,7 @@ export default {
     },
     //具体车型对应的所有数据
     *getcarMaterialList({payload,callback},{call,select,put}){
+      console.log('获取汽车数据',payload)
       let params ={
         ID:payload.ID,
         MODEL:payload.MODEL,
