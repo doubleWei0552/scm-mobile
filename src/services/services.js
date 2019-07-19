@@ -15,3 +15,11 @@ export async function serviceAdd(params) {
   });
 }
 
+// /app/work/queryWorkTasksInfo
+export async function queryWorkTasks(params) {
+  return request('/app/work/queryWorkTasksInfo', {
+    method: 'POST',
+    body: params,
+  });
+}
+

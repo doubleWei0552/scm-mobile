@@ -40,6 +40,14 @@ export async function queryCurrent(params) {
   });
 }
 
+// 修改密码
+export async function changPassword(params) {
+  return request('/rs/resetPassword', {
+    method: 'POST',
+    body: params
+  })
+}
+
 export async function queryConfig(params) {
   return request('/wechat/signatureInfo', {
     method: 'POST',

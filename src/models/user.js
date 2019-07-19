@@ -1,4 +1,4 @@
-import { query as queryUsers, queryCurrent, queryRSLogin, getUserInfo, queryLogoParameter, queryRSLogOut } from '@/services/user';
+import { query as queryUsers, queryCurrent, queryRSLogin, getUserInfo, queryLogoParameter, queryRSLogOut, changPassword } from '@/services/user';
 import { bindWeChat } from '@/services/wechat';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
@@ -105,6 +105,15 @@ export default {
 
     *queryCurrent({ payload, callback }, { call, put }) {
       const result = yield call(queryCurrent, payload);
+      if (result.status === 'success') {
+        callback && callback(result)
+      } else {
+        Toast.fail(result.message, 1);
+      }
+    },
+
+    *changPassword({ payload, callback }, { call, put }) {
+      const result = yield call(changPassword, payload);
       if (result.status === 'success') {
         callback && callback(result)
       } else {

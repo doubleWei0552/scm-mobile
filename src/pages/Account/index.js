@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { NavBar, Icon } from 'antd-mobile';
+import {
+  List,
+  NavBar,
+  Icon
+} from 'antd-mobile';
+import router from 'umi/router'
+
+const Item = List.Item;
 
 export default class Account extends Component {
   constructor(props) {
@@ -29,7 +36,9 @@ export default class Account extends Component {
           </NavBar>
         </div>
         <div>
-          修改登录密码
+          <List>
+            <Item onClick={() => { router.push('/user/password') }} arrow="horizontal">修改登录密码</Item>
+          </List>
         </div>
       </div>
     )

@@ -105,11 +105,17 @@ export default {
           path: '/company/qrcode',
           component: './QrCode',
         },
-        // 修改密码
+        // 账户与安全
         {
           path: '/user/account',
           component: './Account',
         },
+        // 修改密码
+        {
+          path: '/user/password',
+          component: './ChangePassWord',
+        },
+
         // 任务列表
         {
           path: '/user/services',

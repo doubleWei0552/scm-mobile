@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { NavBar, Icon, Button, SearchBar } from 'antd-mobile'
 import router from "umi/router";
+import { connect } from 'dva';
 import ListViews from '@/components/ListView'
 
+
+@connect(({ services, loading }) => ({
+  services,
+  loading: loading.models.queryWorkTasks,
+}))
 export default class ServicesPage extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +17,21 @@ export default class ServicesPage extends Component {
     };
   }
 
+  componentDidMount() {
+    this.queryWorkTasks()
+  }
+
+  // 获取数据
+  queryWorkTasks = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'services/queryWorkTasks',
+      payload: {},
+      callback: (response) => {
+        console.log('response', response)
+      }
+    })
+  }
   // 返回
   goBack = () => {
     window.history.back()
