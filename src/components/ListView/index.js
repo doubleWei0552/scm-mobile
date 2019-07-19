@@ -5,8 +5,6 @@ import {
 import _ from 'lodash';
 import ReactDOM from 'react-dom';
 
-
-
 function MyBody(props) {
   return (
     <div className="am-list-body my-body">
