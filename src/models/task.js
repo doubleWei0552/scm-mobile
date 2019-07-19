@@ -42,7 +42,6 @@ import {
         if(result.success){
             Toast.hide()
             Toast.success('任务提交成功', 1);
-            router.goBack()
         } else {
             Toast.fail('发生未知错误 !!!', 1);
         }
