@@ -82,28 +82,18 @@ export default class ShoppingCart extends React.Component {
     };
   }
 
+  componentWillMount(){
+    this.getTypeList();
+    
+  }
   componentDidMount() {
     const { goodsData: { menuData, list } } = this.props;
     this.props.onRef(this)
     const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
-    this.getTypeList();
     this.getGoodsList();
-    // setTimeout(() => {
-    //     genData(1, list);
-    //     this.setState({
-    //         dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-    //         isLoading: false,
-    //         height: hei,
-    //     });
-    // }, 1000);
   }
 
   componentWillReceiveProps(nextProps) {
-    // if (nextProps.dataSource !== this.props.dataSource) {
-    //   this.setState({
-    //     dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.dataSource),
-    //   });
-    // }
     this.setState({
       cart: nextProps.shoppingCart.goodsLists
     })
@@ -158,22 +148,16 @@ export default class ShoppingCart extends React.Component {
       return;
     }
     console.log('reach end', event);
+    // refresh = false, INSTALLATION_POSITION,CAR_MODEL,  type, pIndex,search
     this.setState({ isLoading: true }, () => {
       this.getGoodsList(false,
-        this.state.Classify,
-        this.state.choiceBox,
-        this.state.QUERY,
+        this.props.INSTALLATION_POSITION,
+        this.props.CAR_MODEL,
         null,
-        null,
-        this.state.pageIndex);
+        this.state.pageIndex,
+        search,
+        );
     });
-    // setTimeout(() => {
-    //     genData(++pageIndex);
-    //     this.setState({
-    //         dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-    //         isLoading: false,
-    //     });
-    // }, 1000);
   }
 
   getScreen = (ID) => {
@@ -215,7 +199,6 @@ export default class ShoppingCart extends React.Component {
 
   // 获取商品列表
   getGoodsList = (refresh = false, INSTALLATION_POSITION,CAR_MODEL,  type, pIndex,search) => {
-    console.log(refresh, INSTALLATION_POSITION,CAR_MODEL,  type, pIndex,search)
     Toast.loading('Loading...', 0);
     const { dispatch } = this.props;
     const { value } = this.state
@@ -241,13 +224,13 @@ export default class ShoppingCart extends React.Component {
         CAR_MODEL,
         customerId, userId, pageSize: 10, 
         currentPage: type ? 1 : pageIndex,
-        QUERY:search,
+        QUERY:_.isEmpty(search) ? null : search,
       },
       callback: response => {
-        console.log('response',response)
         if (response.status === 'success') {
           const { data: { list } } = response;
-          if(!response.data.list.length){
+          const search = search || null
+          if(!search && !response.data.list.length){
             this.dataClean()
           }
           setTimeout(() => {
@@ -361,6 +344,11 @@ export default class ShoppingCart extends React.Component {
 
     return (
       <div className={styles.newGoodsPage} >
+        {/* <div onClick={this.props.onDismask} style={{ display: this.props.isMask ? 'block' : 'none', zIndex: 1000,width:'100%',
+        height: this.state.height - 60,
+        background: 'black',
+        opacity: 0.3,
+        position: 'absolute', }} /> */}
         <ListView
           ref={el => this.lv = el}
           dataSource={this.state.dataSource}

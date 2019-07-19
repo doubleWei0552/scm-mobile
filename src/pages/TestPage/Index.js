@@ -4,7 +4,7 @@ import Link from 'umi/link';
 import _ from 'lodash';
 import ReactDom from 'react-dom';
 import { NavBar, Icon, TabBar, List, Button, WhiteSpace, WingBlank, Result, ActivityIndicator, Badge } from 'antd-mobile';
-import NewGoodsList from '@/components/GoodsList/NewIndex'
+import GoodsList from '@/components/GoodsList/FinalIndex'
 import SelectionPage from '@/components/GoodsList/SelectionPage'
 import OrderList from '@/components/OrderList/Index'
 import HomePage from '@/components/HomePage'
@@ -93,10 +93,7 @@ class TabPanePage extends Component {
       case 'goodList':
         return (
           <div key={1} style={{ flex: 1, textAlign: 'center', height: '100%' }}>
-            {/* <NewGoodsList getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
-              this.goodsListRef = dom;
-            }} /> */}
-            <SelectionPage getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
+            <GoodsList getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
               this.goodsListRef = dom;
             }} />
           </div>

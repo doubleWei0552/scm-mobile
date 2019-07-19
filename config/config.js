@@ -120,6 +120,14 @@ export default {
           path: '/user/service/add',
           component: './ServiceAdd',
         },
+        {
+          path: '/user/service/see/:orderId',
+          component: './Services/ServiceSee',
+        },
+        {
+          path: '/user/service/signIn/:orderId',
+          component: './Services/ServiceSignIn',
+        },
       ],
     },
   ],
