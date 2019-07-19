@@ -122,6 +122,7 @@ export default class UserCenter extends Component {
               </Picker>
             )}
           </List>
+          <Item onClick={() => { router.push('/user/account') }} arrow="horizontal">账号与安全</Item>
           <Item onClick={() => this.handleAbout()} arrow="horizontal">关于</Item>
           <Button onClick={() => {
             alert('警告', '是否确定要退出当前账户？', [

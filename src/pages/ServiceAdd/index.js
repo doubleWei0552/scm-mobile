@@ -129,12 +129,12 @@ export default class ServiceAdd extends Component {
     const { customerUserList, customerContact, checked, START_DATE, END_DATE, postData } = this.state;
     const { getFieldProps, getFieldError } = this.props.form;
     _.map(customerUserList, item => {
-      item.label = item.NAME,
-        item.value = item.ID
+      item.label = item.NAME
+      item.value = item.ID
     })
     _.map(customerContact, item => {
-      item.label = item.CONTACT,
-        item.value = item.ID
+      item.label = `${item.CONTACT}(${item.MOBILE_PHONE})`
+      item.value = item.ID
     })
     const district = [
       {
@@ -221,7 +221,7 @@ export default class ServiceAdd extends Component {
           </List> */}
         </div>
         <div style={{ display: 'flex', position: 'absolute', bottom: 16, width: '100%', justifyContent: 'space-around' }}>
-          <Button style={{ width: '45%' }} type="warning">取消</Button>
+          <Button onClick={this.goBack} style={{ width: '45%' }} type="warning">取消</Button>
           <Button onClick={this.handleAdd} style={{ width: '45%' }} type="primary">保存</Button>
         </div>
       </div >

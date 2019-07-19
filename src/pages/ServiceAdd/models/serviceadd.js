@@ -21,7 +21,12 @@ export default {
     *serviceAdd({ payload, callback }, { call }) {
       console.log('payload', payload)
       const result = yield call(serviceAdd, payload);
-      callback && callback(result)
+
+      if (result.status === 'success') {
+        callback && callback(result)
+      } else {
+        Toast.fail(result.message, 1);
+      }
     },
 
 
