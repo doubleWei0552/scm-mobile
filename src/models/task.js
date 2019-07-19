@@ -3,6 +3,7 @@ import {
     getUpdataDetail,
     getdeledetById,
     updataWorkTasks,
+    updataStatus,
   } from '@/services/task';
   import { Toast } from 'antd-mobile';
   import router from 'umi/router';
@@ -20,14 +21,18 @@ import {
     effects: {
        //任务详情接口
       *getTaskDetails({payload,callback},{select,put,call}){
+        Toast.loading('Loading...')
           let params = {
-              Id:payload.Id
+              Id:payload.Id*1
           }
           let result = yield call(getTaskDetail,params)
+          if(result){
+            Toast.hide()
+          }
           yield put({type:'save',payload:{
-              taskDetail:result.data.WORKTASKS,
-              CUSTOMERCONTACT:result.data.CUSTOMERCONTACT,
-              CUSTOMER:result.data.CUSTOMER,
+              taskDetail:result.body.WORKTASKS,
+              CUSTOMERCONTACT:result.body.CUSTOMERCONTACT,
+              CUSTOMER:result.body.CUSTOMER,
             }})
       },
        //任务详情提交接口
@@ -39,6 +44,7 @@ import {
             VISIT_RECORD:payload.VISIT_RECORD,
         }
         let result = yield call(getUpdataDetail,params)
+        yield put({type:'save',payload:{taskDetail:result.body.WORKTASKS}})
         if(result.success){
             Toast.hide()
             Toast.success('任务提交成功', 1);
@@ -67,13 +73,20 @@ import {
             REGISTRATION_DATE:payload.REGISTRATION_DATE,
         }
         let result = yield call(updataWorkTasks,params)
-        console.log('提交结果',result)
         if(result.success){
             Toast.success('签到成功', 1);
             router.goBack()
         } else {
             Toast.fail('发生未知错误 !!!', 1);
         }
+      },
+      //任务详情页审核接口
+      *updataStatus({payload,callback},{select,put,call}){
+        let params = {
+            ID:payload.Id *1,
+        }
+        let result = yield call(updataStatus,params)
+        yield put({type:'save',payload:{taskDetail:result.body.WORKTASKS}})
       },
     },
   
