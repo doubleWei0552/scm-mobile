@@ -31,3 +31,11 @@ export async function updataWorkTasks(params) {
     body: params,
   });
 }
+
+// 任务审核接口
+export async function updataStatus(params) {
+  return request('/updataStatus', {
+    method: 'POST',
+    body: params,
+  });
+}

@@ -31,7 +31,11 @@ class TextareaItemExample extends React.Component{
         })
     }
     ToAudited=()=>{ //待审核方法
-
+        this.props.dispatch({
+            type:'task/updataStatus',payload:{
+                Id:this.state.taskId
+            }
+        })
     }
     CheckIn=()=>{  //点击签到
         router.push(`/user/service/signIn/${this.state.taskId}`)
@@ -46,12 +50,12 @@ class TextareaItemExample extends React.Component{
                 </div>
             break
             case 'submit':
-                return <div style={{display:'flex',justifyContent:'space-between',}}>
-                    <Button onClick={this.ToAudited} type="primary">待审核</Button>
+                return <div>
+                    <Button onClick={this.ToAudited} type="primary">审核</Button>
                 </div>
             break
             case 'approve':
-                return <div style={{display:'flex',justifyContent:'space-between',}}>
+                return <div>
                     <Button onClick={this.CheckIn} type="primary">签到</Button>
                 </div>
             break
