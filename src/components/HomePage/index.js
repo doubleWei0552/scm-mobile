@@ -97,13 +97,6 @@ export default class HomePage extends React.Component {
               问题提报
             </div>
           </div>
-          
-
-        </div>
-
-        <div>
-            <Button onClick={()=>router.push('/user/service/see/9')}>任务详情</Button>
-            <Button onClick={()=>router.push('/user/service/signIn/9')}>任务签到</Button>
         </div>
       </div>
     )

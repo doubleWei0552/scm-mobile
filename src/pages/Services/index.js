@@ -13,7 +13,7 @@ export default class ServicesPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      data:[]
     };
   }
 
@@ -26,9 +26,12 @@ export default class ServicesPage extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'services/queryWorkTasks',
-      payload: { query: '' },
+      payload: { },
       callback: (response) => {
         console.log('response', response)
+        this.setState({
+          data:response.data
+        })
       }
     })
   }
@@ -42,8 +45,14 @@ export default class ServicesPage extends Component {
     router.push('/user/service/add')
   }
 
+  // 页面跳转
+  onJump = (value) => {
+    router.push(`/user/service/see/${value.ID}`)
+  }
+
   render() {
-    const data = [
+    const {data} = this.state
+    const dataOld = [
       {
         img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
         title: 'Meet hotel',
@@ -61,24 +70,6 @@ export default class ServicesPage extends Component {
         title: 'Eat the week',
         des: '不是所有的兼职汪都需要风吹日晒',
         ID: 3,
-      },
-      {
-        img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
-        title: 'Meet hotel',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID: 4,
-      },
-      {
-        img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-        title: 'McDonald\'s invites you',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID: 5,
-      },
-      {
-        img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-        title: 'Eat the week',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID: 6,
       },
     ];
     return (
@@ -98,7 +89,7 @@ export default class ServicesPage extends Component {
         <SearchBar placeholder="Search" maxLength={8} />
         <div>
           {data.length && (
-            <ListViews list={data} />
+            <ListViews list={data} onJump={this.onJump}/>
           )}
 
         </div>
