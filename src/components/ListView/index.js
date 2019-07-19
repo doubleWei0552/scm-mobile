@@ -3,6 +3,7 @@ import {
   ListView
 } from 'antd-mobile';
 import _ from 'lodash';
+import moment from 'moment'
 import ReactDOM from 'react-dom';
 
 function MyBody(props) {
@@ -59,6 +60,7 @@ export default class ListViews extends Component {
   componentDidMount() {
     // you can scroll to the specified position
     // setTimeout(() => this.lv.scrollTo(0, 120), 800);
+    console.log('传递的参数',this.props)
     const { list } = this.props;
     console.log('sssss', list)
 
@@ -127,7 +129,7 @@ export default class ListViews extends Component {
       }
       const obj = data[index--];
       return (
-        <div key={rowID} style={{ padding: 0 }}>
+        <div onClick={()=>this.props.onJump(obj)} key={rowID} style={{ padding: 0 }}>
           <div
             style={{
               lineHeight: '50px',
@@ -135,14 +137,13 @@ export default class ListViews extends Component {
               fontSize: 14,
               borderBottom: '1px solid #F6F6F6',
               paddingLeft: 10,
-
             }}
           >
-            2019年12月22日 09:00 - 2019年12月22日 18:20
+            {moment(obj.START_DATE).format('YYYY年MM月DD日 hh:mm')} - {moment(obj.END_DATE).format('YYYY年MM月DD日 hh:mm')}
           </div>
           <div style={{ padding: '15px 15px' }}>
-            <h2>拜访南京一点集团李总</h2>
-            <div>江苏南京新街口1号一点大厦1808室</div>
+            <h3>拜访{obj.CUSTOMER}{obj.CUSTOMER_CONTACT}</h3>
+            <div>{obj.ADDRESS ? obj.ADDRESS : '--'}</div>
           </div>
         </div>
       );
