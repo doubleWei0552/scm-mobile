@@ -26,7 +26,7 @@ export default class ServicesPage extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'services/queryWorkTasks',
-      payload: {},
+      payload: { query: '' },
       callback: (response) => {
         console.log('response', response)
       }
