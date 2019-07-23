@@ -62,10 +62,6 @@ export default class ListViews extends Component {
     // setTimeout(() => this.lv.scrollTo(0, 120), 800);
     const { list } = this.props;
     genData(0, list);
-
-
-
-
     const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
     // simulate initial Ajax
     setTimeout(() => {
