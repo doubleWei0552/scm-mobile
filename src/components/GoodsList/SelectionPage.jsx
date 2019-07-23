@@ -104,7 +104,7 @@ export default class SelectionPage extends React.Component {
                     <div style={{height:'100%',overflow:'hidden',display:'flex',flexDirection:'row'}}>
                         {/* left部分 */}
                         <div style={{width:100,height:'100%'}}>
-                                <div style={{position: 'fixed',width: 100, background: '#e6e6e6',top: 45,bottom:0,height: '100%',overflowX: 'hidden',}}>
+                                <div style={{position: 'absolute',width: 100, background: '#e6e6e6',top: 0,bottom:0,height: '100%',overflowX: 'hidden',}}>
                                     <div style={{overflowX: 'hidden',width: 120,height: '100%'}}>
                                         <div style={{width: 100,marginTop:'44px'}}>
                                             {LeftSide}
