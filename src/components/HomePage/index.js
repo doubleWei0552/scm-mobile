@@ -25,11 +25,19 @@ export default class HomePage extends React.Component {
     }, 100);
   }
 
+  componentWillReceiveProps(newProps) {
+    if (window.location.href.indexOf("qrresult=") > -1)
+      alert(location.href.split("qrresult=")[1]);
+  }
+
+
+
   handleServices = () => {
     router.push('/user/services')
   }
 
   render() {
+    console.log('wwwwwww', window)
     return (
       <div className={Styles.homePage}>
         <div>
@@ -70,15 +78,18 @@ export default class HomePage extends React.Component {
               服务预约
             </div>
           </div>
-          <div className='item'>
-            <div className='item-img'>
-              <img src={noImg} alt='' />
-            </div>
+          <a href={`http://sao315.com/w/api/saoyisao?redirect_uri=zmmax.systex365.com:10050/mobile/#/homepage/index`}>
 
-            <div className='item-title'>
-              付款登记
+            <div className='item' onClick={this.handleScan}>
+              <div className='item-img'>
+                <img src={noImg} alt='' />
+              </div>
+
+              <div className='item-title'>
+                付款登记
+              </div>
             </div>
-          </div>
+          </a>
           <div className='item'>
             <div className='item-img'>
               <img src={noImg} alt='' />
@@ -98,7 +109,7 @@ export default class HomePage extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     )
   }
 }

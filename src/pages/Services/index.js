@@ -22,11 +22,11 @@ export default class ServicesPage extends Component {
   }
 
   // 获取数据
-  queryWorkTasks = (query = '') => {
+  queryWorkTasks = (queryvalue = '') => {
     const { dispatch } = this.props;
     dispatch({
       type: 'services/queryWorkTasks',
-      payload: { query },
+      payload: { queryvalue },
       callback: (response) => {
         console.log('response', response)
         this.setState({
