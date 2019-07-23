@@ -361,7 +361,6 @@ export default class ShoppingCart extends React.Component {
             overflow: 'auto',
           }}
           pageSize={4}
-          // onScroll={() => { console.log('scroll'); }}
           scrollRenderAheadDistance={500}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={10}
