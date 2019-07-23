@@ -60,7 +60,7 @@ export default class ListViews extends Component {
   componentDidMount() {
     // you can scroll to the specified position
     // setTimeout(() => this.lv.scrollTo(0, 120), 800);
-    console.log('传递的参数',this.props)
+    console.log('传递的参数', this.props)
     const { list } = this.props;
     console.log('sssss', list)
 
@@ -129,7 +129,7 @@ export default class ListViews extends Component {
       }
       const obj = data[index--];
       return (
-        <div onClick={()=>this.props.onJump(obj)} key={rowID} style={{ padding: 0 }}>
+        <div onClick={() => this.props.onJump(obj)} key={rowID} style={{ padding: 0 }}>
           <div
             style={{
               lineHeight: '50px',

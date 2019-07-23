@@ -62,11 +62,17 @@ export default class About extends Component {
             关于
           </NavBar>
         </div>
+        <div style={{ paddingBottom: 20, paddingTop: 20, display: 'flex', justifyContent: 'center' }}>
+          <Avatar size={150} src={loginLogo.length > 0 ? loginLogo[0].url : ''} style={{ verticalAlign: 'middle' }} />
+        </div>
+        <div>
+          <h2 style={{ textAlign: 'center' }}>精诚供应链系统 v4.0</h2>
+        </div>
         <div>
           <List>
-            <Item extra={<Avatar shape="square" src={loginLogo.length > 0 ? loginLogo[0].url : ''} size={32} />}>公司Logo</Item>
-            <Item extra={'精诚供应链'}>产品名称</Item>
-            <Item extra={'1.0'}>版本</Item>
+            {/* <Item extra={<Avatar shape="square" src={loginLogo.length > 0 ? loginLogo[0].url : ''} size={32} />}>公司Logo</Item> */}
+            {/* <Item extra={'精诚供应链'}>产品名称</Item> */}
+            {/* <Item extra={'1.0'}>版本</Item> */}
             <Item extra={'精诚SCM'} arrow="horizontal" onClick={() => router.push('/company/qrcode')}>公众号</Item>
             <Item extra={''} arrow="horizontal" onClick={this.handleHelp}>帮助</Item>
           </List>

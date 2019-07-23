@@ -6,6 +6,7 @@ import {
   List,
   InputItem,
   Switch,
+  LocaleProvider,
   Stepper,
   Range,
   Button,
@@ -14,6 +15,8 @@ import {
   WhiteSpace,
   DatePicker
 } from 'antd-mobile';
+import enUS from 'antd-mobile/lib/locale-provider/en_US';
+import ruRU from 'antd-mobile/lib/locale-provider/ru_RU';
 import { connect } from 'dva';
 import { createForm } from 'rc-form';
 import Styles from './style.less';
@@ -142,89 +145,93 @@ export default class ServiceAdd extends Component {
         value: '2013',
       }];
     return (
-      <div className={Styles.serviceAdd}>
-        <div>
-          <NavBar
-            mode="dark"
-            icon={<Icon type="left" size='lg' />}
-            onLeftClick={this.goBack}
-            rightContent={[
-              // <Icon type="plus" size='lg' />
-            ]}
-          >
-            新任务
+      <LocaleProvider locale='undefined'>
+        <div className={Styles.serviceAdd}>
+          <div>
+            <NavBar
+              mode="dark"
+              icon={<Icon type="left" size='lg' />}
+              onLeftClick={this.goBack}
+              rightContent={[
+                // <Icon type="plus" size='lg' />
+              ]}
+            >
+              新任务
           </NavBar>
-        </div>
-        <div>
+          </div>
+          <div>
 
-          <List
-          // renderHeader={() => 'Form Validation'}
-          // renderFooter={() => getFieldError('account') && getFieldError('account').join(',')}
-          >
-            <InputItem
-              clear
-              onChange={(v) => this.handleItemChange(v, 'SUBJECT')}
-            // placeholder="auto focus"
+            <List
+            // renderHeader={() => 'Form Validation'}
+            // renderFooter={() => getFieldError('account') && getFieldError('account').join(',')}
             >
-              标题
+              <InputItem
+                clear
+                onChange={(v) => this.handleItemChange(v, 'SUBJECT')}
+              // placeholder="auto focus"
+              >
+                标题
             </InputItem>
-            <Picker value={[postData.ORGANIZATION_ID]} data={customerUserList} cols={1} onOk={v => this.handleItemChange(v[0], 'ORGANIZATION_ID')} className="forss">
-              <List.Item arrow="horizontal">公司</List.Item>
-            </Picker>
-            <Picker value={[postData.CONTACT_ID]} data={customerContact} cols={1} onOk={v => this.handleItemChange(v[0], 'CONTACT_ID')} className="forss">
-              <List.Item arrow="horizontal">联系人</List.Item>
-            </Picker>
-            <TextareaItem
-              title='地址'
-              autoHeight
-              onChange={(v) => this.handleItemChange(v, 'ADDRESS')}
-            />
-          </List>
-          <WhiteSpace size="lg" />
-          <List
-          // renderHeader={() => 'Form Validation'}
-          // renderFooter={() => getFieldError('account') && getFieldError('account').join(',')}
-          >
-            <Item
-              extra={<Switch checked={checked} onChange={(v) => this.handleSwitch(v)} />}
-            >全天</Item>
-            <DatePicker
-              value={START_DATE}
-              onChange={date => this.handleChangeData(date, 'START_DATE')}
-              mode={checked ? 'date' : 'datetime'}
+              <Picker value={[postData.ORGANIZATION_ID]} data={customerUserList} cols={1} onOk={v => this.handleItemChange(v[0], 'ORGANIZATION_ID')} className="forss">
+                <List.Item arrow="horizontal">公司</List.Item>
+              </Picker>
+              <Picker value={[postData.CONTACT_ID]} data={customerContact} cols={1} onOk={v => this.handleItemChange(v[0], 'CONTACT_ID')} className="forss">
+                <List.Item arrow="horizontal">联系人</List.Item>
+              </Picker>
+              <TextareaItem
+                title='地址'
+                autoHeight
+                onChange={(v) => this.handleItemChange(v, 'ADDRESS')}
+              />
+            </List>
+            <WhiteSpace size="lg" />
+            <List
+            // renderHeader={() => 'Form Validation'}
+            // renderFooter={() => getFieldError('account') && getFieldError('account').join(',')}
             >
-              <List.Item arrow="horizontal">开始时间</List.Item>
-            </DatePicker>
-            <DatePicker
-              value={END_DATE}
-              onChange={date => this.handleChangeData(date, 'END_DATE')}
-              mode={checked ? 'date' : 'datetime'}
-            >
-              <List.Item arrow="horizontal">结束时间</List.Item>
-            </DatePicker>
-          </List>
-          <WhiteSpace size="lg" />
-          <List renderHeader={() => <div style={{ color: '#000', fontSize: 17 }}>描述</div>}>
-            <TextareaItem
-              defaultValue="我是描述..."
-              onChange={(v) => this.handleItemChange(v, 'DESCRIBE')}
-              rows={5}
-              count={100}
-            />
-          </List>
-          {/* <List>
-            <TextareaItem
-              defaultValue="描述..."
-              rows={5}
-              count={100}
-            />
-          </List> */}
-        </div>
-        <div style={{ display: 'flex', position: 'absolute', bottom: 16, width: '100%', justifyContent: 'space-around' }}>
-          <Button onClick={this.goBack} style={{ width: '45%' }} type="warning">取消</Button>
-          <Button onClick={this.handleAdd} style={{ width: '45%' }} type="primary">保存</Button>
-        </div>
-      </div >
+              <Item
+                extra={<Switch checked={checked} onChange={(v) => this.handleSwitch(v)} />}
+              >全天</Item>
+              <DatePicker
+                value={START_DATE}
+                title='开始时间'
+                onChange={date => this.handleChangeData(date, 'START_DATE')}
+                mode={checked ? 'date' : 'datetime'}
+              >
+                <List.Item arrow="horizontal">开始时间</List.Item>
+              </DatePicker>
+              <DatePicker
+                value={END_DATE}
+                onChange={date => this.handleChangeData(date, 'END_DATE')}
+                mode={checked ? 'date' : 'datetime'}
+                title='结束时间'
+              >
+                <List.Item arrow="horizontal">结束时间</List.Item>
+              </DatePicker>
+            </List>
+            <WhiteSpace size="lg" />
+            {/* <List renderHeader={() => <div style={{ color: '#000', fontSize: 17 }}>描述</div>}>
+              <TextareaItem
+                // defaultValue="我是描述..."
+                onChange={(v) => this.handleItemChange(v, 'DESCRIBE')}
+                rows={5}
+                count={100}
+              />
+            </List> */}
+            <List>
+              <TextareaItem
+                placeholder="描述..."
+                rows={5}
+                count={100}
+              />
+            </List>
+          </div>
+          <div style={{ display: 'flex', position: 'absolute', bottom: 16, width: '100%', justifyContent: 'space-around' }}>
+            <Button onClick={this.goBack} style={{ width: '45%' }} type="warning">取消</Button>
+            <Button onClick={this.handleAdd} style={{ width: '45%' }} type="primary">保存</Button>
+          </div>
+        </div >
+      </LocaleProvider>
     )
   }
 }

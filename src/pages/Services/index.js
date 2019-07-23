@@ -13,7 +13,7 @@ export default class ServicesPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:[]
+      data: []
     };
   }
 
@@ -22,15 +22,15 @@ export default class ServicesPage extends Component {
   }
 
   // 获取数据
-  queryWorkTasks = () => {
+  queryWorkTasks = (query = '') => {
     const { dispatch } = this.props;
     dispatch({
       type: 'services/queryWorkTasks',
-      payload: { },
+      payload: { query },
       callback: (response) => {
         console.log('response', response)
         this.setState({
-          data:response.data
+          data: response.data
         })
       }
     })
@@ -50,28 +50,14 @@ export default class ServicesPage extends Component {
     router.push(`/user/service/see/${value.ID}`)
   }
 
+  // 查询
+  handleSearch = (v) => {
+    console.log('vvvv', v)
+    this.queryWorkTasks(v)
+  }
+
   render() {
-    const {data} = this.state
-    const dataOld = [
-      {
-        img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
-        title: 'Meet hotel',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID: 1,
-      },
-      {
-        img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-        title: 'McDonald\'s invites you',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID: 2,
-      },
-      {
-        img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-        title: 'Eat the week',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID: 3,
-      },
-    ];
+    const { data } = this.state
     return (
       <div>
         <div>
@@ -86,10 +72,10 @@ export default class ServicesPage extends Component {
             任务列表
           </NavBar>
         </div>
-        <SearchBar placeholder="Search" maxLength={8} />
+        <SearchBar placeholder="Search" maxLength={8} onChange={(v) => this.handleSearch(v)} />
         <div>
-          {data.length && (
-            <ListViews list={data} onJump={this.onJump}/>
+          {data.length > 0 && (
+            <ListViews list={data} onJump={this.onJump} />
           )}
 
         </div>
