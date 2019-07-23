@@ -128,7 +128,7 @@ class TextareaItemExample extends React.Component{
                     />
                 </List>
                 </div>
-                <div style={{borderTop:'1px solid #e3e3e3',padding:'1rem',position:'fixed',bottom:0,width:'100%',height:'80px'}}>
+                <div style={{borderTop:'1px solid #e3e3e3',padding:'1rem',position:'absolute',bottom:0,width:'100%',height:'80px'}}>
                     {this.renderButton()}
                 </div>
             </div>

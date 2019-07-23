@@ -1,13 +1,11 @@
 import React from 'react'
-import { SearchBar, Button, WhiteSpace, WingBlank, Accordion, List, Checkbox, Flex,Drawer, NavBar, Icon } from 'antd-mobile'
+import { SearchBar, Button, WhiteSpace, WingBlank, Accordion, List, Checkbox, Flex } from 'antd-mobile'
 import { Tree,Collapse } from 'antd'
 import { connect } from 'dva'
 import _ from 'lodash'
 
 import GoodsModul from './GoodsModul'
-import SelectionPage from './SelectionPage'
 import screen from './image/screen.svg' //右上角变化表格图标
-import screenOpen from './image/screenOpen.png' //右上角open以后的图标
 import screens from './image/screens.svg' //筛选排序图标
 import Scan from './image/Scan.svg' //扫一扫图标
 import goBack from './image/goBack.png' //返回图标
@@ -37,31 +35,9 @@ export default class GoodsList extends React.Component {
         category:{}, //分类
         INSTALLATION_POSITION:'', //选择的安装位置
         CAR_MODEL:'', //汽车年份
-        open: false, //抽屉管控
-        MANUFACTURER:null, //汽车对应的厂商
-        brandId:null,
-        MODEL:null,
-        search:null,
     }
-    componentWillMount=()=>{
-        // this.props.dispatch({type:'goodsData/getAllcarBrand',callback:res=>{
-        //     if(res.status == "success"){
-        //         this.setState({
-        //             brandId:res.data[0].ID,
-        //         })
-        //         this.props.dispatch({type:'goodsData/getcarManufacturer',payload:{
-        //             brandId:res.data[0].ID
-        //         }
-        //         })
-        //         this.props.dispatch({type:'goodsData/save',
-        //         payload:{brandId:res.data[0].ID,selectBrand:res.data[0]}})
-        //         this.getTypeList();
-        //     }
-        // }})
-    }
-    
-    onOpenChange = (...args) => {
-        this.setState({ open: !this.state.open });
+    componentDidMount=()=>{
+        this.getTypeList();
     }
     
     onCheck = (checkedKeys, info) => {
@@ -91,11 +67,7 @@ export default class GoodsList extends React.Component {
         this.timeOut = setTimeout(()=>this.fn(value),1000)
     };
     fn=(value)=>{
-        console.log('search',value)
         this.child.getGoodsList(false,'','','',[],value)
-        this.setState({
-            search:value
-        })
         if(this.timeOut){
             clearTimeout(this.timeOut)
             this.timeOut = null
@@ -104,6 +76,7 @@ export default class GoodsList extends React.Component {
 
     onScan = () => {
         console.log('点击扫一扫按钮')
+        this.props.onGoSelectPage()
     }
 
     onScreen = () => {
@@ -161,7 +134,7 @@ export default class GoodsList extends React.Component {
     floatFrame=()=>{
         if(this.state.ChoiceButton == '汽车排量年份'){
             return _.get(this.props.goodsData, 'carModel').map((item, index) => {
-                return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
+                return <div key={index} style={{ background: '#efeff4' }}>
                     <div style={{ overflow: 'hidden' }}> 
                         <p onClick={()=>this.onClassification(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.CAR_MODEL}</p>
                     </div>
@@ -169,7 +142,7 @@ export default class GoodsList extends React.Component {
             })
         } else if(this.state.ChoiceButton == '安装位置'){
             return _.get(this.props.goodsData, 'installPosition').map((item, index) => {
-                return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
+                return <div key={index} style={{ background: '#efeff4' }}>
                     <div style={{ overflow: 'hidden' }}> 
                         <p onClick={()=>this.onPosition(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.INSTALLATION_POSITION}</p>
                     </div>
@@ -177,64 +150,33 @@ export default class GoodsList extends React.Component {
             })
         }
     }
-    onGetModel=(value,AllData)=>{
-        this.setState({
-            MODEL:value,
-            MANUFACTURER:AllData.MANUFACTURER,
-        })
-    }
-    onGetId=(value)=>{
-        this.setState({
-            brandId:value
-        })
-    }
 
     render() {
         const goodsModulProps = {
             CAR_MODEL:this.state.CAR_MODEL,
             INSTALLATION_POSITION:this.state.INSTALLATION_POSITION,
-            MODEL:this.state.MODEL,
-            ID:this.state.brandId,
-            MANUFACTURER:this.state.MANUFACTURER,
-            INSTALLATION_POSITION:this.state.INSTALLATION_POSITION, //选择的安装位置
-            CAR_MODEL:this.state.CAR_MODEL,
-            search:this.state.search,
-            onDismask:this.onDismask,
-            isMask:this.state.isMask,
+            MODEL:this.props.MODEL,
+            ID:this.props.ID
         }
-        const SelectionPageProps = {
-            onOpenChange:this.onOpenChange,
-            onGetId:this.onGetId,
-            onGetModel:this.onGetModel,
-        }
-        const {brandId,MODEL} = this.state
-        const {selectBrand} = this.props.goodsData
-        const nameMODEL = this.props.goodsData.MODEL
         return (
             <div className={styles.GoodsList}>
                 {/* 遮罩层 */}
-                {/* <div onClick={this.onDismask} style={{ display: this.state.isMask ? 'block' : 'none', zIndex: 1000 }} className={styles.Mask} /> */}
+                <div onClick={this.onDismask} style={{ display: this.state.isMask ? 'block' : 'none', zIndex: 11 }} className={styles.Mask} />
                 {/* 搜索输入框 */}
-                <div style={{ zIndex: 10000, position: 'relative' }} className={styles.searchBarBox}>
+                <div style={{ zIndex: 1000, position: 'relative' }} className={styles.searchBarBox}>
                     <div className={styles.Scan} onClick={this.onScan}>
-                        <img src={Scan} alt="error" />
+                        <img src={goBack} alt="error" />
                     </div>
                     <div className={styles.searchBar}>
                         <SearchBar placeholder="请输入查询条件" onChange={this.onSearchBarChange} />
                     </div>
-                    <div className={this.state.open ? styles.screenOpen : styles.screen} onClick={this.onScreen}>
-                        <img src={this.state.open ? screenOpen : screen} onClick={this.onOpenChange} alt="error" />
+                    <div className={styles.screen} onClick={this.onScreen}>
+                        <img src={screen} alt="error" />
                     </div>
                 </div>
-                {
-                    this.state.open ? <SelectionPage {...SelectionPageProps}/> : 
-                    <div style={{position: 'relative' }} className={styles.screenBox}>
-                    {/* <div style={{color:'gray',zIndex:100000,height:'30px',width:'100%',textAlign:'left',lineHeight:'30px',padding:'0 1rem'}}>
-                        {`已选择：${selectBrand ? selectBrand.NAME : null}  ->  ${nameMODEL}`}
-                    </div> */}
+                <div style={{ zIndex: 1000, position: 'relative' }} className={styles.screenBox}>
                     {/* 第二层的筛选条件 */}
-                    <div style={{display:!_.isEmpty(this.state.MODEL) ? 'block' : 'none'}} className={styles.screenBottom}>
-                    
+                    <div className={styles.screenBottom}>
                         {/* 商品属性 */}
                         <div onClick={() => this.onChoiceButton('汽车排量年份')} className={this.state.ChoiceButton == '汽车排量年份'  ? styles.screenBottomItemSelect : styles.screenBottomItem} key={'汽车排量年份'}>
                             <span style={{ color: this.state.ChoiceButton == '汽车排量年份' ? '#3c8ee2' : null }}>
@@ -255,15 +197,13 @@ export default class GoodsList extends React.Component {
                             this.floatFrame()
                         }
                     </div>
-                    {/* <div className={styles.hr} /> */}
-                    <div>
-                            {
-                                <GoodsModul {...goodsModulProps} onRef={this.onRef} 
-                                    getStart={(e,element)=>this.props.getStart(e,element)}/>
-                            }
-                        </div>
-                    </div>
-                }
+                </div>
+                <div className={styles.hr} />
+                {/* 商品列表部分 */}
+                <div style={{ zIndex: 10 }}>
+                    <GoodsModul {...goodsModulProps} onRef={this.onRef} 
+                    getStart={(e,element)=>this.props.getStart(e,element)}/>
+                </div>
             </div>
         )
     }

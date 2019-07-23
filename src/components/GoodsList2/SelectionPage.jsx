@@ -16,20 +16,8 @@ export default class SelectionPage extends React.Component {
     state={
         brandId:32,
         isListPage:false, //是否进入详情页
-        MANUFACTURER:null, //汽车对应的厂商
         ID:'',
         MODEL:'',
-    }
-    componentWillMount=()=>{
-        this.props.dispatch({type:'goodsData/getAllcarBrand',callback:res=>{
-            if(res.status == "success"){
-                this.props.dispatch({type:'goodsData/save',
-                payload:{brandId:this.props.goodsData.brandId || res.data[0].ID}})
-                this.props.dispatch({type:'goodsData/getcarManufacturer',payload:{
-                    brandId:this.props.goodsData.brandId || res.data[0].ID
-                }})
-            }
-        }})
     }
     onChangeCarBrand=(item)=>{
         this.props.onGetId(item.ID)
@@ -50,20 +38,18 @@ export default class SelectionPage extends React.Component {
         })
     }
     //选择车型的函数
-    onSelectVehicleType=(value,AllData)=>{
-        console.log('item',value,AllData)
-        this.props.onGetModel(value,AllData)
+    onSelectVehicleType=(value)=>{
+        this.props.onGetModel(value)
         this.props.dispatch({type:'goodsData/save',payload:{
-            ID:this.state.brandId,MODEL:value,MANUFACTURER:AllData.MANUFACTURER
+            ID:this.state.brandId,MODEL:value
         }})
         this.setState({
             // isListPage:true,
             MODEL:value,
-            ID:this.state.brandId,
-            MANUFACTURER:this.state.MANUFACTURER,
+            ID:this.state.brandId
         })
         this.props.dispatch({type:'goodsData/getcarModelsByModel',payload:{
-            ID:this.state.brandId,MODEL:value,MANUFACTURER:AllData.MANUFACTURER
+            ID:this.state.brandId,MODEL:value
         }})
         this.props.onOpenChange()
     }
@@ -88,7 +74,7 @@ export default class SelectionPage extends React.Component {
                 <div style={{width:'100%',border:'1px solid lightgray',minHeight:70,overflow:'hidden'}}>
                     {
                         item.child.map(ii=>{
-                            return <div style={{width:'33.3%',height:86,float:'left',overflow:'hidden',marginTop:'15px'}} onClick={()=>this.onSelectVehicleType(ii,item)} key={ii}>
+                            return <div style={{width:'33.3%',height:86,float:'left',overflow:'hidden',marginTop:'15px'}} onClick={()=>this.onSelectVehicleType(ii)} key={ii}>
                                 <img style={{width:'50%',display:'block',margin:'0 auto'}} src={car} alt="error"/>
                                 <span style={{paddingLeft:4,paddingRight:4,display:'inline-block'}}>{ii}</span>
                             </div>
