@@ -364,7 +364,7 @@ export default class ShoppingCart extends React.Component {
           scrollRenderAheadDistance={500}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={10}
-          pullToRefresh={<PullToRefresh  //下拉刷新
+          pullToRefresh={<PullToRefresh  //下拉 刷新
             onRefresh={() => console.log('假装在刷新页面！')}
           />}
         />
