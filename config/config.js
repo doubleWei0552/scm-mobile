@@ -50,9 +50,13 @@ export default {
       routes: [
         {
           path: '/',
-          redirect: '/welcome'
+          redirect: '/result/1'
         },
         // dashboard
+        {
+          path: '/result/:type',
+          component: './ResultPage',
+        },
         {
           path: '/welcome',
           component: './Login',
