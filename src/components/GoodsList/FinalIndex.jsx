@@ -44,20 +44,7 @@ export default class GoodsList extends React.Component {
         search:null,
     }
     componentWillMount=()=>{
-        // this.props.dispatch({type:'goodsData/getAllcarBrand',callback:res=>{
-        //     if(res.status == "success"){
-        //         this.setState({
-        //             brandId:res.data[0].ID,
-        //         })
-        //         this.props.dispatch({type:'goodsData/getcarManufacturer',payload:{
-        //             brandId:res.data[0].ID
-        //         }
-        //         })
-        //         this.props.dispatch({type:'goodsData/save',
-        //         payload:{brandId:res.data[0].ID,selectBrand:res.data[0]}})
-        //         this.getTypeList();
-        //     }
-        // }})
+
     }
     
     onOpenChange = (...args) => {
@@ -91,10 +78,10 @@ export default class GoodsList extends React.Component {
         this.timeOut = setTimeout(()=>this.fn(value),1000)
     };
     fn=(value)=>{
-        console.log('search',value)
         this.child.getGoodsList(false,'','','',[],value)
         this.setState({
-            search:value
+            search:value,
+            MODEL:null
         })
         if(this.timeOut){
             clearTimeout(this.timeOut)
@@ -159,22 +146,24 @@ export default class GoodsList extends React.Component {
         })
     }
     floatFrame=()=>{
-        if(this.state.ChoiceButton == '汽车排量年份'){
-            return _.get(this.props.goodsData, 'carModel').map((item, index) => {
-                return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
-                    <div style={{ overflow: 'hidden' }}> 
-                        <p onClick={()=>this.onClassification(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.CAR_MODEL}</p>
+        if(!_.isEmpty(this.state.MODEL)){
+            if(this.state.ChoiceButton == '汽车排量年份'){
+                return _.get(this.props.goodsData, 'carModel').map((item, index) => {
+                    return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
+                        <div style={{ overflow: 'hidden' }}> 
+                            <p onClick={()=>this.onClassification(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.CAR_MODEL}</p>
+                        </div>
                     </div>
-                </div>
-            })
-        } else if(this.state.ChoiceButton == '安装位置'){
-            return _.get(this.props.goodsData, 'installPosition').map((item, index) => {
-                return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
-                    <div style={{ overflow: 'hidden' }}> 
-                        <p onClick={()=>this.onPosition(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.INSTALLATION_POSITION}</p>
+                })
+            } else if(this.state.ChoiceButton == '安装位置'){
+                return _.get(this.props.goodsData, 'installPosition').map((item, index) => {
+                    return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
+                        <div style={{ overflow: 'hidden' }}> 
+                            <p onClick={()=>this.onPosition(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.INSTALLATION_POSITION}</p>
+                        </div>
                     </div>
-                </div>
-            })
+                })
+            }
         }
     }
     onGetModel=(value,AllData)=>{
@@ -226,15 +215,14 @@ export default class GoodsList extends React.Component {
                         <img src={this.state.open ? screenOpen : screen} onClick={this.onOpenChange} alt="error" />
                     </div>
                 </div>
-                {
+                { 
                     this.state.open ? <SelectionPage {...SelectionPageProps}/> : 
-                    <div style={{position: 'relative' }} className={styles.screenBox}>
+                    <div style={{position: 'relative',height:'100%' }} className={styles.screenBox}>
                     {/* <div style={{color:'gray',zIndex:100000,height:'30px',width:'100%',textAlign:'left',lineHeight:'30px',padding:'0 1rem'}}>
                         {`已选择：${selectBrand ? selectBrand.NAME : null}  ->  ${nameMODEL}`}
                     </div> */}
                     {/* 第二层的筛选条件 */}
                     <div style={{display:!_.isEmpty(this.state.MODEL) ? 'block' : 'none'}} className={styles.screenBottom}>
-                    
                         {/* 商品属性 */}
                         <div onClick={() => this.onChoiceButton('汽车排量年份')} className={this.state.ChoiceButton == '汽车排量年份'  ? styles.screenBottomItemSelect : styles.screenBottomItem} key={'汽车排量年份'}>
                             <span style={{ color: this.state.ChoiceButton == '汽车排量年份' ? '#3c8ee2' : null }}>
@@ -255,14 +243,13 @@ export default class GoodsList extends React.Component {
                             this.floatFrame()
                         }
                     </div>
-                    {/* <div className={styles.hr} /> */}
-                    <div>
-                            {
-                                <GoodsModul {...goodsModulProps} onRef={this.onRef} 
-                                    getStart={(e,element)=>this.props.getStart(e,element)}/>
-                            }
-                        </div>
+                    <div style={{width:'100%',height:'100%'}}>
+                        {
+                            <GoodsModul {...goodsModulProps} onRef={this.onRef} 
+                                getStart={(e,element)=>this.props.getStart(e,element)}/>
+                        }
                     </div>
+                </div>
                 }
             </div>
         )
