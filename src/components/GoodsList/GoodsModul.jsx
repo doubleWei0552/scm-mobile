@@ -346,12 +346,7 @@ export default class ShoppingCart extends React.Component {
     };
 
     return (
-      <div className={styles.newGoodsPage} >
-        {/* <div onClick={this.props.onDismask} style={{ display: this.props.isMask ? 'block' : 'none', zIndex: 1000,width:'100%',
-        height: this.state.height - 60,
-        background: 'black',
-        opacity: 0.3,
-        position: 'absolute', }} /> */}
+      <div style={{height:'100%'}} className={styles.newGoodsPage} >
         <ListView
           ref={el => this.lv = el}
           dataSource={this.state.dataSource}
@@ -362,11 +357,10 @@ export default class ShoppingCart extends React.Component {
           renderRow={row}
           renderSeparator={separator}
           style={{
-            height: this.state.height,
+            height: '100%',
             overflow: 'auto',
           }}
           pageSize={4}
-          // onScroll={() => { console.log('scroll'); }}
           scrollRenderAheadDistance={500}
           onEndReached={this.onEndReached}
           onEndReachedThreshold={10}

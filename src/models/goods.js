@@ -138,11 +138,11 @@ export default {
     //具体车型对应的所有数据
     *getcarMaterialList({payload,callback},{call,select,put}){
       let params ={
-        ID:payload.ID,
-        MANUFACTURER:payload.MANUFACTURER,
-        MODEL:payload.MODEL,
-        INSTALLATION_POSITION:payload.INSTALLATION_POSITION,
-        CAR_MODEL:payload.CAR_MODEL,
+        ID:payload.QUERY ? null : payload.ID,
+        MANUFACTURER:payload.QUERY ? null : payload.MANUFACTURER,
+        MODEL:payload.QUERY ? null : payload.MODEL,
+        INSTALLATION_POSITION: payload.QUERY ? null : payload.INSTALLATION_POSITION,
+        CAR_MODEL:payload.QUERY ? null : payload.CAR_MODEL,
         customerId:payload.customerId,
         userId:payload.userId,
         pageSize:payload.pageSize,
