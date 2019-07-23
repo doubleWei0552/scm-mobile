@@ -13,7 +13,7 @@ import router from 'umi/router';
 import _ from 'lodash';
 
 export default {
-  namespace: 'goodsData',
+  namespace: 'goodsData2',
 
   state: {
     searchData: [],
@@ -30,7 +30,6 @@ export default {
     installPosition:[],  //安装位置
     brandId:null, //分类页的选择的商品品牌数据
     MODEL:null, //汽车车型
-    MANUFACTURER:null, //汽车对应的厂商
     selectBrand:null,//选择的汽车品牌
     selectModel:null, //选择的车型
   },
@@ -125,11 +124,10 @@ export default {
     },
     //具体车型对应的年份、安装位置数据
     *getcarModelsByModel({payload},{call,select,put}){
-      let {MODEL,ID,MANUFACTURER} = payload
+      let {MODEL,ID} = payload
       let params ={
         MODEL,
-        // ID,
-        MANUFACTURER
+        ID
       }
       let result = yield call(querycarModelsByModel,params)
       yield put({type:'save',payload:{carModel:result.data.carModel,
@@ -137,9 +135,9 @@ export default {
     },
     //具体车型对应的所有数据
     *getcarMaterialList({payload,callback},{call,select,put}){
+      console.log('获取汽车数据',payload)
       let params ={
         ID:payload.ID,
-        MANUFACTURER:payload.MANUFACTURER,
         MODEL:payload.MODEL,
         INSTALLATION_POSITION:payload.INSTALLATION_POSITION,
         CAR_MODEL:payload.CAR_MODEL,
@@ -150,6 +148,7 @@ export default {
         QUERY:payload.QUERY,
       }
       let result = yield call(querycarMaterialList,params)
+      console.log('result',result)
       const oldList = yield select(({ goodsData }) => goodsData.list);
       result.data.list.map((item, index) => {
         let isHave = _.findIndex(oldList, ii => ii.ID === item.ID)

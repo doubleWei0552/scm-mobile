@@ -38,28 +38,46 @@ export default class GoodsList extends React.Component {
         INSTALLATION_POSITION:'', //选择的安装位置
         CAR_MODEL:'', //汽车年份
         open: false, //抽屉管控
-        MANUFACTURER:null, //汽车对应的厂商
         brandId:null,
         MODEL:null,
         search:null,
     }
     componentWillMount=()=>{
-        // this.props.dispatch({type:'goodsData/getAllcarBrand',callback:res=>{
-        //     if(res.status == "success"){
-        //         this.setState({
-        //             brandId:res.data[0].ID,
-        //         })
-        //         this.props.dispatch({type:'goodsData/getcarManufacturer',payload:{
-        //             brandId:res.data[0].ID
-        //         }
-        //         })
-        //         this.props.dispatch({type:'goodsData/save',
-        //         payload:{brandId:res.data[0].ID,selectBrand:res.data[0]}})
-        //         this.getTypeList();
-        //     }
-        // }})
+        this.props.dispatch({type:'goodsData/getAllcarBrand',callback:res=>{
+            if(res.status == "success"){
+                this.setState({
+                    brandId:res.data[0].ID,
+                })
+                this.props.dispatch({type:'goodsData/getcarManufacturer',payload:{
+                    brandId:res.data[0].ID
+                },callback:response=>{
+                    if(response.status == "success"){
+                        this.props.dispatch({type:'goodsData/save',
+                        payload:{MODEL:response.data[0].child[0],selectModel:response.data[0]}})
+                        this.setState({
+                            MODEL:response.data[0].child[0]
+                        })
+                        this.props.dispatch({type:'goodsData/getcarModelsByModel',payload:{
+                            ID:this.state.brandId,MODEL:response.data[0].child[0]
+                        }})
+                    }
+                }})
+                this.props.dispatch({type:'goodsData/save',
+                payload:{brandId:res.data[0].ID,selectBrand:res.data[0]}})
+                this.getTypeList();
+            }
+        }})
     }
-    
+    // componentWillReceiveProps=(nextProps)=>{
+    //     console.log('nextProps',nextProps)
+    //     if(this.props.goodsData.ID != nextProps.goodsData.ID || this.props.goodsData.MODEL != nextProps.goodsData.MODEL){
+    //         this.setState({
+    //             brandId:nextProps.goodsData.ID,
+    //             MODEL:nextProps.goodsData.MODEL
+    //         })
+    //     }
+        
+    // }
     onOpenChange = (...args) => {
         this.setState({ open: !this.state.open });
     }
@@ -91,7 +109,6 @@ export default class GoodsList extends React.Component {
         this.timeOut = setTimeout(()=>this.fn(value),1000)
     };
     fn=(value)=>{
-        console.log('search',value)
         this.child.getGoodsList(false,'','','',[],value)
         this.setState({
             search:value
@@ -161,7 +178,7 @@ export default class GoodsList extends React.Component {
     floatFrame=()=>{
         if(this.state.ChoiceButton == '汽车排量年份'){
             return _.get(this.props.goodsData, 'carModel').map((item, index) => {
-                return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
+                return <div key={index} style={{ background: '#efeff4' }}>
                     <div style={{ overflow: 'hidden' }}> 
                         <p onClick={()=>this.onClassification(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.CAR_MODEL}</p>
                     </div>
@@ -169,7 +186,7 @@ export default class GoodsList extends React.Component {
             })
         } else if(this.state.ChoiceButton == '安装位置'){
             return _.get(this.props.goodsData, 'installPosition').map((item, index) => {
-                return <div key={index} style={{ background: '#efeff4',minHeight:'35px' }}>
+                return <div key={index} style={{ background: '#efeff4' }}>
                     <div style={{ overflow: 'hidden' }}> 
                         <p onClick={()=>this.onPosition(item)} style={{height:'35px',padding:0,margin:0,lineHeight:'35px',borderBottom:'1px solid lightgray'}}>{item.INSTALLATION_POSITION}</p>
                     </div>
@@ -177,10 +194,9 @@ export default class GoodsList extends React.Component {
             })
         }
     }
-    onGetModel=(value,AllData)=>{
+    onGetModel=(value)=>{
         this.setState({
-            MODEL:value,
-            MANUFACTURER:AllData.MANUFACTURER,
+            MODEL:value
         })
     }
     onGetId=(value)=>{
@@ -195,7 +211,6 @@ export default class GoodsList extends React.Component {
             INSTALLATION_POSITION:this.state.INSTALLATION_POSITION,
             MODEL:this.state.MODEL,
             ID:this.state.brandId,
-            MANUFACTURER:this.state.MANUFACTURER,
             INSTALLATION_POSITION:this.state.INSTALLATION_POSITION, //选择的安装位置
             CAR_MODEL:this.state.CAR_MODEL,
             search:this.state.search,
@@ -227,13 +242,12 @@ export default class GoodsList extends React.Component {
                     </div>
                 </div>
                 {
-                    this.state.open ? <SelectionPage {...SelectionPageProps}/> : 
-                    <div style={{position: 'relative' }} className={styles.screenBox}>
-                    {/* <div style={{color:'gray',zIndex:100000,height:'30px',width:'100%',textAlign:'left',lineHeight:'30px',padding:'0 1rem'}}>
+                    this.state.open ? <SelectionPage {...SelectionPageProps}/> : <div style={{position: 'relative' }} className={styles.screenBox}>
+                    <div style={{color:'gray',zIndex:100000,height:'30px',width:'100%',textAlign:'left',lineHeight:'30px',padding:'0 1rem'}}>
                         {`已选择：${selectBrand ? selectBrand.NAME : null}  ->  ${nameMODEL}`}
-                    </div> */}
+                    </div>
                     {/* 第二层的筛选条件 */}
-                    <div style={{display:!_.isEmpty(this.state.MODEL) ? 'block' : 'none'}} className={styles.screenBottom}>
+                    <div className={styles.screenBottom}>
                     
                         {/* 商品属性 */}
                         <div onClick={() => this.onChoiceButton('汽车排量年份')} className={this.state.ChoiceButton == '汽车排量年份'  ? styles.screenBottomItemSelect : styles.screenBottomItem} key={'汽车排量年份'}>
@@ -258,8 +272,9 @@ export default class GoodsList extends React.Component {
                     {/* <div className={styles.hr} /> */}
                     <div>
                             {
-                                <GoodsModul {...goodsModulProps} onRef={this.onRef} 
+                                (brandId && MODEL) ? <GoodsModul {...goodsModulProps} onRef={this.onRef} 
                                     getStart={(e,element)=>this.props.getStart(e,element)}/>
+                                 : null
                             }
                         </div>
                     </div>

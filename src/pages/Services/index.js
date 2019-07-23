@@ -4,7 +4,6 @@ import router from "umi/router";
 import { connect } from 'dva';
 import ListViews from '@/components/ListView'
 
-
 @connect(({ services, loading }) => ({
   services,
   loading: loading.models.queryWorkTasks,

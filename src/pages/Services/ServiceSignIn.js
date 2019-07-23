@@ -72,7 +72,7 @@ class TextareaItemExample extends React.Component{
                     />
                 </List>
                 </div>
-                <div style={{padding:'1rem',position:'fixed',bottom:0,width:'100%',height:'80px'}}>
+                <div style={{padding:'1rem',position:'absolute',bottom:0,width:'100%',height:'80px'}}>
                     <Button onClick={this.updataWorkTasks} type="primary">签到</Button>
                 </div>
             </div>

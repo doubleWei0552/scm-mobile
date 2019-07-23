@@ -60,10 +60,7 @@ export default class ListViews extends Component {
   componentDidMount() {
     // you can scroll to the specified position
     // setTimeout(() => this.lv.scrollTo(0, 120), 800);
-    console.log('传递的参数', this.props)
     const { list } = this.props;
-    console.log('sssss', list)
-
     genData(0, list);
 
 
@@ -108,8 +105,6 @@ export default class ListViews extends Component {
   }
 
   render() {
-    console.log('sectionIDs', sectionIDs)
-    console.log('rowIDs', rowIDs)
     const { list: data } = this.props;
     const separator = (sectionID, rowID) => (
       <div

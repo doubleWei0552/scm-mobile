@@ -198,7 +198,7 @@ export default class ShoppingCart extends React.Component {
   }
 
   // 获取商品列表
-  getGoodsList = (refresh = false, INSTALLATION_POSITION='',CAR_MODEL='',  type='', pIndex,search) => {
+  getGoodsList = (refresh = false, INSTALLATION_POSITION,CAR_MODEL,  type, pIndex,search) => {
     Toast.loading('Loading...', 0);
     const { dispatch } = this.props;
     const { value } = this.state
@@ -218,8 +218,7 @@ export default class ShoppingCart extends React.Component {
       // type: 'goodsData/getGoodsList',
       type:'goodsData/getcarMaterialList',
       payload: {
-        // ID:this.props.ID,
-        MANUFACTURER:this.props.MANUFACTURER,
+        ID:this.props.ID,
         MODEL:this.props.MODEL,
         INSTALLATION_POSITION,
         CAR_MODEL,
@@ -231,10 +230,8 @@ export default class ShoppingCart extends React.Component {
         if (response.status === 'success') {
           const { data: { list } } = response;
           const search = search || null
-          if(this.props.search){
-            if(!response.data.list.length){
-              this.dataClean()
-            }
+          if(!search && !response.data.list.length){
+            this.dataClean()
           }
           setTimeout(() => {
             Toast.hide()
