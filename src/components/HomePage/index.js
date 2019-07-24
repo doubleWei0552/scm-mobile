@@ -47,9 +47,6 @@ export default class HomePage extends React.Component {
           <Carousel
             autoplay
             infinite
-
-            beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
-            afterChange={index => console.log('slide to', index)}
           >
             {this.state.data.map(val => (
               <a

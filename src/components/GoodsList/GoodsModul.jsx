@@ -225,7 +225,7 @@ export default class ShoppingCart extends React.Component {
         CAR_MODEL,
         customerId, userId, pageSize: 10, 
         currentPage: type ? 1 : pageIndex,
-        QUERY:_.isEmpty(search) ? null : search,
+        QUERY:this.props.search,
       },
       callback: response => {
         if (response.status === 'success') {

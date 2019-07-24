@@ -93,8 +93,8 @@ class TabPanePage extends Component {
       case 'goodList':
         return (
           <div key={1} style={{ flex: 1, textAlign: 'center', height: '100%' }}>
-            <GoodsList getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
-              this.goodsListRef = dom;
+            <GoodsList {...this.props} getStart={(rowID, element) => this.getStart(rowID, element)} ref={dom => {
+              this.goodsListRef = dom; 
             }} />
           </div>
         )
