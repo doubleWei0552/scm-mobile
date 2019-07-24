@@ -86,7 +86,7 @@ class TabPanePage extends Component {
       case 'index':
         return (
           <div key={0} style={{ flex: 1, textAlign: 'center' }}>
-            <HomePage key={0} />
+            <HomePage key={0} {...this.props} />
           </div>
         )
         break
