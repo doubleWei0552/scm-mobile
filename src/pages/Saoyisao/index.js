@@ -24,8 +24,6 @@ export default class UserCenter extends Component {
   }
 
   componentWillMount() {
-    console.log('saoyosao', this.props)
-    console.log('saoyosao', wx)
     const { dispatch } = this.props;
     dispatch({
       type: 'saoyisao/queryConfig',
