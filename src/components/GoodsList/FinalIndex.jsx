@@ -41,14 +41,19 @@ export default class GoodsList extends React.Component {
         MANUFACTURER:null, //汽车对应的厂商
         brandId:null,
         MODEL:null,
-        search:null,
+        search:'',
     }
     componentWillMount=()=>{
-
+        if(this.props.location.query.CODE){
+            this.setState({
+                search:this.props.location.query.CODE
+            })
+            this.onSearchBarChange(this.props.location.query.CODE)
+        }
     }
     
     onOpenChange = (...args) => {
-        this.setState({ open: !this.state.open });
+        this.setState({ open: !this.state.open,search:'' });
     }
     
     onCheck = (checkedKeys, info) => {
@@ -75,14 +80,14 @@ export default class GoodsList extends React.Component {
     timeOut = null
     onSearchBarChange = (value) => {
         if(this.timeOut)clearTimeout(this.timeOut)
-        this.timeOut = setTimeout(()=>this.fn(value),1000)
-    };
-    fn=(value)=>{
-        this.child.getGoodsList(false,'','','',[],value)
         this.setState({
             search:value,
             MODEL:null
         })
+        this.timeOut = setTimeout(()=>this.fn(value),1000)
+    };
+    fn=(value)=>{
+        this.child.getGoodsList(false,'','','',[],value)
         if(this.timeOut){
             clearTimeout(this.timeOut)
             this.timeOut = null
@@ -179,6 +184,7 @@ export default class GoodsList extends React.Component {
     }
 
     render() {
+        console.log('搜索框的值',this.state.search)
         const goodsModulProps = {
             CAR_MODEL:this.state.CAR_MODEL,
             INSTALLATION_POSITION:this.state.INSTALLATION_POSITION,
@@ -206,12 +212,14 @@ export default class GoodsList extends React.Component {
                 {/* 搜索输入框 */}
                 <div style={{ zIndex: 10000, position: 'relative' }} className={styles.searchBarBox}>
                     <div className={styles.Scan} onClick={this.onScan}>
-                        <img src={Scan} alt="error" />
+                        <a href={`http://sao315.com/w/api/saoyisao?redirect_uri=${window.location.origin}/mobile?pparams=/homepage/goodList`}>
+                            <img src={Scan} alt="error" />
+                        </a>
                     </div>
                     <div className={styles.searchBar}>
-                        <SearchBar placeholder="请输入查询条件" onChange={this.onSearchBarChange} />
+                        <SearchBar placeholder="请输入查询条件" value={this.state.search} onChange={this.onSearchBarChange} />
                     </div>
-                    <div className={this.state.open ? styles.screenOpen : styles.screen} onClick={this.onScreen}>
+                    <div className={this.state.open ? styles.screenOpen : styles.screen}>
                         <img src={this.state.open ? screenOpen : screen} onClick={this.onOpenChange} alt="error" />
                     </div>
                 </div>

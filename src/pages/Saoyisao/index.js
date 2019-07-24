@@ -5,7 +5,7 @@ import Link from 'umi/link';
 import _ from 'lodash';
 import ReactDom from 'react-dom';
 import Quagga from 'quagga';
-import { Avatar, Button, Upload } from 'antd';
+import { Avatar, Button, Upload, Alert } from 'antd';
 import { NavBar, Icon, TabBar, List, WhiteSpace, WingBlank, Result, ActivityIndicator } from 'antd-mobile';
 
 const Item = List.Item;
