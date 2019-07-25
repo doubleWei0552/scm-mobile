@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { NavBar, Icon } from 'antd-mobile';
-import code from './images/qrcode.png'
+import code from './images/qrcode.png';
+import banner from './images/banner.png';
 
 export default class QrcodePage extends Component {
   constructor(props) {
@@ -29,11 +30,17 @@ export default class QrcodePage extends Component {
           </NavBar>
         </div>
         <div style={{ marginTop: 40, marginBottom: 40 }}>
+          {/* <img
+            src={banner}
+            alt=''
+            style={{ objectFit: 'cover', height: 100, }}
+          /> */}
           <img
             src={code}
             alt=''
             style={{ width: '100%' }}
           />
+
         </div>
         <div>
           <div style={{ textAlign: 'center', fontSize: 16 }}>
