@@ -67,7 +67,7 @@ class OrderDetailPage extends Component {
             mode="dark"
             // leftContent="Back"
             onLeftClick={this.goBack}
-            icon={<Icon type="left" size='lg' />}
+            icon={<Icon onClick={()=>router.goBack()} type="left" size='lg' />}
             rightContent={[]}
           >
             订单详情

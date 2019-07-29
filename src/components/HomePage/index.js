@@ -105,7 +105,7 @@ export default class HomePage extends React.Component {
               <img src={noImg} alt='' />
             </div>
 
-            <div className='item-title'>
+            <div onClick={()=> router.push('/salesReport')} className='item-title'>
               问题提报
             </div>
           </div>
