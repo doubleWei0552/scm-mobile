@@ -97,6 +97,29 @@ export default {
           path: '/saoyisao',
           component: './Saoyisao',
         },
+        //销售提报
+        {
+          path: '/salesReport',
+          component: './SalesReport',
+        },
+        {
+          path: '/salesReportDetail:orderId',
+          component: './SalesReport/SalesReportDetail',
+        },
+        {
+          path: '/salesReportAddGoods',
+          component: './SalesReport/AddGoods',
+        },
+        {
+          path: '/salesReportAddCustomer',
+          component: './SalesReport/AddCustomer',
+        },
+        {
+          path: '/salesReportGoodsList',
+          component: './SalesReport/GoodsList',
+        },
+
+
         {
           path: '/customerselect',
           component: './CustomerSelect',
