@@ -190,7 +190,7 @@ export default class GoodsList extends React.Component{
                         onEndReachedThreshold={10}
                     />
                 </div>
-                <div style={{borderTop:'1px solid lightgray',borderBottom:'1px solid lightgray',height:40,display:'flex',flexDirection:'row-reverse'}}>
+                <div style={{borderTop:'1px solid lightgray',height:40,display:'flex',flexDirection:'row-reverse'}}>
                     <div onClick={()=> router.push('/salesReportAddCustomer')} style={{height:40,lineHeight:'40px',width:'30%',textAlign:'center',background:'#bf6b69'}}>下一步</div>
                     <div style={{height:40,lineHeight:'40px',marginRight:'10px'}}>合计：13890.00</div>
                 </div>

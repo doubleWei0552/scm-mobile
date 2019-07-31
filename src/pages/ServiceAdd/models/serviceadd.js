@@ -20,6 +20,7 @@ export default {
 
     *serviceAdd({ payload, callback }, { call }) {
       console.log('payload', payload)
+      payload.CUSTOMER_ID = localStorage.getItem('customerId') * 1;
       const result = yield call(serviceAdd, payload);
 
       if (result.status === 'success') {

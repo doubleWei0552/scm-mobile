@@ -119,7 +119,7 @@ export default class SalesReportList extends React.Component{
     }
         
     render(){
-        const { SalesReportList } = this.props.salesReport
+        const  SalesReportList = _.get(this.props.salesReport,'SalesReportList')
         const separator = (sectionID, rowID) => (
             <div
                 key={`${sectionID}-${rowID}`}

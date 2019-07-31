@@ -100,13 +100,13 @@ export default class HomePage extends React.Component {
               产品知识
             </div>
           </div>
-          <div className='item'>
+          <div className='item' onClick={()=> router.push('/salesReport')}>
             <div className='item-img'>
               <img src={noImg} alt='' />
             </div>
 
-            <div onClick={()=> router.push('/salesReport')} className='item-title'>
-              问题提报
+            <div className='item-title'>
+              销售提报
             </div>
           </div>
         </div>
