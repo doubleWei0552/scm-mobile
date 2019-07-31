@@ -13,39 +13,6 @@ function MyBody(props) {
     );
 }  
 
-const data = [
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
-      title: '11111111',
-      des: '不是所有的兼职汪都需要风吹日晒',
-      ID:0,
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-      title: '22222222',
-      des: '不是所有的兼职汪都需要风吹日晒',
-      ID:1,
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-      title: '33333333',
-      des: '不是所有的兼职汪都需要风吹日晒',
-      ID:2,
-    },
-    {
-        img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-        title: '44444444',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID:3,
-    },
-    {
-        img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-        title: '5555555',
-        des: '不是所有的兼职汪都需要风吹日晒',
-        ID:4,
-    },
-];
-
 let pageIndex = 0;
 const dataBlobs = {};
 let sectionIDs = [];
@@ -59,11 +26,11 @@ function genData(pIndex = 0,list=[]) {
     }
     rowIDs[pIndex] = [];
     for (let jj = 0; jj < list.length; jj++) {
-        rowIDs[pIndex].push(list[jj].ID);
-        dataBlobs[list[jj].ID] = list[jj].ID;
+      rowIDs[pIndex].push(list[jj].ID);
+      dataBlobs[list[jj].ID] = list[jj].ID;
     }
     sectionIDs = [...sectionIDs];
-    rowIDs = [...rowIDs];
+    rowIDs = _.filter([...rowIDs],item => item != undefined);
     console.log('sectionIDs',sectionIDs,'rowIDs',rowIDs)
 }
   
@@ -89,21 +56,26 @@ export default class SelectGoods extends React.Component{
           height: document.documentElement.clientHeight * 3 / 4,
         };
       }
-    
       componentDidMount() {
-        // you can scroll to the specified position
-        // setTimeout(() => this.lv.scrollTo(0, 120), 800);
-    
         const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
         // simulate initial Ajax
-        setTimeout(() => {
-          genData(0,data);
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-            isLoading: false,
-            height: hei,
-          });
-        }, 600);
+        this.props.dispatch({
+          type:'salesReport/getByCarModel',
+          payload:{currentPage:++pageIndex},
+          callback:res=>{
+            if(res.status == 'success'){
+              let SalesGoodsList = res.data.list
+              setTimeout(() => {
+                genData(0,SalesGoodsList);
+                this.setState({
+                  dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
+                  isLoading: false,
+                  height: hei,
+                });
+              }, 1000);
+            }
+          }
+        })
       }
     
     
@@ -113,44 +85,29 @@ export default class SelectGoods extends React.Component{
         if (this.state.isLoading && !this.state.hasMore) {
           return;
         }
+        let SalesGoodsList = []
         console.log('reach end', event);
-        const Newdata = [
-            {
-              img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
-              title: Math.random(),
-              des: '新增的数据111111',
-              ID:Math.random(),
-            },
-            {
-              img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-              title: Math.random(),
-              des: '新增的数据22222',
-              ID:Math.random(),
-            },
-            {
-              img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-              title: Math.random(),
-              des: '新增的数据333333',
-              ID:Math.random(),
-            },
-            {
-                img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-                title: Math.random(),
-                des: '新增的数据44444',
-                ID:Math.random(),
-            },
-        ];
         this.setState({ isLoading: true });
-        setTimeout(() => {
-          genData(++pageIndex,Newdata);
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-            isLoading: false,
-          });
-        }, 1000);
+        this.props.dispatch({
+          type:'salesReport/getByCarModel',
+          payload:{currentPage:++pageIndex},
+          callback:res=>{
+            if(res.status == 'success'){
+              let SalesGoodsList = res.data.list
+              setTimeout(() => {
+                genData(++pageIndex,SalesGoodsList);
+                this.setState({
+                  dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
+                  isLoading: false,
+                });
+              }, 1000);
+            }
+          }
+        })
       }    
         
     render(){
+        let SalesGoodsList = _.get(this.props.salesReport,'SalesGoodsList')
         const separator = (sectionID, rowID) => (
             <div
               key={`${sectionID}-${rowID}`}
@@ -162,12 +119,9 @@ export default class SelectGoods extends React.Component{
               }}
             />
           );
-          let index = data.length - 1;
           const row = (rowData, sectionID, rowID) => {
-            if (index < 0) {
-              index = data.length - 1;
-            }
-            const obj = data[index--];
+            let index = _.findIndex(SalesGoodsList,item => item.ID == rowID)
+            let obj = SalesGoodsList[index]
             return (
               <div key={rowID} style={{ padding: '0 15px' }}>
                 <div
@@ -177,7 +131,7 @@ export default class SelectGoods extends React.Component{
                     fontSize: 18,
                     borderBottom: '1px solid #F6F6F6',
                   }}
-                >{obj.title}</div>
+                >{obj.GOODS_NAME}</div>
                 <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
                   <img style={{ height: '64px', marginRight: '15px' }} src={obj.img} alt="" />
                   <div style={{ lineHeight: 1 }}>
