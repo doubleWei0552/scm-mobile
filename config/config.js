@@ -66,7 +66,7 @@ export default {
           // component: './TestPage',
           routes: [{
             path: '/homepage',
-            redirect: '/homepage/goodList',
+            redirect: '/homepage/index',
           },
           {
             path: '/homepage/:name',
@@ -117,6 +117,10 @@ export default {
         {
           path: '/salesReportGoodsList',
           component: './SalesReport/GoodsList',
+        },
+        {
+          path: '/salesReportSelectGoods',
+          component: './SalesReport/SelectGoods',
         },
 
 

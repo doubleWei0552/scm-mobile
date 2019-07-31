@@ -1,6 +1,6 @@
 import { 
   querySalesOrder,
-  queryByCarModel 
+  queryMaterialList 
  } from '@/services/salesReport';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
@@ -42,7 +42,7 @@ export default {
         pageSize: payload.pageSize,
         currentPage: payload.currentPage,    
       }
-      let result = yield call(queryByCarModel,params)
+      let result = yield call(queryMaterialList,params)
       if(callback) callback(result)
     }
   },

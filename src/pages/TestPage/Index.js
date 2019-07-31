@@ -49,7 +49,7 @@ class TabPanePage extends Component {
     super(props);
     this.state = {
       NavBarTitle: '', //导航栏顶部的标题
-      selectedTab: 'goodList',
+      selectedTab: 'index',
     };
   }
 

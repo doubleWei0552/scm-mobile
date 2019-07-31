@@ -3,6 +3,8 @@ import { NavBar, Icon,ListView,Button,List, Stepper,InputItem,WhiteSpace,Picker 
 import { createForm } from 'rc-form'
 import router from 'umi/router'
 import { connect } from 'dva'
+import Scan from './image/Scan.svg' //扫一扫图标
+import Right from './image/Right.svg' //向右图标
 import { district, provinceLite } from 'antd-mobile-demo-data';
 
 @connect(({ salesReport, loading }) => ({
@@ -12,9 +14,10 @@ class AddGoodsForm extends React.Component{
     state={
         goodsData:[]
     }
+
     componentDidMount=()=>{
         this.props.dispatch({type:'salesReport/getByCarModel',payload:{
-            pageSize: 100,
+            pageSize: 10,
             currentPage:1,
         },callback:res=>{
             this.setState({
@@ -33,7 +36,6 @@ class AddGoodsForm extends React.Component{
     render(){
         const { getFieldProps } = this.props.form;
         let { goodsData } = this.state
-        console.log('goodsData',goodsData)
         return(
             <div>
                 <NavBar
@@ -45,11 +47,13 @@ class AddGoodsForm extends React.Component{
                 </NavBar>
                 <WhiteSpace />
                 <List>
-                    <Picker data={goodsData} cols={1} {...getFieldProps('addGoods')} className="forss">
-                        <List.Item style={{color:'#bbbbbb'}} arrow="horizontal">
-                            <span style={{color:'#bbbbbb'}}>录入商品</span>
-                        </List.Item>
-                    </Picker>
+                    <div style={{height:44,borderBottom:'1px solid #f3f3f3'}}>
+                        <img onClick={()=>alert('扫一扫还没做！')} style={{height:32,margin:6,float:'left'}} src={Scan} />  
+                        <div onClick={()=>router.push('/salesReportSelectGoods')}>
+                            <span style={{color:'#c4c4c4',marginTop:9,display:'inline-block' ,fontSize:'1.1rem'}}>选择商品</span>
+                            <img style={{height:28,margin:8,float:'right'}} src={Right} /> 
+                        </div>  
+                    </div>
                     <InputItem
                         {...getFieldProps('addNum')}
                         placeholder="录入数量"
