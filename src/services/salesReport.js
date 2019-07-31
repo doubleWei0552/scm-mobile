@@ -10,7 +10,7 @@ export async function querySalesOrder(params) {
 
 // 添加商品，选择商品接口
 export async function queryMaterialList(params) {
-  return request('/app/materialList/load', {
+  return request('/app/materialList/loadByCarModel', {
     method: 'POST',
     body: params,
   });

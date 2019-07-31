@@ -10,7 +10,8 @@ export default {
   namespace: 'salesReport',
 
   state: {
-    SalesReportList:[]
+    SalesReportList:[],
+    SalesGoodsList:[], //新增时，选择商品的数据
   },
 
   effects: {
@@ -34,15 +35,21 @@ export default {
     },
     //添加商品页面获取商品数据
     *getByCarModel({payload,callback},{select,put,call}){
+      const SalesGoodsList = yield select(({salesReport})=>salesReport.SalesGoodsList)
       const customerId = localStorage.getItem('customerId') * 1
       const userId = localStorage.getItem('userId') * 1;
       let params = {
-        customerId,
-        userId,
-        pageSize: payload.pageSize,
-        currentPage: payload.currentPage,    
+          customerId,
+          userId,
+          pageSize:10,
+          currentPage:payload.currentPage,
+          QUERY:payload.QUERY,  //搜索条件  
       }
       let result = yield call(queryMaterialList,params)
+      result.data.list.map(item => {
+        SalesGoodsList.push(item)
+      })
+      yield put({type:'save',payload:{SalesGoodsList}})
       if(callback) callback(result)
     }
   },
