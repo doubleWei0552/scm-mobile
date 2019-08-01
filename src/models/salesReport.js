@@ -1,6 +1,7 @@
 import { 
   querySalesOrder,
-  queryMaterialList 
+  queryMaterialList,
+  queryOrdersSubmit,
  } from '@/services/salesReport';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
@@ -12,6 +13,8 @@ export default {
   state: {
     SalesReportList:[],
     SalesGoodsList:[], //新增时，选择商品的数据
+    SalesSelectGoods:{}, //新增时，选择的数据(当前选择的那一条数据)
+    SalesAllSelectGoods:[], //新增时，选择的数据（所有被选择的数据）
   },
 
   effects: {
@@ -51,6 +54,22 @@ export default {
       })
       yield put({type:'save',payload:{SalesGoodsList}})
       if(callback) callback(result)
+    },
+    //提交订单接口
+    *getOrdersSubmit({payload,callback},{call,select,put}){
+      let SalesAllSelectGoods = yield select(({salesReport})=>salesReport.SalesAllSelectGoods)
+      const customerId = localStorage.getItem('customerId') * 1
+      const userId = localStorage.getItem('userId') * 1;
+      let params = {
+        data:{
+          Customer:payload.Customer,
+          Goods:SalesAllSelectGoods,
+          customerId,
+          userId,
+        }
+      }
+      let result = yield call(queryOrdersSubmit,params)
+
     }
   },
   reducers: {

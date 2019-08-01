@@ -9,7 +9,6 @@ module.exports = {
 
   apiConfig: {
     // apiUrl: 'http://192.168.1.118:9099' // test
-    // apiUrl: 'http://192.168.4.142:9099' // 万
     // apiUrl: 'http://192.168.4.56:9099' // 成杰
     // apiUrl: 'http://zmmax.systex365.com:10050'
     // apiUrl: 'http://192.168.4.128:9099' // 俊峰
