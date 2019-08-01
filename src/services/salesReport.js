@@ -15,3 +15,12 @@ export async function queryMaterialList(params) {
     body: params,
   });
 }
+
+
+// 最后提交订单的接口
+export async function queryOrdersSubmit(params) {
+  return request('/ordersSubmit', {
+    method: 'POST',
+    body: params,
+  });
+}

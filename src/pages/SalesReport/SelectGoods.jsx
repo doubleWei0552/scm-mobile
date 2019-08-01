@@ -4,6 +4,8 @@ import router from 'umi/router'
 import ReactDOM from 'react-dom'
 import { connect } from 'dva'
 
+import noImg from '@/assets/noImg.svg'
+
 function MyBody(props) {
     return (
       <div className="am-list-body my-body">
@@ -31,7 +33,6 @@ function genData(pIndex = 0,list=[]) {
     }
     sectionIDs = [...sectionIDs];
     rowIDs = _.filter([...rowIDs],item => item != undefined);
-    console.log('sectionIDs',sectionIDs,'rowIDs',rowIDs)
 }
   
 @connect(({ salesReport, loading }) => ({
@@ -72,12 +73,16 @@ export default class SelectGoods extends React.Component{
                   isLoading: false,
                   height: hei,
                 });
-              }, 1000);
+              }, 600);
             }
           }
         })
       }
-    
+      addGoods=(value)=>{
+        console.log('用户选择添加的商品',value)
+        this.props.dispatch({type:'salesReport/save',payload:{SalesSelectGoods:value}})
+        router.push(`/salesReportAddGoods`)
+      }
     
       onEndReached = (event) => {
         // load new data
@@ -124,19 +129,14 @@ export default class SelectGoods extends React.Component{
             let obj = SalesGoodsList[index]
             return (
               <div key={rowID} style={{ padding: '0 15px' }}>
-                <div
-                  style={{
-                    lineHeight: '50px',
-                    color: '#888',
-                    fontSize: 18,
-                    borderBottom: '1px solid #F6F6F6',
-                  }}
-                >{obj.GOODS_NAME}</div>
                 <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
-                  <img style={{ height: '64px', marginRight: '15px' }} src={obj.img} alt="" />
-                  <div style={{ lineHeight: 1 }}>
-                    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>{obj.des}</div>
-                    <div><span style={{ fontSize: '30px', color: '#FF6E27' }}>35</span>¥ {rowID}</div>
+                  <img style={{ height: '64px', marginRight: '15px' }} src={obj.IMAGES || noImg} alt="" />
+                  <div style={{ lineHeight: 1,flex:1 }}>
+                    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>{obj.GOODS_NAME}</div>
+                    <div style={{marginBottom: '8px',}}>价格：{obj.PRICE}</div>
+                    <div style={{height:25,display:'flex',flexDirection:'row-reverse'}}>
+                      <Button onClick={()=>this.addGoods(obj)} style={{height:25,width:25,textAlign:'center',paddingLeft:'0.5em',marginRight:'0.5em'}} icon="plus" />
+                    </div>
                   </div>
                 </div>
               </div>

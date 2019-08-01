@@ -1,10 +1,15 @@
 import React from 'react'
-import { NavBar, Icon,ListView,Button,List, Stepper,InputItem,WhiteSpace,Picker } from 'antd-mobile'
+import { NavBar, Icon,ListView,Button,List,TextareaItem, Stepper,InputItem,WhiteSpace,Picker } from 'antd-mobile'
 import { createForm } from 'rc-form'
 import router from 'umi/router'
+import {connect} from 'dva'
+import AddressCom from '@/components/AddressCom/Index'
 import arrayTreeFilter from 'array-tree-filter'
 import { district, provinceLite } from 'antd-mobile-demo-data';
   
+@connect(({ salesReport, loading }) => ({
+    salesReport,
+}))
 class AddCustomerForm extends React.Component{
     state={
         adressvisible: false,
@@ -15,16 +20,16 @@ class AddCustomerForm extends React.Component{
             if(!error){
                 value.adressValue = this.state.adressValue
                 console.log('录入数据',value)
+                this.props.dispatch({type:'salesReport/getOrdersSubmit',payload:{
+                    Customer:value
+                }})
             }
         })
     }
-    getSel() {
-        const value = this.state.adressValue;
-        if (!value) {
-          return '';
-        }
-        const treeChildren = arrayTreeFilter(district, (c, level) => c.value === value[level]);
-        return treeChildren.map(v => v.label).join(',');
+    addressChange=(value)=>{
+        this.setState({
+            adressValue:value
+        })
     }
      
     render(){
@@ -41,34 +46,23 @@ class AddCustomerForm extends React.Component{
                 <WhiteSpace />
                 <List>
                     <InputItem
-                        {...getFieldProps('addGoods')}
+                        {...getFieldProps('name')}
                         placeholder="录入客户名称"
                     />
-                    <Picker data={district} cols={1} {...getFieldProps('contacts')} className="forss">
-                        <List.Item arrow="horizontal">
-                            <span style={{color:'#bbbbbb'}}>录入联系人</span>
-                        </List.Item>
-                    </Picker>
-                    <Picker data={district} cols={1} {...getFieldProps('phoneNumber')} className="forss">
-                        <List.Item style={{color:'#bbbbbb'}} arrow="horizontal">
-                            <span style={{color:'#bbbbbb'}}>录入手机号码</span>
-                        </List.Item>
-                    </Picker>
-                    <Picker 
-                        visible={this.state.adressvisible}
-                        data={district}
-                        value={this.state.adressValue}
-                        onChange={v => this.setState({ adressValue: v })}
-                        onOk={() => this.setState({ adressvisible: false })}
-                        onDismiss={() => this.setState({ adressvisible: false })}
-                    >
-                        <List.Item style={{color:'#bbbbbb'}} extra={this.getSel()} onClick={() => this.setState({ adressvisible: true })}>
-                            <span style={{color:'#bbbbbb'}}>选择地址</span>
-                        </List.Item>
-                    </Picker>
                     <InputItem
+                        {...getFieldProps('contacts')}
+                        placeholder="录入联系人"
+                    />
+                    <InputItem
+                        {...getFieldProps('phoneNumber')}
+                        placeholder="录入手机号码"
+                    />
+                    <AddressCom addressChange={(e)=>this.addressChange(e)} />
+                    <TextareaItem
                         {...getFieldProps('addressDetail')}
                         placeholder="录入详细地址"
+                        rows={5}
+                        count={100}
                     />
                 </List>
                 <div style={{bottom:15,position:'absolute',width:'100%'}}>
