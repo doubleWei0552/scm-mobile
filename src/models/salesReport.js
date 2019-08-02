@@ -15,22 +15,27 @@ export default {
     SalesGoodsList:[], //新增时，选择商品的数据
     SalesSelectGoods:{}, //新增时，选择的数据(当前选择的那一条数据)
     SalesAllSelectGoods:[], //新增时，选择的数据（所有被选择的数据）
+    OrderSelectData:{}, //列表页，选择进入详情页的数据
   },
 
   effects: {
     //获取销售提报页面的列表数据
     *getSalesOrder({payload,callback},{call,put,select}){
+      let SalesReportList = yield select(({salesReport})=>salesReport.SalesReportList)
       const customerId = localStorage.getItem('customerId') * 1;
       let params = {
         data:{
           CUSTOMER_ID:customerId,
-          PAGECOUNT:payload.PAGECOUNT,
+          PAGECOUNT:10,
           PAGEINDEX:payload.PAGEINDEX,
         }
       }
       let result = yield call(querySalesOrder,params)
+      result.body.map(item => {
+        SalesReportList.push(item)
+      })
       if(result.success){
-        yield put({type:'save',payload:{SalesReportList:result.body}})
+        yield put({type:'save',payload:{SalesReportList}})
       } else {
         Toast.fail(result.msg, 1)
       }
@@ -46,7 +51,7 @@ export default {
           userId,
           pageSize:10,
           currentPage:payload.currentPage,
-          QUERY:payload.QUERY,  //搜索条件  
+          QUERY:payload.search,  //搜索条件  
       }
       let result = yield call(queryMaterialList,params)
       result.data.list.map(item => {
@@ -62,6 +67,7 @@ export default {
       const userId = localStorage.getItem('userId') * 1;
       let params = {
         data:{
+          type:payload.type,
           Customer:payload.Customer,
           Goods:SalesAllSelectGoods,
           customerId,
@@ -69,7 +75,12 @@ export default {
         }
       }
       let result = yield call(queryOrdersSubmit,params)
-
+      if(result.success){
+        Toast.success(result.msg, 1);
+        router.push('/salesReport')
+      } else {
+        Toast.fail('系统异常，请稍后重试！', 1)
+      }
     }
   },
   reducers: {

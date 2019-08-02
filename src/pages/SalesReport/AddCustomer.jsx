@@ -18,10 +18,27 @@ class AddCustomerForm extends React.Component{
     submit=()=>{
         this.props.form.validateFields((error, value)=>{
             if(!error){
-                value.adressValue = this.state.adressValue
-                console.log('录入数据',value)
+                let {adressValue} = this.state
+                value.NATION = '中国'
+                value.PROVINCE = adressValue[0]
+                value.CITY = adressValue[1]
+                value.ADDRESS = adressValue[2]
                 this.props.dispatch({type:'salesReport/getOrdersSubmit',payload:{
-                    Customer:value
+                    Customer:value,type:'submit'
+                }})
+            }
+        })
+    }
+    save=()=>{
+        this.props.form.validateFields((error, value)=>{
+            if(!error){
+                let {adressValue} = this.state
+                value.NATION = '中国'
+                value.PROVINCE = adressValue[0]
+                value.CITY = adressValue[1]
+                value.ADDRESS = adressValue[2]
+                this.props.dispatch({type:'salesReport/getOrdersSubmit',payload:{
+                    Customer:value,type:'save'
                 }})
             }
         })
@@ -66,7 +83,7 @@ class AddCustomerForm extends React.Component{
                     />
                 </List>
                 <div style={{bottom:15,position:'absolute',width:'100%'}}>
-                    <Button style={{width:'45%',marginLeft:10,float:'left'}} type='primary'>保存</Button>
+                    <Button onClick={this.save} style={{width:'45%',marginLeft:10,float:'left'}} type='primary'>保存</Button>
                     <Button onClick={this.submit} style={{width:'45%',marginRight:10,float:'right'}} type='primary'>添加</Button>
                 </div>
             </div>

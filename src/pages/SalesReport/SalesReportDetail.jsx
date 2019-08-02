@@ -18,32 +18,22 @@ function MyBody(props) {
       img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
       title: '表头1',
       des: '见风使舵',
+      ID:1,
     },
     {
       img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
       title: 'McDonald\'s invites you',
       des: '反对封',
+      ID:2,
     },
     {
       img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
       title: 'Eat the week',
       des: '可根据',
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-      title: 'McDonald\'s invites you',
-      des: '反对封',
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-      title: 'Eat the week',
-      des: '可根据',
+      ID:3,
     },
   ];
-  const NUM_SECTIONS = 5;
-  const NUM_ROWS_PER_SECTION = 5;
-  let pageIndex = 0;
-  
+
   const dataBlobs = {};
   let sectionIDs = [];
   let rowIDs = [];
@@ -104,27 +94,13 @@ export default class SalesReportDetail extends React.Component{
         }, 600);
       }
     
-      onEndReached = (event) => {
-        // load new data
-        // hasMore: from backend data, indicates whether it is the last page, here is false
-        if (this.state.isLoading && !this.state.hasMore) {
-          return;
-        }
-        console.log('reach end', event);
-        this.setState({ isLoading: true });
-        setTimeout(() => {
-          // genData(++pageIndex);
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-            isLoading: false,
-          });
-        }, 1000);
-      }
     //   步进器改变方法
       onStepperChange=()=>{
 
       }
     render(){
+        const {OrderSelectData} = this.props.salesReport
+        console.log('选择的数据',OrderSelectData)
         const separator = (sectionID, rowID) => (
             <div
               key={`${sectionID}-${rowID}`}
@@ -136,31 +112,27 @@ export default class SalesReportDetail extends React.Component{
               }}
             />
           );
-          let index = data.length - 1;
           const row = (rowData, sectionID, rowID) => {
-            if (index < 0) {
-              index = data.length - 1;
-            }
-            const obj = data[index--];
+            let index = _.findIndex(data,item => item.ID == rowID)
+            const obj = data[index];
             return (
-              <div key={rowID}>
+              <div key={rowID} style={{padding:'0 10px'}}>
                 <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
-                  <img style={{ height: '64px', marginRight: '15px' }} src={obj.img} alt="" />
+                  <img style={{ height: '64px', marginRight: '15px' }} src={obj.img || noImg} alt="error" />
                   <div style={{ lineHeight: 1,width:'100%' }}>
-                    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>{obj.title}</div>
-                    <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>销售号：{obj.des}</div>
+                    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>{obj.GOODS_NAME}</div>
                     <div style={{ width:'100%',display:'flex',justifyContent:'space-between'}}>
                         <div>
-                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>单价：{obj.des}</div>
-                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>金额：{obj.des}</div>
+                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>单价：{obj.setPrice}</div>
+                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>金额：{obj.setPrice * obj.setNum || 0}</div>
                         </div>
                         <div>
                             <Stepper
                                 style={{ width: '100%', minWidth: '100px' }}
                                 showNumber
                                 min={1}
-                                // value={22}
-                                onChange={this.onStepperChange}
+                                value={obj.setNum}
+                                onChange={(e)=>this.onStepperChange(e,obj)}
                             />
                         </div>
                     </div>
@@ -181,9 +153,9 @@ export default class SalesReportDetail extends React.Component{
                 <div style={{padding:'15px 15px 0 15px'}}>
                     <div>
                       <h3>南京一点科技</h3>
-                      <p>2019年12月22日 09:00:40</p>
-                      <p>李三（188 8888 8888）</p>
-                      <p>江苏南京新街口1号一点大厦1808室</p>
+                      <p>{OrderSelectData.DOCUMENT_DATE}</p>
+                      <p>李三（{OrderSelectData.TELEPHONE}）</p>
+                      <p>{OrderSelectData.NATION}{OrderSelectData.PROVINCE}{OrderSelectData.CITY}{OrderSelectData.ADDRESS}</p>
                     </div>
                     <div>
                       <ListView
