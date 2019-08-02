@@ -40,7 +40,6 @@ function genData(pIndex = 1,list=[]) {
     
     sectionIDs = [...sectionIDs];
     rowIDs = _.filter([...rowIDs],item => item != undefined);
-    console.log('sectionIDs,rowIDs',sectionIDs,rowIDs)
 }
 
 @connect(({ salesReport, loading }) => ({
@@ -113,6 +112,7 @@ export default class SalesReportList extends React.Component{
     }
     //跳转到详情页
     onGetDetail =(value)=>{
+      console.log('选择的数据',value)
         this.props.dispatch({
           type:'salesReport/save',
           payload:{OrderSelectData:value}

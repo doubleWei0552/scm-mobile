@@ -2,6 +2,7 @@ import {
   querySalesOrder,
   queryMaterialList,
   queryOrdersSubmit,
+  queryOrdersUpdate,
  } from '@/services/salesReport';
 import { Toast } from 'antd-mobile';
 import router from 'umi/router';
@@ -59,6 +60,21 @@ export default {
       })
       yield put({type:'save',payload:{SalesGoodsList}})
       if(callback) callback(result)
+    },
+    //订单页详情页提交的方法
+    *getOrdersUpdate({payload,callback},{put,select,call}){
+      let params = {
+        data:{
+          ModifyData:payload.ModifyData
+        }
+      }
+      let result = yield call(queryOrdersUpdate,params)
+      if(result.success){
+        Toast.success(result.msg, 1);
+        router.push('/salesReport')
+      } else {
+        Toast.fail('系统异常，请稍后重试！', 1)
+      }
     },
     //提交订单接口
     *getOrdersSubmit({payload,callback},{call,select,put}){
