@@ -3,6 +3,9 @@ import { NavBar, Icon,ListView,Button,List, Stepper } from 'antd-mobile'
 import {connect} from 'dva'
 import ReactDOM from 'react-dom'
 import router from 'umi/router'
+import moment from 'moment'
+import noImg from '@/assets/noImg.svg'
+import { thisExpression } from '@babel/types';
 
 function MyBody(props) {
     return (
@@ -12,42 +15,11 @@ function MyBody(props) {
       </div>
     );
   }
-  
-  const data = [
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
-      title: '表头1',
-      des: '见风使舵',
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-      title: 'McDonald\'s invites you',
-      des: '反对封',
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-      title: 'Eat the week',
-      des: '可根据',
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
-      title: 'McDonald\'s invites you',
-      des: '反对封',
-    },
-    {
-      img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
-      title: 'Eat the week',
-      des: '可根据',
-    },
-  ];
-  const NUM_SECTIONS = 5;
-  const NUM_ROWS_PER_SECTION = 5;
-  let pageIndex = 0;
-  
+
   const dataBlobs = {};
   let sectionIDs = [];
   let rowIDs = [];
-  function genData(pIndex = 0,list=[]) {
+  function genData(pIndex = 0,list) {
     const sectionName = `Section ${pIndex}`;
     const idx = _.findIndex(sectionIDs, item => item === sectionName)
     if (idx > -1) {
@@ -85,13 +57,16 @@ export default class SalesReportDetail extends React.Component{
           dataSource,
           isLoading: true,
           height: document.documentElement.clientHeight * 3 / 4,
+          ModifyData:[],  //被修改的数据，即将提交数组
+          data:[], //展示的商品数据
         };
       }
     
       componentDidMount() {
-        const {dispatch,match} = this.props
-        let orderId = _.get(match, 'params.orderId')
-    
+        let data = _.get(this.props.salesReport,'OrderSelectData.Child')
+        this.setState({
+          data
+        })
         const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
         // simulate initial Ajax
         setTimeout(() => {
@@ -101,30 +76,38 @@ export default class SalesReportDetail extends React.Component{
             isLoading: false,
             height: hei,
           });
-        }, 600);
-      }
-    
-      onEndReached = (event) => {
-        // load new data
-        // hasMore: from backend data, indicates whether it is the last page, here is false
-        if (this.state.isLoading && !this.state.hasMore) {
-          return;
-        }
-        console.log('reach end', event);
-        this.setState({ isLoading: true });
-        setTimeout(() => {
-          // genData(++pageIndex);
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-            isLoading: false,
-          });
         }, 1000);
       }
+    
     //   步进器改变方法
-      onStepperChange=()=>{
-
+      onStepperChange=(e,value)=>{
+        let {ModifyData,data} = this.state
+        let dataIndex = _.findIndex(data,item => item.ID == value.ID)
+        let index = _.findIndex(ModifyData,item => item.ID == value.ID)
+        if(index < 0){
+          value.PRODUCTION_AMOUNT = e
+          value.PRODUCTION_TOTAL_PRICE = value.PRODUCTION_PRICE * e
+          ModifyData.push(value)
+        } else {
+          ModifyData[index].PRODUCTION_AMOUNT = e
+          data[dataIndex].PRODUCTION_TOTAL_PRICE = value.PRODUCTION_PRICE * e
+        }
+        this.setState({
+          ModifyData,
+          data,
+        })
       }
+    // 提交按钮
+    submit=()=>{
+      let {ModifyData} = this.state
+      this.props.dispatch({
+        type:'salesReport/getOrdersUpdate',
+        payload:{ModifyData}
+      })
+    }
     render(){
+        const {OrderSelectData} = this.props.salesReport
+        let {data} = this.state
         const separator = (sectionID, rowID) => (
             <div
               key={`${sectionID}-${rowID}`}
@@ -136,31 +119,27 @@ export default class SalesReportDetail extends React.Component{
               }}
             />
           );
-          let index = data.length - 1;
           const row = (rowData, sectionID, rowID) => {
-            if (index < 0) {
-              index = data.length - 1;
-            }
-            const obj = data[index--];
+            let index = _.findIndex(data,item => item.ID == rowID)
+            const obj = data[index];
             return (
-              <div key={rowID}>
+              <div key={rowID} style={{padding:'0 10px'}}>
                 <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
-                  <img style={{ height: '64px', marginRight: '15px' }} src={obj.img} alt="" />
+                  <img style={{ height: '64px', marginRight: '15px' }} src={obj.img || noImg} alt="error" />
                   <div style={{ lineHeight: 1,width:'100%' }}>
-                    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>{obj.title}</div>
-                    <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>销售号：{obj.des}</div>
+                    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>{obj.PRODUCTION_NAME}</div>
                     <div style={{ width:'100%',display:'flex',justifyContent:'space-between'}}>
                         <div>
-                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>单价：{obj.des}</div>
-                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>金额：{obj.des}</div>
+                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>单价：{obj.PRODUCTION_PRICE}</div>
+                            <div style={{ marginBottom: '8px',fontSize:'0.8rem' }}>金额：{obj.PRODUCTION_TOTAL_PRICE || 0}</div>
                         </div>
                         <div>
                             <Stepper
                                 style={{ width: '100%', minWidth: '100px' }}
                                 showNumber
                                 min={1}
-                                // value={22}
-                                onChange={this.onStepperChange}
+                                defaultValue={obj.PRODUCTION_AMOUNT}
+                                onChange={(e)=>this.onStepperChange(e,obj)}
                             />
                         </div>
                     </div>
@@ -180,10 +159,10 @@ export default class SalesReportDetail extends React.Component{
                 </NavBar>
                 <div style={{padding:'15px 15px 0 15px'}}>
                     <div>
-                      <h3>南京一点科技</h3>
-                      <p>2019年12月22日 09:00:40</p>
-                      <p>李三（188 8888 8888）</p>
-                      <p>江苏南京新街口1号一点大厦1808室</p>
+                      <h3>{OrderSelectData.SIGN_FOR_CUSTOMER}</h3>
+                      <p>{moment(OrderSelectData.DOCUMENT_DATE).format('YYYY年MM月DD日 hh:mm:ss')}</p>
+                      <p>{OrderSelectData.SIGNER}（{OrderSelectData.TELEPHONE}）</p>
+                      <p>{OrderSelectData.NATION}{OrderSelectData.PROVINCE}{OrderSelectData.CITY}{OrderSelectData.ADDRESS}</p>
                     </div>
                     <div>
                       <ListView
@@ -200,7 +179,6 @@ export default class SalesReportDetail extends React.Component{
                           overflow: 'auto',
                           }}
                           pageSize={4}
-                          onScroll={() => { console.log('scroll'); }}
                           scrollRenderAheadDistance={500}
                           onEndReached={this.onEndReached}
                           onEndReachedThreshold={10}
@@ -209,9 +187,10 @@ export default class SalesReportDetail extends React.Component{
                 </div>
                 <div style={{width:'100%',height:'50px',bottom:0,position:'absolute',background:'white',padding:'5px 3% 0 3%',borderTop:'1px solid #f5f5f9'}}>
                         <Button style={{width:'45%',height:'40px',lineHeight:'40px',float:'left'}} type="warning">关闭</Button>
-                        <Button style={{width:'45%',height:'40px',lineHeight:'40px',float:'right'}} type="primary">提交</Button>
+                        <Button onClick={this.submit} style={{width:'45%',height:'40px',lineHeight:'40px',float:'right'}} type="primary">提交</Button>
                 </div>
             </div>
         )
     }
 }
+

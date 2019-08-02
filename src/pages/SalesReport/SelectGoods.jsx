@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavBar, Icon,ListView,Button,List, Stepper,InputItem,WhiteSpace,Picker,SearchBar } from 'antd-mobile'
+import { NavBar, Icon,ListView,Button,List, Stepper,Toast,InputItem,WhiteSpace,Picker,SearchBar } from 'antd-mobile'
 import router from 'umi/router'
 import ReactDOM from 'react-dom'
 import { connect } from 'dva'
@@ -55,6 +55,7 @@ export default class SelectGoods extends React.Component{
           dataSource,
           isLoading: true,
           height: document.documentElement.clientHeight * 3 / 4,
+          search:'', //搜索条件
         };
       }
       componentDidMount() {
@@ -79,10 +80,41 @@ export default class SelectGoods extends React.Component{
         })
       }
       addGoods=(value)=>{
-        console.log('用户选择添加的商品',value)
         this.props.dispatch({type:'salesReport/save',payload:{SalesSelectGoods:value}})
         router.push(`/salesReportAddGoods`)
       }
+
+      setTime = null
+      fn = (value)=>{
+        Toast.loading('Loading...');
+        this.setTime = setTimeout(()=>{
+          this.setState({
+            search:value
+          })
+          this.props.dispatch({
+            type:'salesReport/getByCarModel',
+            payload:{currentPage:1,search:value},
+            callback:res=>{
+              if(res.status == 'success'){
+                Toast.hide()
+                let SalesGoodsList = res.data.list
+                setTimeout(() => {
+                  genData(0,SalesGoodsList);
+                  this.setState({
+                    dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
+                    isLoading: false,
+                  });
+                }, 600);
+              }
+            }
+          })
+        },1000)
+      }
+      searchChange=(value)=>{
+        clearTimeout(this.setTime)
+        this.fn(value)
+      }
+      
     
       onEndReached = (event) => {
         // load new data
@@ -91,11 +123,12 @@ export default class SelectGoods extends React.Component{
           return;
         }
         let SalesGoodsList = []
+        let {search} = this.state
         console.log('reach end', event);
         this.setState({ isLoading: true });
         this.props.dispatch({
           type:'salesReport/getByCarModel',
-          payload:{currentPage:++pageIndex},
+          payload:{currentPage:++pageIndex,search},
           callback:res=>{
             if(res.status == 'success'){
               let SalesGoodsList = res.data.list
@@ -152,7 +185,7 @@ export default class SelectGoods extends React.Component{
                     ]}
                 >选择商品
                 </NavBar>
-                <SearchBar placeholder="请输入搜索条件" />
+                <SearchBar onChange={(e)=>this.searchChange(e)} placeholder="请输入搜索条件" />
                 <div style={{height:'calc(100% - 89px)'}}>
                 <ListView
                     ref={el => this.lv = el}

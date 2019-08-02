@@ -24,3 +24,11 @@ export async function queryOrdersSubmit(params) {
     body: params,
   });
 }
+
+// 订单详情页提交订单的接口
+export async function queryOrdersUpdate(params) {
+  return request('/ordersUpdate', {
+    method: 'POST',
+    body: params,
+  });
+}

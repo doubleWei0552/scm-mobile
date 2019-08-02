@@ -18,31 +18,29 @@ function MyBody(props) {
     );
   }
 
-  const NUM_SECTIONS = 1;
-  const NUM_ROWS_PER_SECTION = 100; //每次加载数据时的渲染个数
-  let pageIndex = 0;
-  
-  const dataBlobs = {};
-  let sectionIDs = [];
-  let rowIDs = [];
-
-  function genData(pIndex = 0,list = []) {
-    const sectionName = `Section ${pIndex}`;
-    const idx = _.findIndex(sectionIDs, item => item === sectionName)
-    if (idx > -1) {
-      return
+let pageIndex = 1;
+const dataBlobs = {};
+let sectionIDs = [];
+let rowIDs = [];
+function genData(pIndex = 1,list=[]) {
+    const sectionName = `Section ${pIndex}`
+    let index = _.findIndex(sectionIDs,item => item == sectionName)
+    if(index < 0){
+        sectionIDs.push(sectionName)
+        dataBlobs[sectionName] = sectionName
     }
-    sectionIDs.push(sectionName);
-    dataBlobs[sectionName] = sectionName;
-    rowIDs[pIndex] = [];
-    _.map(list, (item, i) => {
-      rowIDs[pIndex].push(item.ID);
-      dataBlobs[item.ID] = item.ID;
-    })
+    
+    if(index < 0){
+      rowIDs[pIndex] = [];
+      for (let jj = 0; jj < list.length; jj++) {
+        rowIDs[pIndex].push(list[jj].ID);
+        dataBlobs[list[jj].ID] = list[jj].ID;
+      }
+    }
+    
     sectionIDs = [...sectionIDs];
-    rowIDs = [...rowIDs];
-    console.log('sectionIDs,rowIDs',sectionIDs,rowIDs)
-  }
+    rowIDs = _.filter([...rowIDs],item => item != undefined);
+}
 
 @connect(({ salesReport, loading }) => ({
     salesReport,
@@ -69,54 +67,69 @@ export default class SalesReportList extends React.Component{
     
     
     componentDidMount() {
-        let list = []
+      const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
         this.props.dispatch({type:'salesReport/getSalesOrder',payload:{
-          PAGEINDEX:1,PAGECOUNT:100
+          PAGEINDEX:pageIndex
         },callback:res=>{
-          list = res.body
+          setTimeout(() => {
+            genData(1,res.body);
+            this.setState({
+              dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
+              isLoading: false,
+              height: hei,
+            });
+          }, 1000);
         }})
-        const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
-        // simulate initial Ajax
-        setTimeout(() => {
-          genData(0,list);
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-            isLoading: false,
-            height: hei,
-          });
-        }, 1000);
-      }
+      this.props.dispatch({
+        type:'salesReport/save',
+        payload:{
+          SalesGoodsList:[], 
+          SalesSelectGoods:{}, 
+          SalesAllSelectGoods:[],
+        }
+      })
+    }
     onEndReached = (event) => {
         // load new data
         // hasMore: from backend data, indicates whether it is the last page, here is false
         if (this.state.isLoading && !this.state.hasMore) {
           return;
         }
-        let list = []
         //暂时不做分页
-        // this.props.dispatch({type:'salesReport/getSalesOrder',payload:{
-        //   PAGEINDEX:1,PAGECOUNT:100
-        // },callback:res=>{
-        //   list = res.body
-        // }})
+        this.props.dispatch({type:'salesReport/getSalesOrder',payload:{
+          PAGEINDEX:++pageIndex
+        },callback:res=>{
+          setTimeout(() => {
+            genData(++pageIndex,res.body);
+            this.setState({
+              dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
+              isLoading: false,
+            });
+          }, 1000);
+        }})
         console.log('reach end', event);
         this.setState({ isLoading: true });
-        setTimeout(() => {
-          genData(++pageIndex,list);
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-            isLoading: false,
-          });
-        }, 1000);
     }
     //跳转到详情页
     onGetDetail =(value)=>{
-        router.push(`/salesReportDetail${value.ID}`)
+      console.log('选择的数据',value)
+        this.props.dispatch({
+          type:'salesReport/save',
+          payload:{OrderSelectData:value}
+        })
+        router.push(`/salesReportDetail`)
     }
     //跳转到新增页
     onAddGoods=()=>{
         router.push('/salesReportAddGoods')
     }
+
+    // componentWillUnmount=()=>{
+    //   pageIndex = 1;
+    //   dataBlobs = {};
+    //   sectionIDs = [];
+    //   rowIDs = [];
+    // }
         
     render(){
         const  SalesReportList = _.get(this.props.salesReport,'SalesReportList')
@@ -160,9 +173,9 @@ export default class SalesReportList extends React.Component{
                     leftContent={[
                         <Icon key={'left'} onClick={()=>router.goBack()} type="left" />,
                     ]}
-                    rightContent={[
-                        <Icon key={'right'} type="search" />,
-                    ]}
+                    // rightContent={[
+                    //     <Icon key={'right'} type="search" />,
+                    // ]}
                 >销售提报
                 </NavBar>
                 <div style={{height:'calc(100% - 45px)'}}>
@@ -170,7 +183,7 @@ export default class SalesReportList extends React.Component{
                         ref={el => this.lv = el}
                         dataSource={this.state.dataSource}
                         renderFooter={() => (<div style={{ padding: 30, textAlign: 'center' }}>
-                        {this.state.isLoading ? '数据加载中...' : '数据加载完成'}
+                        {this.state.isLoading ? '数据加载中...' : '已加载所有数据'}
                         </div>)}
                         // renderBodyComponent={() => <MyBody />}
                         renderRow={row}

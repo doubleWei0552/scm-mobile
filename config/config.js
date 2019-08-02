@@ -103,7 +103,7 @@ export default {
           component: './SalesReport',
         },
         {
-          path: '/salesReportDetail:orderId',
+          path: '/salesReportDetail',
           component: './SalesReport/SalesReportDetail',
         },
         {
