@@ -18,10 +18,23 @@ class AddGoodsForm extends React.Component{
     }
 
     componentDidMount=()=>{
-        let SalesSelectGoods = _.get(this.props.salesReport,'SalesSelectGoods')
-        this.setState({
-            SalesSelectGoods
-        })
+        if(this.props.location.query.CODE){
+            this.props.dispatch({
+                type:'salesReport/getCarModelBySaoYiSao',
+                payload:{currentPage:1,search:this.props.location.query.CODE},
+            })
+            setTimeout(()=>{
+                let SalesSelectGoods = _.get(this.props.salesReport,'SalesSelectGoods')
+                this.setState({
+                    SalesSelectGoods
+                })
+            },600)
+        } else {
+            let SalesSelectGoods = _.get(this.props.salesReport,'SalesSelectGoods')
+            this.setState({
+                SalesSelectGoods
+            })
+        }
     }
     addNum=(e)=>{
         let {SalesSelectGoods} = this.state
@@ -83,7 +96,9 @@ class AddGoodsForm extends React.Component{
                 <WhiteSpace />
                 <List>
                     <div style={{height:44,borderBottom:'1px solid #f3f3f3'}}>
-                        <img onClick={()=>alert('扫一扫还没做！')} style={{height:32,margin:6,float:'left'}} src={Scan} />  
+                        <a href={`http://sao315.com/w/api/saoyisao?redirect_uri=${window.location.origin}/mobile?pparams=/salesReportAddGoods`}>
+                            <img style={{height:32,margin:6,float:'left'}} src={Scan} />  
+                        </a>
                         <div onClick={()=>router.push('/salesReportSelectGoods')} style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
                             <span style={{color:SalesSelectGoods.GOODS_NAME ? 'black' : '#c4c4c4',marginTop:9,display:'inline-block',fontSize:'1.1rem' }}>
                                 {SalesSelectGoods.GOODS_NAME ? SalesSelectGoods.GOODS_NAME : '选择商品'}

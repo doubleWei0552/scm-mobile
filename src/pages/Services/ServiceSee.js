@@ -42,19 +42,19 @@ class TextareaItemExample extends React.Component{
     }
     renderButton=()=>{
         let { taskDetail,CUSTOMER,CUSTOMERCONTACT } = this.props.task
-        switch(_.get(taskDetail,'status')){
+        switch(_.get(taskDetail,'tasksStatus')){
             case 'draft':
                 return <div style={{display:'flex',justifyContent:'space-between',}}>
                     <Button onClick={this.delete} style={{width:'45%'}} type="warning">删除</Button>
                     <Button onClick={this.submit} style={{width:'45%'}} type="primary">提交</Button>
                 </div>
             break
-            case 'submit':
+            case 'signedin':
                 return <div>
                     <Button onClick={this.ToAudited} type="primary">审核</Button>
                 </div>
             break
-            case 'approve':
+            case 'tosignin':
                 return <div>
                     <Button onClick={this.CheckIn} type="primary">签到</Button>
                 </div>
@@ -70,6 +70,7 @@ class TextareaItemExample extends React.Component{
         }
     }
     submit=()=>{
+        console.log('点击提交')
         this.props.form.validateFields((error, value) => {
             if(!error){
                 this.props.dispatch({
@@ -90,6 +91,7 @@ class TextareaItemExample extends React.Component{
         })
     }
     render(){
+        console.log(_.get(this.props.task,'taskDetail.status'))
         const { getFieldProps } = this.props.form
         let { taskDetail,CUSTOMER,CUSTOMERCONTACT } = this.props.task
         const MapAppProps = {

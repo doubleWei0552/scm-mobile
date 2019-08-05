@@ -186,7 +186,7 @@ export default class SalesReportDetail extends React.Component{
                     </div>
                 </div>
                 <div style={{width:'100%',height:'50px',bottom:0,position:'absolute',background:'white',padding:'5px 3% 0 3%',borderTop:'1px solid #f5f5f9'}}>
-                        <Button style={{width:'45%',height:'40px',lineHeight:'40px',float:'left'}} type="warning">关闭</Button>
+                        <Button onClick={()=>router.goBack()} style={{width:'45%',height:'40px',lineHeight:'40px',float:'left'}} type="warning">关闭</Button>
                         <Button onClick={this.submit} style={{width:'45%',height:'40px',lineHeight:'40px',float:'right'}} type="primary">提交</Button>
                 </div>
             </div>

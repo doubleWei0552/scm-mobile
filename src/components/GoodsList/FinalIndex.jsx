@@ -109,19 +109,6 @@ export default class GoodsList extends React.Component {
         })
     }
 
-    onCheckboxChange = (value) => { // 复选框的选择事件
-        let choiceBox = this.state.choiceBox
-        let index = _.findIndex(choiceBox,item => item.ID == value.ID)
-        if(index > -1){
-            choiceBox.splice(index,1)
-        } else {
-            choiceBox.push(value)
-        }
-        this.setState({
-            choiceBox
-        })
-    }
-
     onClassification =(value)=>{  //分类选择事件
         this.child.getGoodsList(false,this.state.INSTALLATION_POSITION,value.CAR_MODEL,'',[])
         this.setState({
@@ -184,7 +171,6 @@ export default class GoodsList extends React.Component {
     }
 
     render() {
-        console.log('搜索框的值',this.state.search)
         const goodsModulProps = {
             CAR_MODEL:this.state.CAR_MODEL,
             INSTALLATION_POSITION:this.state.INSTALLATION_POSITION,

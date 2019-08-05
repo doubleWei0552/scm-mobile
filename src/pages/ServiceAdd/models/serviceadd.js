@@ -25,6 +25,7 @@ export default {
 
       if (result.status === 'success') {
         callback && callback(result)
+        router.goBack()
       } else {
         Toast.fail(result.message, 1);
       }

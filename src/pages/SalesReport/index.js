@@ -40,6 +40,7 @@ function genData(pIndex = 1,list=[]) {
     
     sectionIDs = [...sectionIDs];
     rowIDs = _.filter([...rowIDs],item => item != undefined);
+    console.log('sectionIDs,rowIDs',sectionIDs,rowIDs)
 }
 
 @connect(({ salesReport, loading }) => ({
@@ -64,7 +65,6 @@ export default class SalesReportList extends React.Component{
           height: document.documentElement.clientHeight * 3 / 4,
         };
       }
-    
     
     componentDidMount() {
       const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
@@ -112,7 +112,6 @@ export default class SalesReportList extends React.Component{
     }
     //跳转到详情页
     onGetDetail =(value)=>{
-      console.log('选择的数据',value)
         this.props.dispatch({
           type:'salesReport/save',
           payload:{OrderSelectData:value}
@@ -171,7 +170,7 @@ export default class SalesReportList extends React.Component{
                 <NavBar
                     mode="dark"
                     leftContent={[
-                        <Icon key={'left'} onClick={()=>router.goBack()} type="left" />,
+                        <Icon key={'left'} onClick={()=>router.push('/homepage/index')} type="left" />,
                     ]}
                     // rightContent={[
                     //     <Icon key={'right'} type="search" />,
