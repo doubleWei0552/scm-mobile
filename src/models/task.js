@@ -26,14 +26,18 @@ import {
               Id:payload.Id*1
           }
           let result = yield call(getTaskDetail,params)
-          if(result){
+          if(result.status == 'success'){
             Toast.hide()
+          } else {
+            Toast.hide()
+            Toast.fail('系统错误,操作失败 !!!', 1);
+            router.goBack()
           }
           yield put({type:'save',payload:{
-              taskDetail:result.body.WORKTASKS,
-              CUSTOMERCONTACT:result.body.CUSTOMERCONTACT,
-              CUSTOMER:result.body.CUSTOMER,
-            }})
+            taskDetail:result.data.WORKTASKS,
+            CUSTOMERCONTACT:result.data.CUSTOMERCONTACT,
+            CUSTOMER:result.data.CUSTOMER,
+          }})
       },
        //任务详情提交接口
       *getUpdataDetail({payload,callback},{select,put,call}){
@@ -44,7 +48,7 @@ import {
             VISIT_RECORD:payload.VISIT_RECORD,
         }
         let result = yield call(getUpdataDetail,params)
-        yield put({type:'save',payload:{taskDetail:result.body.WORKTASKS}})
+        yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})
         if(result.success){
             Toast.hide()
             Toast.success('任务提交成功', 1);
@@ -58,6 +62,7 @@ import {
             ID:payload.Id *1,
         }
         let result = yield call(getdeledetById,params)
+        yield put({type:'save'})
         if(result.success){
             Toast.success('删除成功', 1);
             router.goBack()
@@ -73,6 +78,7 @@ import {
             REGISTRATION_DATE:payload.REGISTRATION_DATE,
         }
         let result = yield call(updataWorkTasks,params)
+        yield put({type:'save'})
         if(result.success){
             Toast.success('签到成功', 1);
             router.goBack()
@@ -86,7 +92,7 @@ import {
             ID:payload.Id *1,
         }
         let result = yield call(updataStatus,params)
-        yield put({type:'save',payload:{taskDetail:result.body.WORKTASKS}})
+        yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})
       },
     },
   

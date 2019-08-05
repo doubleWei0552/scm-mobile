@@ -61,6 +61,22 @@ export default {
       yield put({type:'save',payload:{SalesGoodsList}})
       if(callback) callback(result)
     },
+    // 通过扫一扫添加的商品
+    *getCarModelBySaoYiSao({payload,callback},{select,put,call}){
+      const SalesGoodsList = yield select(({salesReport})=>salesReport.SalesGoodsList)
+      const customerId = localStorage.getItem('customerId') * 1
+      const userId = localStorage.getItem('userId') * 1;
+      let params = {
+          customerId,
+          userId,
+          pageSize:10,
+          currentPage:payload.currentPage,
+          QUERY:payload.search,  //搜索条件  
+      }
+      let result = yield call(queryMaterialList,params)
+      yield put({type:'save',payload:{SalesSelectGoods:result.data.list[0]}})
+      if(callback) callback(result)
+    },
     //订单页详情页提交的方法
     *getOrdersUpdate({payload,callback},{put,select,call}){
       let params = {
@@ -72,6 +88,7 @@ export default {
       if(result.success){
         Toast.success(result.msg, 1);
         router.push('/salesReport')
+        yield put({type:'save'})
       } else {
         Toast.fail('系统异常，请稍后重试！', 1)
       }
