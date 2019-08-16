@@ -40,29 +40,42 @@ class TextareaItemExample extends React.Component{
     CheckIn=()=>{  //点击签到
         router.push(`/user/service/signIn/${this.state.taskId}`)
     }
+    onVisit=()=>{
+        const taskId = _.get(this.state, 'taskId')
+        this.props.dispatch({
+            type:'task/updataWorkTesksEnum',payload:{Id:taskId}
+        })
+        this.setState({
+            taskId
+        })
+    }
     renderButton=()=>{
         let { taskDetail,CUSTOMER,CUSTOMERCONTACT } = this.props.task
-        switch(_.get(taskDetail,'tasksStatus')){
+        switch(_.get(taskDetail,'buttonStatus')){
             case 'draft':
                 return <div style={{display:'flex',justifyContent:'space-between',}}>
                     <Button onClick={this.delete} style={{width:'45%'}} type="warning">删除</Button>
                     <Button onClick={this.submit} style={{width:'45%'}} type="primary">提交</Button>
                 </div>
             break
-            case 'signedin':
+            case 'submit':
                 return <div>
                     <Button onClick={this.ToAudited} type="primary">审核</Button>
                 </div>
             break
-            case 'tosignin':
+            case 'approve':
                 return <div>
                     <Button onClick={this.CheckIn} type="primary">签到</Button>
                 </div>
             break
-            case 'close':
-                return <div style={{display:'flex',justifyContent:'space-between',}}>
-                    <Button onClick={this.delete} style={{width:'45%'}} type="warning">删除</Button>
-                    <Button onClick={this.submit} style={{width:'45%'}} type="primary">提交</Button>
+            case 'signedin':
+                return <div>
+                    <Button onClick={this.onVisit} type="primary">拜访</Button>
+                </div>
+            break
+            case 'offthestocks':
+                return <div onClick={()=>router.goBack()}>
+                    <Button onClick={this.onVisit} type="primary">返回</Button>
                 </div>
             break
             default:
@@ -108,7 +121,7 @@ class TextareaItemExample extends React.Component{
                     >任务详情</NavBar>
                 </div>
                 <div style={{paddingLeft:'1rem',height:'calc(100% - 125px)',overflow:'auto'}}>
-                    <h2>拜访{_.get(CUSTOMER,'name')}</h2>
+                    <h2>拜访{_.get(CUSTOMER,'name')}{_.get(CUSTOMERCONTACT,'contact')}</h2>
                     <p style={{marginBottom:'5px'}}>{_.get(taskDetail,'startTime')} - {_.get(taskDetail,'endTime')}</p>
                     <p style={{marginBottom:'5px'}}>{_.get(CUSTOMER,'name')}</p>
                     <p style={{marginBottom:'5px'}}>{_.get(CUSTOMERCONTACT,'contact')}({_.get(CUSTOMERCONTACT,'mobilePhone')})</p>

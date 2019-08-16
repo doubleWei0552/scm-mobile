@@ -1,31 +1,24 @@
 import React from "react";
 import {Map,Marker} from 'react-amap';
 
-  export default class MapApp extends React.Component {
-  constructor(){
+export default class MapApp extends React.Component {
+  constructor() {
     super();
     this.toolEvents = {
       created: (tool) => {
         this.tool = tool;
       }
     }
+    this.mapPlugins = ['ToolBar'];
   }
 
-  componentDidMount=()=>{
-      this.mapPlugins = ['ToolBar'];
-      // this.mapCenter = {longitude: this.props.longitude, latitude: this.props.latitude};
-      this.markerPosition = {longitude: 113.735245, latitude: 34.773151};
-  }
-
-  render(){
-    console.log('map',this.props)
-        return  <Map 
-          plugins={this.mapPlugins}
-          // center={this.mapCenter}
-          zoom={90}
-        >
-          <Marker position={this.markerPosition} />
-        </Map>
+  render() {
+    return <div style={{ width: '100%', height: '100%' }}>
+      <Map zoom={90} plugins={this.mapPlugins}
+        center={{longitude: this.props.longitude, latitude: this.props.latitude}}>
+          <Marker position={{longitude: this.props.longitude, latitude: this.props.latitude}} />
+      </Map>
+    </div>
   }
 }
   

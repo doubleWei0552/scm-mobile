@@ -39,3 +39,11 @@ export async function updataStatus(params) {
     body: params,
   });
 }
+
+// 任务拜访接口
+export async function updataWorkTesksEnum(params) {
+  return request('/updataWorkTesksEnum', {
+    method: 'POST',
+    body: params,
+  });
+}
