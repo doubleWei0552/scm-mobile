@@ -4,6 +4,7 @@ import {
     getdeledetById,
     updataWorkTasks,
     updataStatus,
+    updataWorkTesksEnum,
   } from '@/services/task';
   import { Toast } from 'antd-mobile';
   import router from 'umi/router';
@@ -49,7 +50,7 @@ import {
         }
         let result = yield call(getUpdataDetail,params)
         yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})
-        if(result.success){
+        if(result.status == 'success'){
             Toast.hide()
             Toast.success('任务提交成功', 1);
         } else {
@@ -63,7 +64,7 @@ import {
         }
         let result = yield call(getdeledetById,params)
         yield put({type:'save'})
-        if(result.success){
+        if(result.status == 'success'){
             Toast.success('删除成功', 1);
             router.goBack()
         } else {
@@ -79,9 +80,23 @@ import {
         }
         let result = yield call(updataWorkTasks,params)
         yield put({type:'save'})
-        if(result.success){
+        if(result.status == 'success'){
             Toast.success('签到成功', 1);
-            router.goBack()
+        } else {
+            Toast.fail('发生未知错误 !!!', 1);
+        }
+      },
+      //任务点击拜访按钮
+      *updataWorkTesksEnum({payload,callback},{select,put,call}){
+        let params = {
+          ID:payload.Id *1,
+          EXPLAIN:payload.EXPLAIN,
+          REGISTRATION_DATE:payload.REGISTRATION_DATE,
+        }
+        let result = yield call(updataWorkTesksEnum,params)
+        yield put({type:'save'})
+        if(result.status == 'success'){
+          Toast.success('拜访成功', 1);
         } else {
             Toast.fail('发生未知错误 !!!', 1);
         }

@@ -15,8 +15,13 @@ export default {
 
 
     *queryWorkTasks({ payload, callback }, { call }) {
-      console.log('payload', payload)
-      const result = yield call(queryWorkTasks, payload);
+      const customerId = localStorage.getItem('userId') * 1
+      let params = {
+        customerId,
+        pageCount: 30,
+        pageIndex:1
+      }
+      const result = yield call(queryWorkTasks, params);
 
       if (result.status === 'success') {
         callback && callback(result)
