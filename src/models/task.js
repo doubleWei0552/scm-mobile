@@ -60,7 +60,7 @@ import {
       //任务详情删除接口
       *getdeledetById({payload,callback},{select,put,call}){
         let params = {
-            ID:payload.Id *1,
+            data:{ID:payload.Id *1}
         }
         let result = yield call(getdeledetById,params)
         yield put({type:'save'})
@@ -75,11 +75,11 @@ import {
       *updataWorkTasks({payload,callback},{select,put,call}){
         let params = {
             ID:payload.Id *1,
-            EXPLAIN:payload.EXPLAIN,
+            DESCRIBE:payload.DESCRIBE,
             REGISTRATION_DATE:payload.REGISTRATION_DATE,
         }
         let result = yield call(updataWorkTasks,params)
-        yield put({type:'save'})
+        yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})
         if(result.status == 'success'){
             Toast.success('签到成功', 1);
         } else {
@@ -90,11 +90,11 @@ import {
       *updataWorkTesksEnum({payload,callback},{select,put,call}){
         let params = {
           ID:payload.Id *1,
-          EXPLAIN:payload.EXPLAIN,
-          REGISTRATION_DATE:payload.REGISTRATION_DATE,
+          DESCRIBE:payload.DESCRIBE,
+          VISIT_RECORD:payload.VISIT_RECORD,
         }
         let result = yield call(updataWorkTesksEnum,params)
-        yield put({type:'save'})
+        yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})
         if(result.status == 'success'){
           Toast.success('拜访成功', 1);
         } else {
@@ -105,6 +105,7 @@ import {
       *updataStatus({payload,callback},{select,put,call}){
         let params = {
             ID:payload.Id *1,
+            DESCRIBE:payload.DESCRIBE,
         }
         let result = yield call(updataStatus,params)
         yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})

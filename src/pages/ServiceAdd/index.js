@@ -220,6 +220,7 @@ export default class ServiceAdd extends Component {
             </List> */}
             <List>
               <TextareaItem
+                onChange={(v) => this.handleItemChange(v, 'DESCRIBE')}
                 placeholder="描述..."
                 rows={5}
                 count={100}
