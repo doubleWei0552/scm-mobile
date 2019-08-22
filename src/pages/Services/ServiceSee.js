@@ -1,8 +1,9 @@
 import React from 'react'
-import { NavBar, Icon,List, TextareaItem,Button,WhiteSpace } from 'antd-mobile'
+import { NavBar, Icon,List, TextareaItem,Button,WhiteSpace,Toast } from 'antd-mobile'
 import { createForm } from 'rc-form'
 import router from 'umi/router'
 import { connect } from 'dva'
+import moment from 'moment'
 import MapApp from '@/components/MapModule/Index'
 import _ from 'lodash'
 
@@ -31,23 +32,51 @@ class TextareaItemExample extends React.Component{
         })
     }
     ToAudited=()=>{ //待审核方法
-        this.props.dispatch({
-            type:'task/updataStatus',payload:{
-                Id:this.state.taskId
+        this.props.form.validateFields((error, value) => {
+            if(!error){
+                this.props.dispatch({
+                    type:'task/updataStatus',payload:{
+                        Id:this.state.taskId,
+                        DESCRIBE:value.DESCRIBE,
+                    }
+                })
             }
-        })
+        }); 
     }
     CheckIn=()=>{  //点击签到
-        router.push(`/user/service/signIn/${this.state.taskId}`)
+        // router.push(`/user/service/signIn/${this.state.taskId}`)
+        this.props.form.validateFields((error, value) => {
+            if(!error){
+                this.props.dispatch({
+                    type:'task/updataWorkTasks',
+                    payload:{
+                        DESCRIBE:value.DESCRIBE,
+                        Id:this.state.taskId,
+                        REGISTRATION_DATE:moment().valueOf()
+                }})
+            }
+        });
     }
     onVisit=()=>{
-        const taskId = _.get(this.state, 'taskId')
-        this.props.dispatch({
-            type:'task/updataWorkTesksEnum',payload:{Id:taskId}
-        })
-        this.setState({
-            taskId
-        })
+        this.props.form.validateFields((error, value) => {
+            if(!error){
+                if(value.VISIT_RECORD){
+                    const taskId = _.get(this.state, 'taskId')
+                    this.props.dispatch({
+                        type:'task/updataWorkTesksEnum',payload:{
+                            Id:taskId,
+                            DESCRIBE:value.DESCRIBE,
+                            VISIT_RECORD:value.VISIT_RECORD,
+                        }
+                    })
+                    this.setState({
+                        taskId
+                    })
+                } else {
+                    Toast.fail('请填写拜访记录 !!!', 1);
+                }
+            }
+        }); 
     }
     renderButton=()=>{
         let { taskDetail,CUSTOMER,CUSTOMERCONTACT } = this.props.task
@@ -104,7 +133,7 @@ class TextareaItemExample extends React.Component{
         })
     }
     render(){
-        console.log(_.get(this.props.task,'taskDetail.status'))
+        console.log(this.props,_.get(this.props.task,'taskDetail.describe'))
         const { getFieldProps } = this.props.form
         let { taskDetail,CUSTOMER,CUSTOMERCONTACT } = this.props.task
         const MapAppProps = {
@@ -129,18 +158,23 @@ class TextareaItemExample extends React.Component{
                         <MapApp {...MapAppProps}/>
                     </div>
                     <p style={{margin:'5px 0'}}>{_.get(taskDetail,'address')}</p>
-                <List>
+                <List style={{background:'pink'}}>
                     <TextareaItem
-                        {...getFieldProps('DESCRIBE')}
+                        {...getFieldProps('DESCRIBE', {
+                            initialValue: _.get(this.props.task,'taskDetail.describe'),
+                          })}
                         rows={4}
                         placeholder="描述"
                     />
-                    <div style={{height:'1rem',width:'100%'}}/>
-                    <TextareaItem
-                        {...getFieldProps('VISIT_RECORD')}
-                        rows={4}
-                        placeholder="拜访记录"
-                    />
+                    <div style={{display:_.get(taskDetail,'buttonStatus')== 'signedin' || 'offthestocks' ? 'block' : 'none'}}>                           
+                        <TextareaItem
+                            {...getFieldProps('VISIT_RECORD', {
+                                initialValue: _.get(this.props.task,'taskDetail.visitRecord'),
+                              })}
+                            rows={4}
+                            placeholder="拜访记录"
+                        />
+                    </div>
                 </List>
                 </div>
                 <div style={{borderTop:'1px solid #e3e3e3',padding:'1rem',position:'absolute',bottom:0,width:'100%',height:'80px'}}>
