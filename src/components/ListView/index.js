@@ -132,7 +132,8 @@ export default class ListViews extends Component {
           >
             {moment(obj.START_DATE).format('YYYY年MM月DD日 hh:mm')} - {moment(obj.END_DATE).format('YYYY年MM月DD日 hh:mm')}
           </div>
-          <div style={{ padding: '15px 15px' }}>
+          <div style={{ padding: '0px 10px 10px' }}>
+            <h2>{obj.SUBJECT}</h2>
             <h3>拜访{obj.CUSTOMER}{obj.CUSTOMER_CONTACT}</h3>
             <div>{obj.ADDRESS ? obj.ADDRESS : '--'}</div>
           </div>

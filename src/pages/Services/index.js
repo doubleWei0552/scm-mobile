@@ -29,7 +29,7 @@ export default class ServicesPage extends Component {
       callback: (response) => {
         console.log('response', response)
         this.setState({
-          data: response.data
+          data: _.reverse(response.data)
         })
       }
     })

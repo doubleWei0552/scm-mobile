@@ -15,11 +15,11 @@ export default {
 
 
     *queryWorkTasks({ payload, callback }, { call }) {
-      const customerId = localStorage.getItem('userId') * 1
+      const customerId = localStorage.getItem('customerId') * 1
       let params = {
         customerId,
-        pageCount: 30,
-        pageIndex:1
+        pageCount: 9999,
+        pageIndex: 1
       }
       const result = yield call(queryWorkTasks, params);
 
