@@ -130,7 +130,7 @@ export default class ListViews extends Component {
               paddingLeft: 10,
             }}
           >
-            {moment(obj.START_DATE).format('YYYY年MM月DD日 hh:mm')} - {moment(obj.END_DATE).format('YYYY年MM月DD日 hh:mm')}
+            {moment(obj.START_DATE).format('YYYY年MM月DD日 HH:mm')} - {moment(obj.END_DATE).format('YYYY年MM月DD日 HH:mm')}
           </div>
           <div style={{ padding: '0px 10px 10px' }}>
             <h2>{obj.SUBJECT}</h2>
