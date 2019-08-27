@@ -38,6 +38,7 @@ class TextareaItemExample extends React.Component{
                     type:'task/updataStatus',payload:{
                         Id:this.state.taskId,
                         DESCRIBE:value.DESCRIBE,
+                        Sign_In:value.Sign_In,
                     }
                 })
             }
@@ -47,13 +48,18 @@ class TextareaItemExample extends React.Component{
         // router.push(`/user/service/signIn/${this.state.taskId}`)
         this.props.form.validateFields((error, value) => {
             if(!error){
-                this.props.dispatch({
-                    type:'task/updataWorkTasks',
-                    payload:{
-                        DESCRIBE:value.DESCRIBE,
-                        Id:this.state.taskId,
-                        REGISTRATION_DATE:moment().valueOf()
-                }})
+                if(value.Sign_In){
+                    this.props.dispatch({
+                        type:'task/updataWorkTasks',
+                        payload:{
+                            DESCRIBE:value.DESCRIBE,
+                            Sign_In:value.Sign_In,
+                            Id:this.state.taskId,
+                            REGISTRATION_DATE:moment().valueOf()
+                    }})
+                } else {
+                    Toast.fail('请填写签到记录 !!!', 1);
+                }
             }
         });
     }
@@ -67,6 +73,7 @@ class TextareaItemExample extends React.Component{
                             Id:taskId,
                             DESCRIBE:value.DESCRIBE,
                             VISIT_RECORD:value.VISIT_RECORD,
+                            Sign_In:value.Sign_In,
                         }
                     })
                     this.setState({
@@ -112,7 +119,6 @@ class TextareaItemExample extends React.Component{
         }
     }
     submit=()=>{
-        console.log('点击提交')
         this.props.form.validateFields((error, value) => {
             if(!error){
                 this.props.dispatch({
@@ -120,6 +126,7 @@ class TextareaItemExample extends React.Component{
                         Id:this.state.taskId,
                         DESCRIBE:value.DESCRIBE,
                         VISIT_RECORD:value.VISIT_RECORD,
+                        Sign_In:value.Sign_In,
                     }
                 })
             }
@@ -133,7 +140,7 @@ class TextareaItemExample extends React.Component{
         })
     }
     render(){
-        console.log(this.props,_.get(this.props.task,'taskDetail.describe'))
+        let showTime = _.get(this.props.task.taskDetail,'buttonStatus') == 'draft' || _.get(this.props.task.taskDetail,'buttonStatus') == 'offthestocks'
         const { getFieldProps } = this.props.form
         let { taskDetail,CUSTOMER,CUSTOMERCONTACT } = this.props.task
         const MapAppProps = {
@@ -150,8 +157,12 @@ class TextareaItemExample extends React.Component{
                     >任务详情</NavBar>
                 </div>
                 <div style={{paddingLeft:'1rem',height:'calc(100% - 125px)',overflow:'auto'}}>
-                    <h2>拜访{_.get(CUSTOMER,'name')}{_.get(CUSTOMERCONTACT,'contact')}</h2>
-                    <p style={{marginBottom:'5px'}}>{_.get(taskDetail,'startTime')} - {_.get(taskDetail,'endTime')}</p>
+                    <h1 style={{margin:0}}>{_.get(taskDetail,'subject')}</h1>
+                    <h3>拜访{_.get(CUSTOMER,'name')}{_.get(CUSTOMERCONTACT,'contact')}</h3>
+                    <p style={{marginBottom:'5px',display:showTime ? 'block' : 'none'}}>{_.get(taskDetail,'startTime') ?
+                    `${_.get(taskDetail,'startTime')} - ${_.get(taskDetail,'endTime')}` : 
+                    `${moment(_.get(taskDetail,'startDate')).format('YYYY-MM-DD hh:mm:ss')} - ${moment(_.get(taskDetail,'endDate')).format('YYYY-MM-DD hh:mm:ss')}` }
+                    </p>
                     <p style={{marginBottom:'5px'}}>{_.get(CUSTOMER,'name')}</p>
                     <p style={{marginBottom:'5px'}}>{_.get(CUSTOMERCONTACT,'contact')}({_.get(CUSTOMERCONTACT,'mobilePhone')})</p>
                     <div style={{width:'100%',height:'180px'}}>
@@ -163,14 +174,26 @@ class TextareaItemExample extends React.Component{
                         {...getFieldProps('DESCRIBE', {
                             initialValue: _.get(this.props.task,'taskDetail.describe'),
                           })}
+                        disabled={true}
                         rows={4}
                         placeholder="描述"
                     />
-                    <div style={{display:_.get(taskDetail,'buttonStatus')== 'signedin' || 'offthestocks' ? 'block' : 'none'}}>                           
+                    <div style={{borderBottom:'1px solid #dddddd',display:(_.get(taskDetail,'buttonStatus') == 'approve' || _.get(taskDetail,'buttonStatus') == 'signedin' || _.get(taskDetail,'buttonStatus') == 'offthestocks') ? 'block' : 'none'}}>                           
+                        <TextareaItem
+                            {...getFieldProps('Sign_In', {
+                                initialValue: _.get(this.props.task,'taskDetail.explain'),
+                              })}
+                            disabled={_.get(taskDetail,'buttonStatus') == 'approve' ? false : true}
+                            rows={4}
+                            placeholder="签到记录"
+                        />
+                    </div>
+                    <div style={{display:(_.get(taskDetail,'buttonStatus') == 'signedin' || _.get(taskDetail,'buttonStatus') == 'offthestocks') ? 'block' : 'none'}}>                           
                         <TextareaItem
                             {...getFieldProps('VISIT_RECORD', {
                                 initialValue: _.get(this.props.task,'taskDetail.visitRecord'),
                               })}
+                            disabled={_.get(taskDetail,'buttonStatus') == 'signedin' ? false : true}
                             rows={4}
                             placeholder="拜访记录"
                         />

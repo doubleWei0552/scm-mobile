@@ -47,6 +47,7 @@ import {
             ID:payload.Id *1,
             DESCRIBE:payload.DESCRIBE,
             VISIT_RECORD:payload.VISIT_RECORD,
+            Sign_In:payload.Sign_In,
         }
         let result = yield call(getUpdataDetail,params)
         yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})
@@ -76,6 +77,7 @@ import {
         let params = {
             ID:payload.Id *1,
             DESCRIBE:payload.DESCRIBE,
+            Sign_In:payload.Sign_In,
             REGISTRATION_DATE:payload.REGISTRATION_DATE,
         }
         let result = yield call(updataWorkTasks,params)
@@ -91,6 +93,7 @@ import {
         let params = {
           ID:payload.Id *1,
           DESCRIBE:payload.DESCRIBE,
+          Sign_In:payload.Sign_In,
           VISIT_RECORD:payload.VISIT_RECORD,
         }
         let result = yield call(updataWorkTesksEnum,params)
@@ -106,6 +109,7 @@ import {
         let params = {
             ID:payload.Id *1,
             DESCRIBE:payload.DESCRIBE,
+            Sign_In:payload.Sign_In,
         }
         let result = yield call(updataStatus,params)
         yield put({type:'save',payload:{taskDetail:result.data.WORKTASKS}})

@@ -15,6 +15,7 @@ import {
   WhiteSpace,
   DatePicker
 } from 'antd-mobile';
+import moment from 'moment'
 import enUS from 'antd-mobile/lib/locale-provider/en_US';
 import ruRU from 'antd-mobile/lib/locale-provider/ru_RU';
 import { connect } from 'dva';
@@ -106,11 +107,16 @@ export default class ServiceAdd extends Component {
   // 日期变化
   handleChangeData = (date, key) => {
     const { checked } = this.state
-    console.log('data', date.valueOf())
+    let newDate 
     if (checked) {
-      this.state.postData['START_DATE'] = date.valueOf()
-      this.state.postData['END_DATE'] = date.valueOf()
+      newDate = moment(date).set({hour:0,minute:0,second:0,millisecond:0}).valueOf()
+      if(key == 'START_DATE'){
+        this.state.postData['START_DATE'] = newDate 
+      } else if(key == 'END_DATE'){
+        this.state.postData['END_DATE'] = newDate
+      }
     } else {
+      newDate = _.cloneDeep(date.valueOf())
       this.state.postData[key] = date.valueOf()
     }
     this.state[key] = date
