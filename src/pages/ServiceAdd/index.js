@@ -16,6 +16,7 @@ import {
   DatePicker
 } from 'antd-mobile';
 import moment from 'moment'
+import zhCN from 'antd/es/locale/zh_CN';
 import enUS from 'antd-mobile/lib/locale-provider/en_US';
 import ruRU from 'antd-mobile/lib/locale-provider/ru_RU';
 import { connect } from 'dva';
@@ -134,7 +135,6 @@ export default class ServiceAdd extends Component {
   }
 
   render() {
-    console.log('ssss', this.state)
     const { customerUserList, customerContact, checked, START_DATE, END_DATE, postData } = this.state;
     const { getFieldProps, getFieldError } = this.props.form;
     _.map(customerUserList, item => {
@@ -151,7 +151,7 @@ export default class ServiceAdd extends Component {
         value: '2013',
       }];
     return (
-      <LocaleProvider locale='undefined'>
+      <LocaleProvider>
         <div className={Styles.serviceAdd}>
           <div>
             <NavBar

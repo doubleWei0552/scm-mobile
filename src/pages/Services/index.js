@@ -80,7 +80,7 @@ export default class ServicesPage extends Component {
         </div>
         <Button
           onClick={this.handleAddService}
-          style={{ position: 'absolute', right: 30, bottom: 60, width: 40, height: 40, borderRadius: 20, opacity: 0.9, boxShadow: "5px 5px 5px #888888" }} type="primary">
+          style={{ position: 'absolute',zIndex:100, right: 30, bottom: 60, width: 40, height: 40, borderRadius: 20, opacity: 0.9, boxShadow: "5px 5px 5px #888888" }} type="primary">
           <Icon style={{ fontWeight: "bolder" }} type="plus" size='sm' />
         </Button>
       </div>
