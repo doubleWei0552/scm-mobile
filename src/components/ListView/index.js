@@ -1,39 +1,36 @@
 import React, { Component } from "react";
 import {
-  ListView
+  ListView,
+  PullToRefresh
 } from 'antd-mobile';
 import _ from 'lodash';
 import moment from 'moment'
 import ReactDOM from 'react-dom';
 
-function MyBody(props) {
-  return (
-    <div className="am-list-body my-body">
-      <span style={{ display: 'none' }}>you can custom body wrap element</span>
-      {props.children}
-    </div>
-  );
-}
-
-
-let dataBlobs = {};
+const dataBlobs = {};
 let sectionIDs = [];
 let rowIDs = [];
-function genData(pIndex = 0, list = []) {
-  const sectionName = `Section ${pIndex}`;
-  const idx = _.findIndex(sectionIDs, item => item === sectionName)
-  if (idx > -1) {
-    return
-  }
-  sectionIDs.push(sectionName);
-  dataBlobs[sectionName] = sectionName;
-  rowIDs[pIndex] = [];
-  _.map(list, (item, i) => {
-    rowIDs[pIndex].push(item.ID);
-    dataBlobs[item.ID] = item.ID;
-  })
-  sectionIDs = [...sectionIDs];
-  rowIDs = [...rowIDs];
+function genData(pIndex = 0,list) {
+    const sectionName = `Section ${pIndex}`;
+    const idx = _.findIndex(sectionIDs, item => item === sectionName)
+    if (idx > -1) {
+        rowIDs[pIndex] = [];
+        _.map(list, (item, i) => {
+            rowIDs[pIndex].push(item.ID);
+            dataBlobs[item.ID] = item.ID;
+        })
+        rowIDs = [...rowIDs];
+    } else {
+        sectionIDs.push(sectionName);
+        dataBlobs[sectionName] = sectionName;
+        rowIDs[pIndex] = [];
+        _.map(list, (item, i) => {
+            rowIDs[pIndex].push(item.ID);
+            dataBlobs[item.ID] = item.ID;
+        })
+        sectionIDs = [...sectionIDs];
+        rowIDs = [...rowIDs];
+    }
 }
 
 // 不分页长列表
@@ -58,8 +55,6 @@ export default class ListViews extends Component {
   }
 
   componentDidMount() {
-    // you can scroll to the specified position
-    // setTimeout(() => this.lv.scrollTo(0, 120), 800);
     const { list } = this.props;
     genData(0, list);
     const hei = document.documentElement.clientHeight - ReactDOM.findDOMNode(this.lv).parentNode.offsetTop;
@@ -71,33 +66,6 @@ export default class ListViews extends Component {
         height: hei,
       });
     }, 600);
-  }
-
-  // If you use redux, the data maybe at props, you need use `componentWillReceiveProps`
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.dataSource !== this.props.dataSource) {
-  //     this.setState({
-  //       dataSource: this.state.dataSource.cloneWithRowsAndSections(nextProps.dataSource),
-  //     });
-  //   }
-  // }
-
-
-  onEndReached = (event) => {
-    // load new data
-    // hasMore: from backend data, indicates whether it is the last page, here is false
-    if (this.state.isLoading && !this.state.hasMore) {
-      return;
-    }
-    console.log('reach end', event);
-    this.setState({ isLoading: true });
-    setTimeout(() => {
-      // genData(++pageIndex);
-      this.setState({
-        // dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlobs, sectionIDs, rowIDs),
-        isLoading: false,
-      });
-    }, 1000);
   }
 
   render() {
@@ -113,12 +81,9 @@ export default class ListViews extends Component {
         }}
       />
     );
-    let index = data.length - 1;
     const row = (rowData, sectionID, rowID) => {
-      if (index < 0) {
-        index = data.length - 1;
-      }
-      const obj = data[index--];
+    let index = _.findIndex(data,item => item.ID == rowID)
+    const obj = data[index];
       return (
         <div onClick={() => this.props.onJump(obj)} key={rowID} style={{ padding: 0 }}>
           <div
@@ -146,14 +111,9 @@ export default class ListViews extends Component {
         <ListView
           ref={el => this.lv = el}
           dataSource={this.state.dataSource}
-          // renderHeader={() => <span>header</span>}
           renderFooter={() => (<div style={{ padding: 30, textAlign: 'center' }}>
-            {this.state.isLoading ? 'Loading...' : 'Loaded'}
+            {this.state.isLoading ? '数据加载中...' : '已加载所有数据'}
           </div>)}
-          // renderSectionHeader={sectionData => (
-          //   <div>{`Task ${sectionData.split(' ')[1]}`}</div>
-          // )}
-          // renderBodyComponent={() => <MyBody />}
           renderRow={row}
           renderSeparator={separator}
           style={{
@@ -161,10 +121,10 @@ export default class ListViews extends Component {
             overflow: 'auto',
           }}
           pageSize={5}
-          onScroll={() => { console.log('scroll'); }}
           scrollRenderAheadDistance={500}
-          onEndReached={this.onEndReached}
-          onEndReachedThreshold={10}
+          pullToRefresh={<PullToRefresh  //下拉刷新
+            onRefresh={() => genData(0, this.props.list)}
+          />}
         />
       </div>
     );
