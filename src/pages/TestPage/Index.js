@@ -149,13 +149,15 @@ class TabPanePage extends Component {
     let { goodsLists } = this.props.shoppingCart
     return (
       <div style={{ height: '100%' }}>
-        <NavBar
-          mode="dark"
-        >{
-            this.state.NavBarTitle}
-        </NavBar>
+        <div>
+          <NavBar
+            mode="dark"
+          >{
+              this.state.NavBarTitle}
+          </NavBar>
+        </div>
         <div style={{ height: 'calc(100% - 45px)', position: 'relative', }}>
-          <div style={{ height: 'calc(100% - 50px)', width: '100%' }}>
+          <div style={{ height: 'calc(100% - 50px)', width: '100%',overflow:'scroll' }}>
             {
               this.renderDom(selectedTab)
             }

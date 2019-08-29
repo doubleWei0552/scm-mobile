@@ -8,7 +8,7 @@ import noImg from '@/assets/noImg.svg'
 import Styles from './Index.less'
 import router from 'umi/router';
 import { Button } from 'antd';
-
+import WaterfallFlow from '../WaterfallFlow/Index'
 
 export default class HomePage extends React.Component {
   state = {
@@ -109,6 +109,11 @@ export default class HomePage extends React.Component {
               销售提报
             </div>
           </div>
+        </div>
+        {/* 瀑布流组件 */}
+        <div style={{height:'1rem',borderBottom:'1px solid lightgray',marginBottom:'1rem'}} />
+        <div style={{paddingBottom:'70px'}}> 
+          <WaterfallFlow />
         </div>
       </div >
     )
