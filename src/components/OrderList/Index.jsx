@@ -27,6 +27,19 @@ import {
 import router from 'umi/router';
 import styles from './order.less'
 
+import jzq1 from '@/assets/jzq/jzq1.jpg'
+import jzq2 from '@/assets/jzq/jzq2.jpg'
+import jzq3 from '@/assets/jzq/jzq3.jpg'
+import jzq4 from '@/assets/jzq/jzq4.jpg'
+import jzq5 from '@/assets/jzq/jzq5.jpg'
+import jzq6 from '@/assets/jzq/jzq6.jpg'
+import jzq7 from '@/assets/jzq/jzq7.jpg'
+import jzq8 from '@/assets/jzq/jzq8.jpg'
+import jzq9 from '@/assets/jzq/jzq9.jpg'
+
+const demo = [jzq1, jzq2, jzq3, jzq4, jzq5, jzq6, jzq7, jzq8, jzq9];
+
+
 const NUM_SECTIONS = 10;
 const NUM_ROWS_PER_SECTION = 10;  //每页展示的数据
 let pageIndex = 0;
@@ -269,7 +282,7 @@ export default class OrderList extends React.Component {
             <div style={{ height: '94px', width: '100%', padding: '15px 0', whiteSpace: 'nowrap' }}>
               <div style={{ overflowX: 'scroll', whiteSpace: 'nowrap', display: '-webkit-box' }}>
                 {obj.detailOrder.map((ii, jj) => {
-                  return <img key={jj} style={{ height: '64px', marginRight: '15px', marginBottom: '10px' }} src={obj.order.URL || noImg} alt="error" />
+                  return <img key={jj} style={{ height: '64px', marginRight: '15px', marginBottom: '10px' }} src={demo[jj % 9] || obj.order.URL || noImg} alt="error" />
                 })}
               </div>
             </div>

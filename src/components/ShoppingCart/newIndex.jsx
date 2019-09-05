@@ -7,6 +7,18 @@ import router from 'umi/router';
 import noImg from '@/assets/noImg.svg'
 import styles from './newIndex.less'
 
+import jzq1 from '@/assets/jzq/jzq1.jpg'
+import jzq2 from '@/assets/jzq/jzq2.jpg'
+import jzq3 from '@/assets/jzq/jzq3.jpg'
+import jzq4 from '@/assets/jzq/jzq4.jpg'
+import jzq5 from '@/assets/jzq/jzq5.jpg'
+import jzq6 from '@/assets/jzq/jzq6.jpg'
+import jzq7 from '@/assets/jzq/jzq7.jpg'
+import jzq8 from '@/assets/jzq/jzq8.jpg'
+import jzq9 from '@/assets/jzq/jzq9.jpg'
+
+const demo = [jzq1, jzq2, jzq3, jzq4, jzq5, jzq6, jzq7, jzq8, jzq9];
+
 function MyBody(props) {
   return (
     <div className="am-list-body my-body">
@@ -196,6 +208,7 @@ export default class ShoppingCart extends React.Component {
     // let index = goodsLists.length - 1;
     const row = (rowData, sectionID, rowID) => {
       const index = _.findIndex(goodsLists, item => item.ID === rowID)
+      const idx = index % 9
       const obj = goodsLists[index]
       if (index < 0) {
         return null
@@ -203,7 +216,7 @@ export default class ShoppingCart extends React.Component {
         return (
           <div key={rowID} style={{ padding: '0 10px' }}>
             <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
-              <img style={{ height: '80px', marginRight: '15px' }} src={obj.url || noImg} alt="error" />
+              <img style={{ height: '80px', marginRight: '15px' }} src={demo[idx] || obj.url || noImg} alt="error" />
               <div style={{ lineHeight: 1, width: 'calc(100% - 95px)' }}>
                 <div style={{ marginBottom: '8px', fontWeight: 'bold', textAlign: 'left' }}>{obj.GOODS_NAME}</div>
                 <div style={{ marginBottom: '8px', textAlign: 'left', color: 'gray' }}>{obj.GOODS_SPEC}</div>

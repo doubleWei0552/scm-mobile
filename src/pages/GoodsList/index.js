@@ -6,6 +6,17 @@ import ReactDom from 'react-dom';
 import { Menu, ActivityIndicator, NavBar, Icon, ListView, Stepper, PullToRefresh, Badge, Modal, List, Button, Toast } from 'antd-mobile';
 import router from 'umi/router';
 import Style from './style.less';
+import jzq1 from '@/assets/jzq/jzq1.jpg'
+import jzq2 from '@/assets/jzq/jzq2.jpg'
+import jzq3 from '@/assets/jzq/jzq3.jpg'
+import jzq4 from '@/assets/jzq/jzq4.jpg'
+import jzq5 from '@/assets/jzq/jzq5.jpg'
+import jzq6 from '@/assets/jzq/jzq6.jpg'
+import jzq7 from '@/assets/jzq/jzq7.jpg'
+import jzq8 from '@/assets/jzq/jzq8.jpg'
+import jzq9 from '@/assets/jzq/jzq9.jpg'
+
+const demo = [jzq1, jzq2, jzq3, jzq4, jzq5, jzq6, jzq7, jzq8, jzq9];
 
 let dataBlobs = {};
 let sectionIDs = [];
@@ -348,7 +359,7 @@ class GoodsListPage extends Component {
           >{_.get(obj, 'GOODS_NAME')}
           </div>
           <div style={{ display: '-webkit-box', display: 'flex', padding: '5px 0' }}>
-            <img style={{ height: '64px', marginRight: '15px' }} src={_.get(obj, 'img') || 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png'} alt="" />
+            <img style={{ height: '64px', marginRight: '15px' }} src={demo[0] || _.get(obj, 'img') || 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png'} alt="" />
             <div style={{ lineHeight: 1, flex: 1 }}>
               <div style={{ marginBottom: '8px', fontWeight: 'bold', textAlign: 'left' }}>{_.get(obj, 'des', '我是商品描述')}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>

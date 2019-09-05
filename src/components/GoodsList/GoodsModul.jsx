@@ -8,6 +8,18 @@ import router from 'umi/router';
 import noImg from '@/assets/noImg.svg'
 import styles from './style.less'
 
+import jzq1 from '@/assets/jzq/jzq1.jpg'
+import jzq2 from '@/assets/jzq/jzq2.jpg'
+import jzq3 from '@/assets/jzq/jzq3.jpg'
+import jzq4 from '@/assets/jzq/jzq4.jpg'
+import jzq5 from '@/assets/jzq/jzq5.jpg'
+import jzq6 from '@/assets/jzq/jzq6.jpg'
+import jzq7 from '@/assets/jzq/jzq7.jpg'
+import jzq8 from '@/assets/jzq/jzq8.jpg'
+import jzq9 from '@/assets/jzq/jzq9.jpg'
+
+const demo = [jzq1, jzq2, jzq3, jzq4, jzq5, jzq6, jzq7, jzq8, jzq9];
+
 const CheckboxItem = Checkbox.CheckboxItem;
 
 function MyBody(props) {
@@ -82,9 +94,9 @@ export default class ShoppingCart extends React.Component {
     };
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.getTypeList();
-    
+
   }
   componentDidMount() {
     const { goodsData: { menuData, list } } = this.props;
@@ -156,7 +168,7 @@ export default class ShoppingCart extends React.Component {
         null,
         this.state.pageIndex,
         search,
-        );
+      );
     });
   }
 
@@ -198,7 +210,7 @@ export default class ShoppingCart extends React.Component {
   }
 
   // 获取商品列表
-  getGoodsList = (refresh = false, INSTALLATION_POSITION='',CAR_MODEL='',  type='', pIndex,search) => {
+  getGoodsList = (refresh = false, INSTALLATION_POSITION = '', CAR_MODEL = '', type = '', pIndex, search) => {
     Toast.loading('Loading...', 0);
     const { dispatch } = this.props;
     const { value } = this.state
@@ -216,23 +228,23 @@ export default class ShoppingCart extends React.Component {
     }
     dispatch({
       // type: 'goodsData/getGoodsList',
-      type:'goodsData/getcarMaterialList',
+      type: 'goodsData/getcarMaterialList',
       payload: {
         // ID:this.props.ID,
-        MANUFACTURER:this.props.MANUFACTURER,
-        MODEL:this.props.MODEL,
+        MANUFACTURER: this.props.MANUFACTURER,
+        MODEL: this.props.MODEL,
         INSTALLATION_POSITION,
         CAR_MODEL,
-        customerId, userId, pageSize: 10, 
+        customerId, userId, pageSize: 10,
         currentPage: type ? 1 : pageIndex,
-        QUERY:this.props.search,
+        QUERY: this.props.search,
       },
       callback: response => {
         if (response.status === 'success') {
           const { data: { list } } = response;
           const search = search || null
-          if(this.props.search){
-            if(!response.data.list.length){
+          if (this.props.search) {
+            if (!response.data.list.length) {
               this.dataClean()
             }
           }
@@ -307,11 +319,12 @@ export default class ShoppingCart extends React.Component {
     }
     const row = (rowData, sectionID, rowID) => {
       const index = _.findIndex(goodsLists, item => item.ID === rowID)
+      const idx = index % 9
       const obj = goodsLists[index];
       return (
         <div key={rowID} style={{ padding: '0 10px' }}>
           <div style={{ display: '-webkit-box', display: 'flex', padding: '15px 0' }}>
-            <img style={{ height: '80px', marginRight: '15px' }} src={obj.img || noImg} alt="" />
+            <img style={{ height: '80px', marginRight: '15px' }} src={demo[idx] || obj.img || noImg} alt="" />
             <div style={{ lineHeight: 1, width: 'calc(100% - 95px)' }}>
               <div style={{ marginBottom: '8px', fontWeight: 'bold', textAlign: 'left' }}>{obj.GOODS_NAME}</div>
               <div style={{ marginBottom: '8px', textAlign: 'left' }}>{obj.des}</div>
@@ -346,7 +359,7 @@ export default class ShoppingCart extends React.Component {
     };
 
     return (
-      <div style={{height:'100%'}} className={styles.newGoodsPage} >
+      <div style={{ height: '100%' }} className={styles.newGoodsPage} >
         <ListView
           ref={el => this.lv = el}
           dataSource={this.state.dataSource}
